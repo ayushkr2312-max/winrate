@@ -20,19 +20,17 @@ export default function KineticHeading({ rows, className = "", tag: Tag = "h2", 
     const el = ref.current;
     if (!el) return;
     const inners = el.querySelectorAll(".inner");
-    gsap.set(inners, { yPercent: 110 });
 
     const st = ScrollTrigger.create({
       trigger: el,
       start: triggerStart,
       once: true,
       onEnter: () => {
-        gsap.to(inners, {
-          yPercent: 0,
-          duration: 1.1,
-          ease: "expo.out",
-          stagger,
-        });
+        gsap.fromTo(
+          inners,
+          { yPercent: 110 },
+          { yPercent: 0, duration: 1.1, ease: "expo.out", stagger },
+        );
       },
     });
     return () => st.kill();

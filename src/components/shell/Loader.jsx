@@ -13,13 +13,14 @@ export default function Loader({ onDone }) {
   const fillRef = useRef(null);
   const pctRef = useRef(null);
   const feedRef = useRef(null);
+  const uidRef = useRef(`${Math.floor(Math.random() * 9 + 1)}${Date.now().toString(36).slice(-7).toUpperCase()}`);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     let elapsed = 0;
     const total = 1500;
-    const step = 40;
+    const step = 50;
     let feedIdx = 0;
 
     const iv = setInterval(() => {
@@ -78,7 +79,7 @@ export default function Loader({ onDone }) {
           <div className="loader-bar-fill" ref={fillRef} />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px" }}>
-          <span>UID · {Math.floor(Math.random() * 9 + 1)}{Date.now().toString(36).slice(-7).toUpperCase()}</span>
+          <span>UID · {uidRef.current}</span>
           <span>SECURE LINK</span>
         </div>
       </div>

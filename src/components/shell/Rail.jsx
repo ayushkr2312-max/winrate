@@ -10,22 +10,46 @@ const SECTIONS = [
   { id: "problem", label: "Challenge", num: "02" },
   { id: "solutions", label: "Solutions", num: "03" },
   { id: "stats", label: "Readiness", num: "04" },
-  { id: "process", label: "Process", num: "05" },
+  { id: "experience", label: "Exp × Tech", num: "05" },
   { id: "manifesto", label: "Manifesto", num: "06" },
   { id: "contact", label: "Contact", num: "07" },
 ];
 
 function pad(n) { return String(n).padStart(2, "0"); }
 
+const DOCK_BAR_H = 42;
+
+function scrollProblemIntoDockView() {
+  const problem = document.getElementById("problem");
+  if (!problem) return;
+
+  const rect = problem.getBoundingClientRect();
+  const y = window.scrollY + rect.top - DOCK_BAR_H;
+
+  const lenis = getLenis();
+  if (lenis) {
+    lenis.scrollTo(y, { immediate: true, lock: true, force: true });
+  } else {
+    window.scrollTo(0, y);
+  }
+}
+
 export default function Rail() {
   const [active, setActive] = useState("hero");
   const [docked, setDocked] = useState(false);
   const [clock, setClock] = useState("00:00 UTC");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuHover, setMenuHover] = useState(false);
   const eqRef = useRef(null);
   const sweepRef = useRef(null);
   const sweepTlRef = useRef(null);
   const dockedRef = useRef(false);
   const lockRef = useRef(false);
+  const menuRef = useRef(null);
+  const lastScrollYRef = useRef(0);
+
+  const activeSection = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
+  const menuVisible = menuOpen || menuHover;
 
   useEffect(() => {
     const upd = () => {
@@ -50,23 +74,22 @@ export default function Rail() {
         sweepTlRef.current = null;
         lockRef.current = false;
         ScrollTrigger.refresh();
+        if (toDocked) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(scrollProblemIntoDockView);
+          });
+        }
       },
     });
 
     if (toDocked) {
-      const bridge = document.querySelector(".bridge");
       tl.set(sw, { scaleX: 0, opacity: 1, transformOrigin: "left center" })
         .to(sw, { scaleX: 1, duration: 0.3, ease: "power4.inOut" })
         .add(() => {
           setDocked(true);
           dockedRef.current = true;
           document.documentElement.style.setProperty("--rail", "0px");
-          if (bridge) {
-            const off = Math.round(window.innerHeight * 0.5);
-            const lenis = getLenis();
-            if (lenis) { lenis.scrollTo(bridge, { immediate: true, offset: off }); }
-            else { window.scrollTo(0, bridge.offsetTop + off); }
-          }
+          requestAnimationFrame(scrollProblemIntoDockView);
         })
         .to(sw, { opacity: 0, duration: 0.25, ease: "power2.out" })
         .set(sw, { scaleX: 0, opacity: 1 });
@@ -92,8 +115,13 @@ export default function Rail() {
   }, []);
 
   useEffect(() => {
+    let rafId = 0;
     const onScroll = () => {
       if (lockRef.current) return;
+      const scrolled = window.scrollY;
+      const directionUp = scrolled < lastScrollYRef.current - 1;
+      const directionDown = scrolled > lastScrollYRef.current + 1;
+      lastScrollYRef.current = scrolled;
 
       let cur = "hero";
       const half = window.innerHeight / 2;
@@ -102,15 +130,13 @@ export default function Rail() {
         if (!el) continue;
         if (el.getBoundingClientRect().top - half <= 0) cur = s.id;
       }
-      setActive(cur);
+      setActive((prev) => (prev === cur ? prev : cur));
 
       const hero = document.getElementById("hero");
       if (hero) {
         const heroRect = hero.getBoundingClientRect();
-        const shouldDock = heroRect.top < -200;
-        const bridge = document.querySelector(".bridge");
-        const shouldUndock = dockedRef.current && bridge &&
-          bridge.getBoundingClientRect().top > 10;
+        const shouldDock = directionDown && heroRect.top < -200;
+        const shouldUndock = dockedRef.current && directionUp && heroRect.top > -120;
 
         if (shouldDock && !dockedRef.current) {
           runSweep(true);
@@ -130,10 +156,51 @@ export default function Rail() {
         });
       }
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const requestOnScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        onScroll();
+      });
+    };
+
+    requestOnScroll();
+    window.addEventListener("scroll", requestOnScroll, { passive: true });
+    window.addEventListener("resize", requestOnScroll);
+    return () => {
+      window.removeEventListener("scroll", requestOnScroll);
+      window.removeEventListener("resize", requestOnScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [runSweep]);
+
+  useEffect(() => {
+    if (!docked) {
+      setMenuOpen(false);
+      setMenuHover(false);
+    }
+  }, [docked]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    const onPointer = (e) => {
+      if (!menuRef.current?.contains(e.target)) setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [menuOpen]);
+
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    setMenuHover(false);
+  }, []);
 
   const isInverted = ["manifesto"].includes(active);
 
@@ -141,27 +208,36 @@ export default function Rail() {
     "rail",
     isInverted && !docked && "is-inverted",
     docked && "is-docked",
+    docked && menuVisible && "is-menu-visible",
   ].filter(Boolean).join(" ");
 
   return (
     <>
       <div className="rail-sweep" ref={sweepRef} aria-hidden="true" />
-      <nav className={cls} aria-label="Primary">
+      <nav
+        className={cls}
+        aria-label="Primary"
+        onMouseEnter={() => { if (docked) setMenuHover(true); }}
+        onMouseLeave={() => { if (docked) setMenuHover(false); }}
+      >
         <a href="#hero" className="rail-logo" data-cursor-label="HOME">
           <span className="short">W<span className="a">I</span></span>
           <span className="full">NRVTE</span>
         </a>
 
-        <div className="rail-eq" ref={eqRef} aria-hidden="true">
-          <svg viewBox="0 0 12 60" preserveAspectRatio="none">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <rect key={i} className="bar" x={i * 2.4} y="10" width="1.4" height="40" rx="0.7"
-                style={{ transformBox: "fill-box", transformOrigin: "center" }} />
-            ))}
-          </svg>
-        </div>
+        {!docked && (
+          <div className="rail-eq" ref={eqRef} aria-hidden="true">
+            <svg viewBox="0 0 12 60" preserveAspectRatio="none">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <rect key={i} className="bar" x={i * 2.4} y="10" width="1.4" height="40" rx="0.7"
+                  style={{ transformBox: "fill-box", transformOrigin: "center" }} />
+              ))}
+            </svg>
+          </div>
+        )}
 
-        <ul className="rail-items">
+        {!docked && (
+          <ul className="rail-items">
           {SECTIONS.map((s) => (
             <li key={s.id} className={"rail-item" + (active === s.id ? " is-active" : "")}>
               <a href={`#${s.id}`} className="rail-dot" aria-label={s.label} />
@@ -169,11 +245,52 @@ export default function Rail() {
               <span className="rail-num">{s.num}</span>
             </li>
           ))}
-        </ul>
+          </ul>
+        )}
 
-        <div className="rail-foot">
-          <span className="rail-clock">{clock}</span>
-          <a href="#" className="rail-social" aria-label="X" data-cursor-label="X">
+        {docked && (
+          <div ref={menuRef} className={"rail-dock-center" + (menuVisible ? " is-open" : "")}>
+            <button
+              type="button"
+              className="rail-center-eq"
+              aria-label={menuOpen ? "Close section navigation" : "Open section navigation"}
+              aria-expanded={menuVisible}
+              aria-controls="rail-dock-panel"
+              onClick={() => setMenuOpen((v) => !v)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+            <div id="rail-dock-panel" className="rail-dock-panel" role="menu">
+              <ul className="rail-dock-list">
+                {SECTIONS.map((s) => (
+                  <li key={s.id} role="none">
+                    <a
+                      href={`#${s.id}`}
+                      role="menuitem"
+                      className={"rail-dock-link" + (active === s.id ? " is-active" : "")}
+                      onClick={closeMenu}
+                    >
+                      <span className="rail-dock-link-num">{s.num}</span>
+                      <span className="rail-dock-link-label">{s.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {docked ? (
+          <div className="rail-dock-right" aria-live="polite">
+            <span className="rail-dock-right-k">Current</span>
+            <span className="rail-dock-right-v">{activeSection.label}</span>
+          </div>
+        ) : (
+          <div className="rail-foot">
+            <span className="rail-clock">{clock}</span>
+            <a href="#" className="rail-social" aria-label="X" data-cursor-label="X">
             <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.734l7.726-8.877L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </a>
           <a href="#" className="rail-social" aria-label="Discord" data-cursor-label="DC">
@@ -182,7 +299,8 @@ export default function Rail() {
           <a href="#" className="rail-social" aria-label="Instagram" data-cursor-label="IG">
             <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
           </a>
-        </div>
+          </div>
+        )}
       </nav>
     </>
   );

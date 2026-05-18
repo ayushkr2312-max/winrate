@@ -19,7 +19,7 @@ export default function Footer() {
             <a href="#problem" className="footer-link">Challenge</a>
             <a href="#solutions" className="footer-link">Solutions</a>
             <a href="#stats" className="footer-link">Readiness</a>
-            <a href="#process" className="footer-link">Process</a>
+            <a href="#experience" className="footer-link">Experience × Tech</a>
           </div>
         </div>
 

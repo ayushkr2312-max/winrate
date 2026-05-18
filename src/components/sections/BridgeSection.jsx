@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionCoord from "../primitives/SectionCoord";
 import {
   VisualOpsDrowning,
   VisualScoutingGuess,
@@ -10,14 +10,12 @@ import {
   VisualContentChaos,
 } from "../problems/ProblemVisuals";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const CHALLENGES = [
   {
     num: "01",
     tag: "OPERATIONS",
     cluster: "EXECUTION LAYER",
-    headline: "Operations core\nat burnout velocity.",
+    headline: "Operations core at burnout velocity",
     statement:
       "Scheduling, approvals, travel, comms, and deliverables are split across disconnected tools. One person becomes the system, then the system breaks at peak match load.",
     stat: "67%",
@@ -28,13 +26,13 @@ const CHALLENGES = [
       { k: "Competitive Cost", v: "2-4 avoidable misses each match week: late submissions, delayed posts, unresolved blockers." },
     ],
     Visual: VisualOpsDrowning,
-    textSide: "left",
+    accent: "Execution layer",
   },
   {
     num: "02",
     tag: "TALENT",
     cluster: "SCOUTING ENGINE",
-    headline: "Talent pipeline\nis reactive.",
+    headline: "Talent pipeline is reactive",
     statement:
       "Scouting from clips, DMs, and memory cannot compound. Faster orgs tag, score, and track prospects before hype cycles inflate price.",
     stat: "4×",
@@ -45,13 +43,13 @@ const CHALLENGES = [
       { k: "Signing Loss", v: "2-3 future top-tier prospects per quarter are identified too late." },
     ],
     Visual: VisualScoutingGuess,
-    textSide: "right",
+    accent: "Scouting engine",
   },
   {
     num: "03",
     tag: "ANALYTICS",
     cluster: "DECISION STACK",
-    headline: "Decision data\nis fragmented.",
+    headline: "Decision data is fragmented",
     statement:
       "Performance, social, content, finance, and roster data all exist, but no team trusts it because each department works from a different export.",
     stat: "6+",
@@ -62,13 +60,13 @@ const CHALLENGES = [
       { k: "Alignment Risk", v: "Coach, GM, and partnerships optimize against different snapshots." },
     ],
     Visual: VisualDataScatter,
-    textSide: "left",
+    accent: "Decision stack",
   },
   {
     num: "04",
     tag: "SPONSORSHIP",
     cluster: "REVENUE OPS",
-    headline: "Sponsor delivery\nis panic-driven.",
+    headline: "Sponsor delivery is panic-driven",
     statement:
       "Deals are won, but renewals weaken when proof-of-delivery and media value are assembled from screenshots, scattered links, and last-minute reports.",
     stat: "11",
@@ -79,13 +77,13 @@ const CHALLENGES = [
       { k: "Revenue Exposure", v: "One missed premium deliverable can wipe months of net margin." },
     ],
     Visual: VisualSponsorLeak,
-    textSide: "right",
+    accent: "Revenue ops",
   },
   {
     num: "05",
     tag: "CONTENT",
     cluster: "PUBLISHING PIPELINE",
-    headline: "Content engine\nis chaotic.",
+    headline: "Content engine is chaotic",
     statement:
       "Requests from players, social, and partners arrive in real time, but approvals and assets still move manually, so momentum dies in queue.",
     stat: "31h",
@@ -96,13 +94,13 @@ const CHALLENGES = [
       { k: "Brand Risk", v: "No unified approval trail leads to messaging drift and partner stress." },
     ],
     Visual: VisualContentChaos,
-    textSide: "left",
+    accent: "Publishing pipeline",
   },
   {
     num: "06",
     tag: "BRAND",
     cluster: "DIGITAL PRESENCE",
-    headline: "Web presence\nkills credibility.",
+    headline: "Web presence kills credibility",
     statement:
       "Before calls, sponsors and talent check your site. If it feels slow, dated, or inconsistent, they assume your operation is too.",
     stat: "3.4×",
@@ -113,197 +111,238 @@ const CHALLENGES = [
       { k: "Speed Signal", v: "LCP improvements are often the fastest credibility multiplier." },
     ],
     Visual: VisualOldSite,
-    textSide: "right",
+    accent: "Digital presence",
   },
 ];
 
-const EDGE_GROW_STEP = 0.5;
-const EDGE_GROW_MAX = 14;
-
 export default function BridgeSection() {
   const sectionRef = useRef(null);
-  const stickyRef  = useRef(null);
-  const fillRef    = useRef(null);
-  const panelRefs  = useRef([]);
-  const dotRefs    = useRef([]);
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  const dotTops = CHALLENGES.map((_, i) => `${14 + (72 / Math.max(CHALLENGES.length - 1, 1)) * i}%`);
+  const stageRef = useRef(null);
+  const overlayRef = useRef(null);
+  const cardRefs = useRef([]);
+  const hoverTimerRef = useRef(null);
+  const hoverIdxRef = useRef(null);
+  const [activeIdx, setActiveIdx] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const activeItem = activeIdx !== null ? CHALLENGES[activeIdx] : null;
 
   useEffect(() => {
-    const root = document.documentElement;
-    const panels = panelRefs.current.filter(Boolean);
-    const dots   = dotRefs.current.filter(Boolean);
-    const n      = panels.length;
-
-    const setEdgeGrow = (px) => {
-      root.style.setProperty("--edge-line-grow", `${px.toFixed(1)}px`);
-    };
-
-    const quantizeGrow = (progress) =>
-      Math.round((Math.min(1, Math.max(0, progress)) * EDGE_GROW_MAX) / EDGE_GROW_STEP) * EDGE_GROW_STEP;
-
-    panels.forEach((el, i) => {
-      const dir = CHALLENGES[i].textSide === "left" ? -1 : 1;
-      gsap.set(el, { x: dir * 120, opacity: 0, scale: 0.94 });
-    });
-    gsap.set(fillRef.current, { scaleY: 0, transformOrigin: "top center" });
-    gsap.set(dots, { scale: 0, opacity: 0 });
-
     const ctx = gsap.context(() => {
-      const scrollPx = window.innerHeight * (n + 0.8);
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: `+=${scrollPx}`,
-          pin: stickyRef.current,
-          scrub: 1.4,
-          anticipatePin: 1,
-          onEnter: () => setEdgeGrow(0),
-          onEnterBack: () => setEdgeGrow(EDGE_GROW_MAX),
-          onLeave: () => setEdgeGrow(EDGE_GROW_MAX),
-          onLeaveBack: () => setEdgeGrow(0),
-          onUpdate: (self) => {
-            const idx = Math.min(Math.floor(self.progress * n + 0.1), n - 1);
-            setActiveIdx(idx);
-            setEdgeGrow(quantizeGrow(self.progress));
-          },
-        },
-      });
-
-      tl.to(fillRef.current, { scaleY: 1, ease: "none", duration: n }, 0);
-
-      panels.forEach((panel, i) => {
-        const s         = i;
-        const enterEnd  = s + 0.38;
-        const exitStart = s + 0.72;
-        const exitEnd   = s + 1.0;
-
-        tl.to(panel, {
-          x: 0, opacity: 1, scale: 1,
+      gsap.fromTo(
+        ".challenge-card",
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
           ease: "power3.out",
-          duration: enterEnd - s,
-        }, s);
-
-        if (dots[i]) {
-          tl.to(dots[i], { scale: 1, opacity: 1, duration: 0.15, ease: "back.out(2)" }, s + 0.1);
-        }
-
-        if (i < n - 1) {
-          tl.to(panel, {
-            y: -90, opacity: 0,
-            ease: "power2.in",
-            duration: exitEnd - exitStart,
-          }, exitStart);
-          if (dots[i]) {
-            tl.to(dots[i], { scale: 0.3, opacity: 0.2, duration: 0.15 }, exitStart + 0.05);
-          }
-        }
-      });
+          stagger: 0.06,
+          delay: 0.08,
+        },
+      );
     }, sectionRef);
-
-    return () => {
-      ctx.revert();
-      setEdgeGrow(0);
-    };
+    return () => ctx.revert();
   }, []);
 
-  return (
-    <section className="bridge" id="problem" ref={sectionRef}>
-      <div className="bridge-sticky" ref={stickyRef}>
+  const expandFromCard = useCallback((index) => {
+    const stage = stageRef.current;
+    const overlay = overlayRef.current;
+    const origin = cardRefs.current[index];
+    if (!stage || !overlay || !origin) return;
 
-        {/* Vertical spine */}
-        <div className="bridge-spine">
-          <div className="bridge-spine-track" />
-          <div className="bridge-spine-fill" ref={fillRef} />
-          {CHALLENGES.map((_, i) => (
-            <div
-              key={i}
-              className="bridge-spine-dot"
-              ref={el => { dotRefs.current[i] = el; }}
-              style={{ top: dotTops[i] }}
-            />
-          ))}
+    const stageRect = stage.getBoundingClientRect();
+    const cardRect = origin.getBoundingClientRect();
+
+    gsap.killTweensOf(overlay);
+    gsap.killTweensOf(".challenge-overlay-details > *");
+    gsap.set(overlay, {
+      x: cardRect.left - stageRect.left,
+      y: cardRect.top - stageRect.top,
+      width: cardRect.width,
+      height: cardRect.height,
+      borderRadius: 18,
+      autoAlpha: 1,
+    });
+    gsap.to(overlay, {
+      x: 0,
+      y: 0,
+      width: stageRect.width,
+      height: stageRect.height,
+      borderRadius: 24,
+      duration: 0.62,
+      ease: "power3.inOut",
+    });
+    gsap.fromTo(
+      ".challenge-overlay-details > *",
+      { opacity: 0, y: 12 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.44,
+        ease: "power2.out",
+        stagger: 0.04,
+        delay: 0.18,
+      },
+    );
+  }, []);
+
+  const activate = useCallback((index) => {
+    setActiveIdx(index);
+    setIsExpanded((wasExpanded) => {
+      if (!wasExpanded) {
+        requestAnimationFrame(() => expandFromCard(index));
+      } else {
+        gsap.fromTo(
+          ".challenge-overlay-details > *",
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.33, ease: "power2.out", stagger: 0.03 },
+        );
+      }
+      return true;
+    });
+  }, [expandFromCard]);
+
+  const clearHoverIntent = useCallback(() => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  }, []);
+
+  const queueActivate = useCallback((index) => {
+    hoverIdxRef.current = index;
+    clearHoverIntent();
+    hoverTimerRef.current = setTimeout(() => {
+      if (hoverIdxRef.current === index) activate(index);
+    }, 140);
+  }, [activate, clearHoverIntent]);
+
+  const cancelQueuedActivate = useCallback((index) => {
+    if (hoverIdxRef.current === index) {
+      hoverIdxRef.current = null;
+      clearHoverIntent();
+    }
+  }, [clearHoverIntent]);
+
+  const collapse = useCallback(() => {
+    if (!isExpanded || activeIdx === null) return;
+    const stage = stageRef.current;
+    const overlay = overlayRef.current;
+    const origin = cardRefs.current[activeIdx];
+    if (!stage || !overlay || !origin) {
+      setIsExpanded(false);
+      setActiveIdx(null);
+      return;
+    }
+
+    const stageRect = stage.getBoundingClientRect();
+    const cardRect = origin.getBoundingClientRect();
+
+    gsap.killTweensOf(overlay);
+    gsap.to(overlay, {
+      x: cardRect.left - stageRect.left,
+      y: cardRect.top - stageRect.top,
+      width: cardRect.width,
+      height: cardRect.height,
+      borderRadius: 18,
+      autoAlpha: 0,
+      duration: 0.45,
+      ease: "power2.inOut",
+      onComplete: () => {
+        setIsExpanded(false);
+        setActiveIdx(null);
+        hoverIdxRef.current = null;
+      },
+    });
+  }, [activeIdx, isExpanded]);
+
+  useEffect(() => () => clearHoverIntent(), [clearHoverIntent]);
+
+  return (
+    <section className="sect challenge-wall" id="problem" ref={sectionRef}>
+      <SectionCoord idx="02" label="CHALLENGE" lat="40.7°N" lon="74.0°W" />
+      <div className="sect-inner">
+        <div className="challenge-head">
+          <h2>
+            THE <span className="accent">PROBLEM</span> MAP
+          </h2>
+          <p>hover to expand</p>
         </div>
 
-        {/* Panels */}
-        {CHALLENGES.map((item, i) => {
-          const Visual  = item.Visual;
-          const isLeft  = item.textSide === "left";
-          const isActive = activeIdx === i;
+        <div
+          className={"challenge-stage" + (isExpanded ? " is-expanded" : "")}
+          ref={stageRef}
+          onMouseLeave={collapse}
+        >
+          <div className="challenge-grid">
+            {CHALLENGES.map((item, i) => (
+              <button
+                key={item.num}
+                type="button"
+                className={"challenge-card" + (activeIdx === i ? " is-active" : "")}
+                onMouseEnter={() => queueActivate(i)}
+                onMouseLeave={() => cancelQueuedActivate(i)}
+                onFocus={() => activate(i)}
+                onClick={() => {
+                  clearHoverIntent();
+                  activate(i);
+                }}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+              >
+                <span className="challenge-card-num">{item.num}</span>
+                <span className="challenge-card-tag">{item.tag}</span>
+                <span className="challenge-card-title">{item.headline}</span>
+                <span className="challenge-card-foot">{item.accent}</span>
+              </button>
+            ))}
+          </div>
 
-          const textBlock = (
-            <div className="bridge-panel-text">
-              <div className="bridge-tag-row">
-                <span className="bridge-num">{item.num}</span>
-                <span className="bridge-sep">/</span>
-                <span className="bridge-tag">{item.tag}</span>
-                <span className="bridge-sep">·</span>
-                <span className="bridge-cluster">{item.cluster}</span>
-              </div>
-
-              <h2 className="bridge-headline">
-                {item.headline.split("\n").map((line, j) => (
-                  <span key={j} className="bridge-headline-line">{line}</span>
-                ))}
-              </h2>
-
-              <p className="bridge-body">{item.statement}</p>
-
-              <div className="bridge-stat">
-                <span className="bridge-stat-val">{item.stat}</span>
-                <span className="bridge-stat-label">{item.statLabel}</span>
-              </div>
-
-              <div className="bridge-details">
-                {item.details.map((d, j) => (
-                  <div className="bridge-detail-row" key={j}>
-                    <span className="bridge-detail-k">{d.k}</span>
-                    <span className="bridge-detail-v">{d.v}</span>
+          {activeItem && (
+            <div className={"challenge-overlay" + (isExpanded ? " is-open" : "")} ref={overlayRef}>
+              <button type="button" className="challenge-overlay-close" onClick={collapse} aria-label="Close problem details">
+                CLOSE
+              </button>
+              <div className="challenge-overlay-grid challenge-overlay-details">
+                <div className="challenge-overlay-copy">
+                  <div className="challenge-overlay-top">
+                    <span>{activeItem.num}</span>
+                    <span>{activeItem.tag}</span>
+                    <span>{activeItem.cluster}</span>
                   </div>
-                ))}
+                  <h3>{activeItem.headline}</h3>
+                  <p>{activeItem.statement}</p>
+                  <div className="challenge-overlay-stat">
+                    <span className="v">{activeItem.stat}</span>
+                    <span className="k">{activeItem.statLabel}</span>
+                  </div>
+                  <div className="challenge-overlay-list">
+                    {activeItem.details.map((detail) => (
+                      <div key={detail.k} className="challenge-overlay-row">
+                        <span>{detail.k}</span>
+                        <span>{detail.v}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="challenge-overlay-visual">
+                  <div className="challenge-overlay-visual-top">
+                    <span>
+                      <i /> LIVE ISSUE MODEL
+                    </span>
+                    <span>VIS.{activeItem.num}</span>
+                  </div>
+                  <div className="challenge-overlay-visual-body">
+                    <activeItem.Visual active={isExpanded} />
+                  </div>
+                </div>
               </div>
             </div>
-          );
-
-          const visualBlock = (
-            <div className={`bridge-panel-visual bridge-panel-visual--${isLeft ? "right" : "left"}`}>
-              <div className="bridge-vis-header">
-                <span className="bridge-vis-header-left">
-                  <span className="bridge-live-dot" />
-                  <span className="bridge-vis-tag">{item.tag}</span>
-                </span>
-                <span className="bridge-vis-id">VIS.{item.num}</span>
-              </div>
-              <div className="bridge-vis-body">
-                <Visual active={isActive} />
-              </div>
-            </div>
-          );
-
-          return (
-            <div
-              key={i}
-              className={`bridge-panel bridge-panel--text-${item.textSide}`}
-              ref={el => { panelRefs.current[i] = el; }}
-            >
-              {isLeft ? (
-                <>{textBlock}{visualBlock}</>
-              ) : (
-                <>{visualBlock}{textBlock}</>
-              )}
-            </div>
-          );
-        })}
-
-        <div className="bridge-section-label">
-          <span>CHALLENGE</span>
+          )}
         </div>
       </div>
-
-      <div className="bridge-tail" aria-hidden="true" />
     </section>
   );
 }

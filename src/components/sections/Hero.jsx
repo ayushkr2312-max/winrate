@@ -54,32 +54,43 @@ export default function Hero({ playEntrance }) {
   useEffect(() => {
     const hero = heroRef.current;
     if (!hero) return;
+    const xTo = gsap.quickTo(".hero-line-b, .hero-line-c", "x", { duration: 1, ease: "power2.out" });
     const onMove = (e) => {
       const rx = (e.clientX / window.innerWidth  - 0.5) * 8;
-      const ry = (e.clientY / window.innerHeight - 0.5) * 5;
-
-      gsap.to(".hero-line-b, .hero-line-c", { x: rx * 0.18, duration: 1, ease: "power2.out" });
+      xTo(rx * 0.18);
     };
     hero.addEventListener("mousemove", onMove);
     return () => hero.removeEventListener("mousemove", onMove);
   }, []);
 
   useEffect(() => {
+    let rafId = 0;
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const pct = max <= 0 ? 0 : Math.min(1, Math.max(0, window.scrollY / max));
       if (cueFillRef.current) cueFillRef.current.style.height = `${pct * 100}%`;
     };
+    const requestOnScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        onScroll();
+      });
+    };
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    requestOnScroll();
+    window.addEventListener("scroll", requestOnScroll, { passive: true });
+    window.addEventListener("resize", requestOnScroll);
+    return () => {
+      window.removeEventListener("scroll", requestOnScroll);
+      window.removeEventListener("resize", requestOnScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
     <section className="hero" id="hero" ref={heroRef}>
       <div className="hero-grid" aria-hidden="true" />
-      <div className="hero-watermark" aria-hidden="true">WINRVTE</div>
 
       <div className="hero-left">
         <div className="hero-title">

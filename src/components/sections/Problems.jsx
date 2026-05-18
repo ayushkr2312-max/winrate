@@ -109,6 +109,8 @@ const PROBLEMS = [
 
 export default function Problems() {
   const [active, setActive] = useState(0);
+  const [sectionVisible, setSectionVisible] = useState(false);
+  const sectionRef = useRef(null);
   const stackRef = useRef(null);
   const closerRef = useRef(null);
 
@@ -136,12 +138,19 @@ export default function Problems() {
           onEnter: () => gsap.to(inners, { yPercent: 0, duration: 1.1, ease: "expo.out", stagger: 0.12 }),
         });
       }
+
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: (self) => setSectionVisible(self.isActive),
+      });
     }, stackRef);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section className="sect problems" id="problem">
+    <section className="sect problems" id="problem" ref={sectionRef}>
       <SectionCoord idx="02" label="CHALLENGE" lat="40.7°N" lon="74.0°W" />
       <div className="sect-inner">
         <div className="prob-head">
@@ -162,7 +171,7 @@ export default function Problems() {
         <div className="prob-stack" ref={stackRef}>
           {PROBLEMS.map((p, i) => {
             const Visual = p.Visual;
-            const isOn = i === active;
+            const isOn = sectionVisible && i === active;
             return (
               <div
                 key={i}

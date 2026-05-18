@@ -103,6 +103,7 @@ const SOLUTIONS = [
 
 export default function Solutions() {
   const [active, setActive] = useState(0);
+  const [sectionVisible, setSectionVisible] = useState(false);
   const stackRef = useRef(null);
   const sectionRef = useRef(null);
 
@@ -116,6 +117,13 @@ export default function Solutions() {
           once: true,
           onEnter: () => gsap.to(card, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", delay: i * 0.04 }),
         });
+      });
+
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: (self) => setSectionVisible(self.isActive),
       });
 
       ScrollTrigger.create({
@@ -154,7 +162,7 @@ export default function Solutions() {
         <div className="sol-stack" ref={stackRef}>
           {SOLUTIONS.map((s, i) => {
             const Visual = s.Visual;
-            const isOn = i === active;
+            const isOn = sectionVisible && i === active;
             return (
               <div
                 key={i}

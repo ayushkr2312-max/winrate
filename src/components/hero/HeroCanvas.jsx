@@ -10,11 +10,20 @@ export default function HeroCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isSmallViewport = window.innerWidth < 900;
+    const lowPowerDevice = (navigator.hardwareConcurrency || 8) <= 4;
+    const disableCanvas = reducedMotion || isSmallViewport;
+    if (disableCanvas) return;
 
     let W = 0, H = 0;
     const points = [];
     let t0 = performance.now();
+    let lastDraw = 0;
     let pillPos = null;
+    const targetFrameTime = lowPowerDevice ? 1000 / 24 : 1000 / 30;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -30,7 +39,9 @@ export default function HeroCanvas() {
 
     function build() {
       points.length = 0;
-      const SP = 6.5;
+      const area = W * H;
+      const densityScale = lowPowerDevice ? 1.35 : 1;
+      const SP = Math.max(7, Math.min(12, Math.sqrt(area / 8500) * densityScale));
       for (let y = SP / 2; y < H + SP; y += SP) {
         for (let x = SP / 2; x < W + SP; x += SP) {
           points.push({ bx: x, by: y, phase: Math.random() * Math.PI * 2 });
@@ -67,7 +78,19 @@ export default function HeroCanvas() {
 
     let rafId;
     function draw() {
-      const t = (performance.now() - t0) * 0.001;
+      const now = performance.now();
+      if (document.hidden) {
+        rafId = requestAnimationFrame(draw);
+        return;
+      }
+
+      if (now - lastDraw < targetFrameTime) {
+        rafId = requestAnimationFrame(draw);
+        return;
+      }
+      lastDraw = now;
+
+      const t = (now - t0) * 0.001;
       ctx.clearRect(0, 0, W, H);
 
       // Band centre travels from -2σ (off-screen left) to W+2σ (off-screen right), then repeats
@@ -81,8 +104,9 @@ export default function HeroCanvas() {
         if (pillPos) {
           const dx = pillPos.x - p.bx;
           const dy = pillPos.y - p.by;
-          const d  = Math.sqrt(dx * dx + dy * dy);
-          if (d < GATHER_R) {
+          const d2 = dx * dx + dy * dy;
+          if (d2 < GATHER_R * GATHER_R) {
+            const d = Math.sqrt(d2);
             const f      = 1 - d / GATHER_R;
             const smooth = f * f * (3 - 2 * f);
             const px     = p.bx + (dx / (d || 1)) * smooth * GATHER_F;

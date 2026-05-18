@@ -14,7 +14,7 @@ import Ticker from "@/components/sections/Ticker";
 import BridgeSection from "@/components/sections/BridgeSection";
 import Solutions from "@/components/sections/Solutions";
 import Stats from "@/components/sections/Stats";
-import Process from "@/components/sections/Process";
+import ExperienceTech from "@/components/sections/ExperienceTech";
 import Manifesto from "@/components/sections/Manifesto";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
@@ -26,6 +26,7 @@ export default function App() {
   return (
     <>
       <HeroCanvas />
+      <div className="site-watermark" aria-hidden="true">WINRVTE</div>
       <div className="scanlines" aria-hidden="true" />
       <TopProgress />
       <Rail />
@@ -42,7 +43,7 @@ export default function App() {
       <Solutions />
       <Ticker invert />
       <Stats />
-      <Process />
+      <ExperienceTech />
       <Manifesto />
       <Contact />
       <Footer />

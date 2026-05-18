@@ -26,12 +26,15 @@ export default function Contact() {
     const ctx = gsap.context(() => {
       const inners = headRef.current?.querySelectorAll(".inner");
       if (inners) {
-        gsap.set(inners, { yPercent: 110 });
         ScrollTrigger.create({
           trigger: headRef.current,
           start: "top 78%",
           once: true,
-          onEnter: () => gsap.to(inners, { yPercent: 0, duration: 1.1, stagger: 0.12, ease: "expo.out" }),
+          onEnter: () => gsap.fromTo(
+            inners,
+            { yPercent: 110 },
+            { yPercent: 0, duration: 1.1, stagger: 0.12, ease: "expo.out" },
+          ),
         });
       }
     });

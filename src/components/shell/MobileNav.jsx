@@ -4,7 +4,7 @@ const LINKS = [
   { id: "problem", label: "Challenge", idx: "01" },
   { id: "solutions", label: "Solutions", idx: "02" },
   { id: "stats", label: "Readiness", idx: "03" },
-  { id: "process", label: "Process", idx: "04" },
+  { id: "experience", label: "Exp × Tech", idx: "04" },
   { id: "manifesto", label: "Manifesto", idx: "05" },
   { id: "contact", label: "Contact", idx: "06" },
 ];

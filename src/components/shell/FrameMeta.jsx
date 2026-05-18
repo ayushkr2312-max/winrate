@@ -11,14 +11,12 @@ export default function FrameMeta() {
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
-    let raf, last = performance.now(), f = 0;
-    const tick = (t) => {
-      // increment ~20fps to feel alive without flicker
-      if (t - last > 50) { f += 1; last = t; setFrame(f); }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    let f = 0;
+    const iv = window.setInterval(() => {
+      f += 1;
+      setFrame(f);
+    }, 250);
+    return () => window.clearInterval(iv);
   }, []);
 
   return (
