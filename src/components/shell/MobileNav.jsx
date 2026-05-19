@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
 const LINKS = [
-  { id: "problem", label: "Challenge", idx: "01" },
+  { id: "problem", label: "Problems", idx: "01" },
   { id: "solutions", label: "Solutions", idx: "02" },
-  { id: "stats", label: "Readiness", idx: "03" },
-  { id: "what-we-do", label: "What We Do", idx: "04" },
-  { id: "manifesto", label: "Manifesto", idx: "05" },
+  { id: "stats", label: "Outcomes", idx: "03" },
+  { id: "what-we-do", label: "Why Winrvte", idx: "04" },
+  { id: "manifesto", label: "About", idx: "05" },
   { id: "contact", label: "Contact", idx: "06" },
 ];
 

@@ -127,7 +127,7 @@ export function VisualScoutingGuess({ active }) {
             );
           })}
           <div style={{ position: "absolute", left: "57%", top: "34%", ...monoMeta, fontSize: ".44rem", color: "var(--lime)" }}>LOCKED TARGET</div>
-          <div style={{ position: "absolute", left: "20%", top: "62%", ...monoMeta, fontSize: ".44rem", color: "var(--crimson)" }}>SIGNED BY RIVAL</div>
+          <div style={{ position: "absolute", left: "20%", top: "62%", ...monoMeta, fontSize: ".44rem", color: "var(--crimson)" }}>SIGNED ELSEWHERE</div>
         </div>
 
         <div style={{ display: "grid", gridTemplateRows: "1fr 1fr", gap: 8 }}>

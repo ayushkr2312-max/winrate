@@ -11,41 +11,42 @@ export default function Hero({ playEntrance }) {
   useEffect(() => {
     if (!playEntrance) return;
     const tl = gsap.timeline({ delay: 0.05 });
-    tl.to('.hero-line-a .inner', { y: 0, opacity: 1, duration: 0.9, ease: "expo.out" }, 0.2);
-    tl.to('.hero-line-b .inner', { y: 0, opacity: 1, duration: 1.0, ease: "expo.out" }, 0.32);
-    tl.to('.hero-line-c .inner', { y: 0, opacity: 1, duration: 1.0, ease: "expo.out" }, 0.44);
-    tl.to('.hero-cue',  { opacity: 1, duration: 0.6 }, 1.0);
-    tl.to('.hero-foot', { opacity: 1, y: 0, duration: 0.6 }, 1.0);
+    tl.to(".hero-pre", { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 0.08);
+    tl.to(".hero-line-a .inner", { y: 0, opacity: 1, duration: 0.9, ease: "expo.out" }, 0.2);
+    tl.to(".hero-line-b .inner", { y: 0, opacity: 1, duration: 1.0, ease: "expo.out" }, 0.32);
+    tl.to(".hero-line-c .inner", { y: 0, opacity: 1, duration: 1.0, ease: "expo.out" }, 0.44);
+    tl.to(".hero-cue", { opacity: 1, duration: 0.6 }, 1.0);
+    tl.to(".hero-foot", { opacity: 1, y: 0, duration: 0.6 }, 1.0);
   }, [playEntrance]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set('.hero-swap-hover', { rotationX: -80, z: -400, scale: 0.8, opacity: 0 });
+      gsap.set(".hero-swap-hover", { rotationX: -80, z: -400, scale: 0.8, opacity: 0 });
 
       let swapped = false;
       ScrollTrigger.create({
-        trigger:   heroRef.current,
-        start:     'top top',
-        end:       '+=120',
-        pin:       true,
+        trigger: heroRef.current,
+        start: "top top",
+        end: "+=120",
+        pin: true,
         onUpdate: (self) => {
           if (self.progress > 0.15 && !swapped) {
             swapped = true;
-            gsap.to('.hero-line-a',        { scale: 2, fontWeight: 500, duration: 0.55, ease: 'expo.out', overwrite: 'auto' });
-            gsap.to('.hero-swap-default',  { rotationX: 80,  z: -400, scale: 0.8, opacity: 0, duration: 0.55, ease: 'expo.out', overwrite: 'auto' });
-            gsap.to('.hero-swap-hover',    { rotationX: 0,   z: 0,    scale: 1,   opacity: 1, duration: 0.55, ease: 'expo.out', overwrite: 'auto' });
+            gsap.to(".hero-line-a", { scale: 2, fontWeight: 500, duration: 0.55, ease: "expo.out", overwrite: "auto" });
+            gsap.to(".hero-swap-default", { rotationX: 80, z: -400, scale: 0.8, opacity: 0, duration: 0.55, ease: "expo.out", overwrite: "auto" });
+            gsap.to(".hero-swap-hover", { rotationX: 0, z: 0, scale: 1, opacity: 1, duration: 0.55, ease: "expo.out", overwrite: "auto" });
           } else if (self.progress <= 0.15 && swapped) {
             swapped = false;
-            gsap.to('.hero-line-a',        { scale: 1, fontWeight: 300, duration: 0.55, ease: 'expo.out', overwrite: 'auto' });
-            gsap.to('.hero-swap-default',  { rotationX: 0,   z: 0,    scale: 1,   opacity: 1, duration: 0.55, ease: 'expo.out', overwrite: 'auto' });
-            gsap.to('.hero-swap-hover',    { rotationX: -80, z: -400, scale: 0.8, opacity: 0, duration: 0.55, ease: 'expo.out', overwrite: 'auto' });
+            gsap.to(".hero-line-a", { scale: 1, fontWeight: 300, duration: 0.55, ease: "expo.out", overwrite: "auto" });
+            gsap.to(".hero-swap-default", { rotationX: 0, z: 0, scale: 1, opacity: 1, duration: 0.55, ease: "expo.out", overwrite: "auto" });
+            gsap.to(".hero-swap-hover", { rotationX: -80, z: -400, scale: 0.8, opacity: 0, duration: 0.55, ease: "expo.out", overwrite: "auto" });
           }
         },
       });
 
-      gsap.to('.ops-card', {
+      gsap.to(".ops-card", {
         y: -50,
-        scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: 1.6 },
+        scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: 1.6 },
       });
     }, heroRef);
     return () => ctx.revert();
@@ -106,6 +107,13 @@ export default function Hero({ playEntrance }) {
       <div className="hero-grid" aria-hidden="true" />
 
       <div className="hero-left">
+        <div className="hero-pre">
+          <span className="pulse" />
+          <span>Esports Operations + Systems Agency</span>
+          <span className="pipe">/</span>
+          <span>Custom-Built For Growing Orgs</span>
+        </div>
+
         <div className="hero-title">
           <span className="hero-line-a"><span className="inner">THE TECH</span></span>
           <div className="hero-swap-wrap">

@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 const STATIC_EVENTS = [
-  { msg: "Scout pipeline · VAL/NA · 412 prospects", ok: true },
-  { msg: "Roster patch shipped · CLIENT-014", ok: true },
-  { msg: "Dashboard query · 132ms p95", ok: true },
-  { msg: "Auto-DM cadence triggered", ok: true },
-  { msg: "Contract sync · Tier-2 OCE", ok: true },
-  { msg: "Match log · BO5 · 2 maps remaining", ok: true },
-  { msg: "Social cross-post · IG + X + TT", ok: true },
-  { msg: "Webhook ingest · 1.4k events", ok: true },
-  { msg: "Sponsor lookbook generated", ok: true },
-  { msg: "Player VOD tags · 48 added", ok: true },
+  { msg: "Ops request queue triaged by role", ok: true },
+  { msg: "Dashboard sync complete across sheets + forms", ok: true },
+  { msg: "Sponsor deliverable tracker updated", ok: true },
+  { msg: "Prep dataset refreshed for analyst review", ok: true },
+  { msg: "Staff intake workflow routed to approvals", ok: true },
+  { msg: "Task reminder batch dispatched in Discord", ok: true },
+  { msg: "Roster info check passed against source sheets", ok: true },
+  { msg: "Scrim schedule automation completed", ok: true },
+  { msg: "Content request board normalized by priority", ok: true },
+  { msg: "Budget-ready operations snapshot generated", ok: true },
 ];
 
 function nowTime() {
@@ -64,7 +64,7 @@ export default function OpsFeed() {
     <div className="ops-card" ref={cardRef}>
       <div className="ops-head">
         <span className="live">OPERATIONAL</span>
-        <span className="tag">LIVE FEED · UTC</span>
+        <span className="tag">SAMPLE FEED</span>
       </div>
 
       <div className="ops-feed" ref={feedRef}>
@@ -79,24 +79,24 @@ export default function OpsFeed() {
 
       <div className="ops-metrics">
         <div className="ops-metric">
-          <span className="lbl">Active Clients</span>
-          <span className="val">12+</span>
-          <span className="sub">NA · EU · APAC</span>
+          <span className="lbl">Core Stack</span>
+          <span className="val">3X</span>
+          <span className="sub">Experience x Tech x Network</span>
         </div>
         <div className="ops-metric">
-          <span className="lbl">Retention</span>
-          <span className="val">98%</span>
-          <span className="sub">Renewals YTD</span>
+          <span className="lbl">Delivery Model</span>
+          <span className="val">Custom</span>
+          <span className="sub">Scoped per org + budget</span>
         </div>
         <div className="ops-metric">
-          <span className="lbl">Fan Reach</span>
-          <span className="val">3.2M+</span>
-          <span className="sub">↑ 18% QoQ</span>
+          <span className="lbl">Best For</span>
+          <span className="val">SMB</span>
+          <span className="sub">Growing esports orgs</span>
         </div>
         <div className="ops-metric">
-          <span className="lbl">Avg. Delivery</span>
-          <span className="val">14 d</span>
-          <span className="sub">↓ Fastest yet</span>
+          <span className="lbl">Response</span>
+          <span className="val">24h</span>
+          <span className="sub">Discovery call turnaround</span>
         </div>
       </div>
     </div>

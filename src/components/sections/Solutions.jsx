@@ -11,92 +11,92 @@ const SOLUTIONS = [
   {
     num: "01",
     id: "workflow",
-    name: "Workflow Automation",
+    name: "Systems and Workflow Automation",
     imageSrc: null,
     summary:
-      "Eliminate the manual ops chokepoints. We build custom flows across Make, n8n, Zapier and direct APIs that ship as part of your stack — not as another subscription.",
+      "We design and build practical automation that removes repetitive work and keeps your staff focused on high-impact execution.",
     bullets: [
-      { label: "Scheduling & comms", text: "Match-day cadence, scrim invites, recap DMs." },
-      { label: "Task routing", text: "Auto-assign by role, escalate on SLA breach." },
-      { label: "Reporting", text: "Nightly digests, weekly leadership reports." },
+      { label: "Automation flows", text: "Forms, requests, routing, reminders, and approvals." },
+      { label: "Integrations", text: "Sync data between sheets, channels, and internal systems." },
+      { label: "Operational reliability", text: "Runbooks and handoff logic your team can actually use." },
     ],
-    tags: ["Make.com", "n8n", "Zapier", "Custom APIs"],
-    meta: [["Delivery", "7–14 d"], ["Impact", "85", "lime"], ["Type", "ADVANCED"]],
+    tags: ["Workflow Design", "Automation", "Integrations", "Ops Systems"],
+    meta: [["Format", "Custom"], ["Priority", "High"], ["Type", "Core"]],
   },
   {
     num: "02",
     id: "scouting",
-    name: "Talent Scouting Pipeline",
+    name: "Personalized Dashboards",
     imageSrc: null,
     summary:
-      "A structured discovery engine that ingests match data, VOD signals, and social pulse across regions—so your scouting lead reviews candidates, not spreadsheets.",
+      "Custom dashboard hubs that give your organization one clear place to manage teams, staff, prep inputs, and live operational data.",
     bullets: [
-      { label: "Multi-source ingest", text: "Match logs, VOD tags, social ranks." },
-      { label: "Scoring model", text: "Normalized across leagues and roles." },
-      { label: "Watchlist", text: "Alerts when a prospect's metrics shift." },
+      { label: "One source of truth", text: "Bring key org data into one clean interface." },
+      { label: "Role-based views", text: "Different views for ops leads, managers, analysts, and staff." },
+      { label: "Connected systems", text: "Keep existing tools while syncing into a centralized dashboard." },
     ],
-    tags: ["Python", "Postgres", "Custom DB", "Scrapers"],
-    meta: [["Delivery", "14–21 d"], ["Impact", "92", "lime"], ["Type", "COMPLEX"]],
+    tags: ["Dashboard UI", "Data Sync", "Team Views", "Org Tracking"],
+    meta: [["Format", "Custom"], ["Priority", "High"], ["Type", "Core"]],
   },
   {
     num: "03",
     id: "data",
-    name: "Data Visualization",
+    name: "Esports Operations Optimization",
     imageSrc: null,
     summary:
-      "Live dashboards built around how coaches and GMs actually decide. We pull from your existing tools, normalize, and surface only what changes a call.",
+      "We audit daily operations, identify bottlenecks, and redesign execution workflows so teams move faster with less friction.",
     bullets: [
-      { label: "Coach view", text: "Player performance, side bias, agent fit." },
-      { label: "GM view", text: "ROI per signing, sponsor delivery, social trend." },
-      { label: "Real-time alerts", text: "SLO breaches, social anomalies." },
+      { label: "Workflow tuning", text: "Improve communication structure and task ownership." },
+      { label: "Resource planning", text: "Allocate people and budget where they create most value." },
+      { label: "Process cleanup", text: "Replace chaotic routines with repeatable systems." },
     ],
-    tags: ["React", "D3.js", "REST APIs", "Postgres"],
-    meta: [["Delivery", "10–18 d"], ["Impact", "88", "lime"], ["Type", "INTERMEDIATE"]],
+    tags: ["Ops Review", "Process Design", "Execution Speed", "Cost Control"],
+    meta: [["Format", "Custom"], ["Priority", "High"], ["Type", "Core"]],
   },
   {
     num: "04",
     id: "social",
-    name: "Social Growth Tracking",
+    name: "Analyst Support and Prep Tools",
     imageSrc: null,
     summary:
-      "Monitor, benchmark, and grow your footprint across every platform in one view. Stop refreshing five dashboards before every leadership meeting.",
+      "Tools and data pipelines that help analysts and coaches prepare faster by structuring public opponent data and reusable prep views.",
     bullets: [
-      { label: "Unified metrics", text: "Reach, engagement, retention." },
-      { label: "Benchmark vs. peers", text: "Normalized against tier and region." },
-      { label: "Content scoring", text: "What's hitting, what to retire." },
+      { label: "Data collection", text: "Scrape, organize, and store relevant public match information." },
+      { label: "Prep workflows", text: "Make weekly prep easier with structured, reusable tooling." },
+      { label: "Analyst support", text: "Set up clear data systems for review and decision-making." },
     ],
-    tags: ["Meta API", "TikTok API", "Analytics", "CMS"],
-    meta: [["Delivery", "5–10 d"], ["Impact", "76", "lime"], ["Type", "STANDARD"]],
+    tags: ["Prep Stack", "Opponent Data", "Analyst Tools", "Review Systems"],
+    meta: [["Format", "Custom"], ["Priority", "Medium"], ["Type", "Specialized"]],
   },
   {
     num: "05",
     id: "web",
-    name: "Web Build & Support",
+    name: "Network and Resource Sourcing",
     imageSrc: null,
     summary:
-      "Sites built for esports orgs—fast, dark, branded, and backed by ongoing support. Next.js stack. Built for sponsors to take you seriously in under a second.",
+      "Access trusted esports network channels for staff, editors, designers, coaches, players, vendors, and other operational resources.",
     bullets: [
-      { label: "Performance budget", text: "LCP under 1s, CLS under 0.05." },
-      { label: "Editor-friendly CMS", text: "Your team ships posts, not tickets." },
-      { label: "Ongoing iteration", text: "Not deliver-and-bounce agency work." },
+      { label: "People sourcing", text: "Connect with reliable talent and staff options." },
+      { label: "Vendor routing", text: "Find vetted providers matched to your budget level." },
+      { label: "Value-first matching", text: "Prioritize practical fit over expensive default choices." },
     ],
-    tags: ["Next.js", "Figma", "Sanity CMS", "CDN"],
-    meta: [["Delivery", "14–28 d"], ["Impact", "90", "lime"], ["Type", "ADVANCED"]],
+    tags: ["Esports Network", "Talent Access", "Vendor Sourcing", "Budget Fit"],
+    meta: [["Format", "On-Demand"], ["Priority", "Medium"], ["Type", "Support"]],
   },
   {
     num: "06",
     id: "roster",
-    name: "Roster Management",
+    name: "Custom Solutions for Teams",
     imageSrc: null,
     summary:
-      "One source of truth for your entire squad—contracts, performance history, transfers, renewals. Replaces the spreadsheets your ops lead maintains by hand.",
+      "Team-specific builds and optimizations tailored to your structure, goals, and current resources, not a fixed package template.",
     bullets: [
-      { label: "Contract clocks", text: "Auto-flag renewal windows." },
-      { label: "Performance ledger", text: "Tied to match outcomes and VOD." },
-      { label: "Transfer history", text: "Internal CRM for player relationships." },
+      { label: "Flexible scope", text: "Build only what your org actually needs right now." },
+      { label: "Budget-aware pricing", text: "Solutions sized for available resources and impact targets." },
+      { label: "Hands-on support", text: "Continuous improvement as your org grows and priorities shift." },
     ],
-    tags: ["Custom App", "DB Design", "Contracts", "API"],
-    meta: [["Delivery", "21–35 d"], ["Impact", "94", "lime"], ["Type", "COMPLEX"]],
+    tags: ["Custom Scope", "Team Tools", "Ops Support", "Iterative Delivery"],
+    meta: [["Format", "Tailored"], ["Priority", "High"], ["Type", "Strategic"]],
   },
 ];
 
@@ -144,13 +144,13 @@ export default function Solutions() {
           <KineticHeading
             tag="h2"
             rows={[
-              { text: "CAPABILITY" },
-              { parts: [{ text: "STACK.", accent: true }] },
+              { text: "SERVICES" },
+              { parts: [{ text: "BUILT TO FIT.", accent: true }] },
             ]}
           />
           <div className="sol-head-meta">
-            <span className="section-tag"><span className="num">03</span> Build Units</span>
-            <p>Hover a bar to expand. Six deliverables in one view—text left, your image on the right.</p>
+            <span className="section-tag"><span className="num">03</span> Core Services</span>
+            <p>Every engagement is custom. Hover each lane to see what we can design, build, and optimize for your org.</p>
           </div>
         </div>
 

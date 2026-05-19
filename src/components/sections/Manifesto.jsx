@@ -10,24 +10,24 @@ gsap.registerPlugin(ScrollTrigger);
 const ROWS = [
   {
     n: "01",
-    title: "Built from the inside",
-    body: "Built by people who've worked inside esports orgs, not consultants parachuting in. We know the difference between a roster manager's workflow and a GM's reporting needs.",
-    detail: "Founders include former ops leads, data analysts, and developers from active esports organizations.",
-    tag: "Insider",
+    title: "Real esports operating experience",
+    body: "We understand how esports organizations actually function day-to-day because our team has worked in esports management environments directly.",
+    detail: "You get guidance and systems shaped by practical org realities, not generic frameworks.",
+    tag: "Esports-native",
   },
   {
     n: "02",
-    title: "Custom-scoped, always",
-    body: "Every solution is custom-scoped. No SaaS subscriptions for tools you'll never fully use. We scope to your actual problems, not to a feature list someone else validated.",
-    detail: "Average engagement kick-off to first deliverable: 14 days.",
-    tag: "No Bloat",
+    title: "Technical execution that ships",
+    body: "We do more than recommend changes. We build and implement automations, dashboards, workflows, and data systems your team can use right away.",
+    detail: "The focus is practical delivery: less friction, faster execution, cleaner organization.",
+    tag: "Build-first",
   },
   {
     n: "03",
-    title: "We stay on",
-    body: "Ongoing support, iteration, and a direct line — not a Zendesk ticket. We treat client relationships like we're embedded in your team, because functionally, we are.",
-    detail: "All clients get a direct Slack channel and dedicated point of contact from day one.",
-    tag: "Direct",
+    title: "Custom solutions, cost-conscious delivery",
+    body: "We adapt scope and pricing to each org's needs and available resources so teams can improve operations without overcommitting budget.",
+    detail: "Every engagement is tailored for your structure, growth stage, and biggest operational pressure points.",
+    tag: "Practical value",
   },
 ];
 
@@ -52,16 +52,16 @@ export default function Manifesto() {
   return (
     <section className="sect manifesto" id="manifesto" ref={ref}>
       <div className="sect-inner">
-        <span className="section-tag invert"><span className="num" style={{ color: "var(--lime-2)" }}>03</span> Manifesto</span>
+        <span className="section-tag invert"><span className="num" style={{ color: "var(--lime-2)" }}>06</span> About / Why Us</span>
         <div className="manifesto-head">
           <KineticHeading
             tag="h2"
             rows={[
-              { text: "WE SPEAK" },
-              { parts: [{ text: "", }, { text: "ESPORTS.", accent: true }] },
+              { text: "BUILT FOR" },
+              { parts: [{ text: "GROWING ", }, { text: "ORGS.", accent: true }] },
             ]}
           />
-          <p>Three principles that separate us from agencies that "also do esports." We're not adapted for this space — we were built in it.</p>
+          <p>Winrvte Tech is a hands-on partner for organizations that need better systems, cleaner operations, and smarter use of limited budget.</p>
         </div>
 
         <div className="manifesto-rows">
@@ -80,11 +80,11 @@ export default function Manifesto() {
 
         <div className="manifesto-cta">
           <div className="manifesto-cta-left">
-            <h3>Ready to talk?</h3>
-            <p>Strategy calls are free. We'll scope your biggest pain point in 30 minutes.</p>
+            <h3>Let&apos;s discuss your org</h3>
+            <p>Share your current setup, biggest bottlenecks, and budget range. We&apos;ll suggest the most practical first move.</p>
           </div>
           <Magnetic as="a" href="#contact" className="btn-dark" data-cursor-label="GO" strength={0.32}>
-            Book a Strategy Call →
+            Book a Call →
           </Magnetic>
         </div>
       </div>

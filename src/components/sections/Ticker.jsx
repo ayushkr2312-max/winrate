@@ -10,14 +10,14 @@ gsap.registerPlugin(ScrollTrigger);
  * Drift speed is bound to scroll velocity (scroll forward → speed up).
  */
 const ITEMS = [
-  { t: "00:01:14", label: "VAL / NA", val: "412 SCOUTS" },
-  { t: "00:02:38", label: "ROSTER PATCH", val: "v2.1.3" },
-  { t: "00:04:02", label: "DASHBOARD", val: "132ms p95" },
-  { t: "00:05:11", label: "AUTOMATIONS", val: "+18 /day" },
-  { t: "00:06:45", label: "EU / MATCHDAY", val: "BO5" },
-  { t: "00:08:01", label: "SOCIAL X-POST", val: "IG · X · TT" },
-  { t: "00:09:20", label: "WEBHOOK INGEST", val: "1.4k ev" },
-  { t: "00:10:55", label: "APAC / SCRIMS", val: "ONLINE" },
+  { t: "00:01:14", label: "SYSTEMS", val: "WORKFLOW AUTOMATION" },
+  { t: "00:02:38", label: "DASHBOARDS", val: "ORG CONTROL CENTER" },
+  { t: "00:04:02", label: "OPERATIONS", val: "PROCESS OPTIMIZATION" },
+  { t: "00:05:11", label: "ANALYST SUPPORT", val: "PREP TOOLING" },
+  { t: "00:06:45", label: "RESOURCE NETWORK", val: "STAFF + VENDORS" },
+  { t: "00:08:01", label: "CUSTOM DELIVERY", val: "SCOPED PER ORG" },
+  { t: "00:09:20", label: "VALUE FOCUS", val: "LOWER COST / LESS DRAG" },
+  { t: "00:10:55", label: "WINRVTE TECH", val: "ESPORTS OPS PARTNER" },
 ];
 
 export default function Ticker({ invert = false }) {

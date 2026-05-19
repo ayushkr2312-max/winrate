@@ -9,17 +9,17 @@ import ScrambleNum from "../primitives/ScrambleNum";
 gsap.registerPlugin(ScrollTrigger);
 
 const STATS = [
-  { val: 48, suf: "H", label: "Prototype Turnaround", sub: "From kickoff to first working build in focused sprints.", trend: "Sprint-ready", spark: [18, 20, 24, 26, 30, 28, 34, 36, 38, 40, 43, 48] },
-  { val: 7, suf: "", label: "Delivery Modules", sub: "Automation, scouting, data systems, web, and growth stacks ready to deploy.", trend: "Scope-adaptive", spark: [2, 3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 7] },
-  { val: 24, suf: "/7", label: "Operational Coverage", sub: "Monitoring and support cadence built for global esports schedules.", trend: "Always-on", spark: [8, 10, 11, 13, 15, 18, 19, 21, 22, 23, 24, 24] },
-  { val: 3, suf: " REG", label: "Timezone Overlap", sub: "Execution windows aligned across NA, EU, and APAC collaboration hours.", trend: "Global-ready", spark: [1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3] },
+  { val: 6, suf: "X", label: "Less Repetitive Work", sub: "Automated flows remove recurring admin drag so staff can focus on outcomes.", trend: "Time back", spark: [10, 11, 12, 14, 15, 17, 18, 20, 21, 23, 24, 26] },
+  { val: 1, suf: "", label: "Clear Source Of Truth", sub: "Centralized dashboards replace scattered notes and disconnected sheets.", trend: "Aligned teams", spark: [4, 4, 5, 6, 7, 7, 8, 9, 10, 10, 11, 12] },
+  { val: 2, suf: "X", label: "Faster Task Turnaround", sub: "Better routing, ownership, and reminders help requests move quickly.", trend: "Execution speed", spark: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] },
+  { val: 3, suf: "P", label: "Scalable Ops Foundation", sub: "Process + systems + support creates stronger growth readiness.", trend: "Built to scale", spark: [6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12, 13] },
 ];
 
 const LIVE_SIGNALS = [
-  { code: "LIVE // 01", text: "Automation blueprint currently in queue for next sprint window" },
-  { code: "LIVE // 02", text: "Data dashboard template pre-wired for KPI ingestion and overlays" },
-  { code: "LIVE // 03", text: "Scouting pipeline tuned for role tags, alerts, and roster filters" },
-  { code: "LIVE // 04", text: "Web + social stack prepared for rapid campaign landing pages" },
+  { code: "OUTCOME // 01", text: "Less manual follow-up and cleaner handoffs across staff roles" },
+  { code: "OUTCOME // 02", text: "Better visibility into tasks, teams, and operational bottlenecks" },
+  { code: "OUTCOME // 03", text: "Lower operational waste by fixing process and system inefficiencies" },
+  { code: "OUTCOME // 04", text: "Improved prep and analyst workflows through structured data" },
 ];
 
 function buildSparkPath(points) {
@@ -94,21 +94,21 @@ export default function Stats() {
 
   return (
     <section className="sect stats" id="stats">
-      <SectionCoord idx="04" label="READINESS" lat="35.7°N" lon="139.6°E" />
+      <SectionCoord idx="04" label="OUTCOMES" lat="35.7°N" lon="139.6°E" />
       <div className="sect-inner">
         <div className="stats-head">
           <div>
-            <span className="section-tag"><span className="num">04</span> Build Readiness</span>
+            <span className="section-tag"><span className="num">04</span> Results and Outcomes</span>
             <KineticHeading
               tag="h2"
               className=""
               rows={[
-                { text: "PROOF OF" },
-                { parts: [{ text: "EXECUTION ", }, { text: "READY.", accent: true }] },
+                { text: "WHAT ORGS" },
+                { parts: [{ text: "GAIN.", accent: true }] },
               ]}
             />
           </div>
-          <p>We are early-stage, so this panel shows operational readiness instead of vanity outcomes: build speed, delivery breadth, and live execution capacity.</p>
+          <p>The goal is practical improvement: save time, reduce costs, and make teams easier to run through better systems and execution structure.</p>
         </div>
 
         <div className="stats-grid" ref={gridRef}>

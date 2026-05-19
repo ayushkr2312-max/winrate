@@ -7,11 +7,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 const SECTIONS = [
   { id: "hero", label: "Index", num: "01" },
-  { id: "problem", label: "Challenge", num: "02" },
+  { id: "problem", label: "Problems", num: "02" },
   { id: "solutions", label: "Solutions", num: "03" },
-  { id: "stats", label: "Readiness", num: "04" },
-  { id: "what-we-do", label: "What We Do", num: "05" },
-  { id: "manifesto", label: "Manifesto", num: "06" },
+  { id: "stats", label: "Outcomes", num: "04" },
+  { id: "what-we-do", label: "Why Winrvte", num: "05" },
+  { id: "manifesto", label: "About", num: "06" },
   { id: "contact", label: "Contact", num: "07" },
 ];
 
@@ -293,7 +293,6 @@ export default function Rail() {
           </div>
         ) : (
           <div className="rail-foot">
-            <span className="rail-clock">{clock}</span>
             <a href="#" className="rail-social" aria-label="X" data-cursor-label="X">
             <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.734l7.726-8.877L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </a>

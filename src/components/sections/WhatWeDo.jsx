@@ -8,83 +8,83 @@ gsap.registerPlugin(ScrollTrigger);
 
 const LANES = [
   {
-    id: "systems",
+    id: "experience",
     num: "01",
-    short: "Systems",
-    title: "Tech when it earns its place",
-    lead: "We build where code removes repeatable drag—never where a dashboard would look impressive in a deck.",
-    body: "Automations, internal tools, and data layers scoped to how your org actually runs match week. If a workflow needs judgment, we don't force a bot on it.",
+    short: "Experience",
+    title: "Esports context first, always",
+    lead: "We come from esports operations, so we understand what breaks when teams scale quickly with limited resources.",
+    body: "That context helps us design systems that fit real org pressure: match schedules, staff constraints, sponsor obligations, and fast-moving decisions.",
     signals: [
-      { k: "Fit test", v: "Every build must clear a time-saved or error-removed bar before we scope it." },
-      { k: "Stack", v: "Make, n8n, custom APIs, React dashboards—chosen for maintainability, not trend." },
-      { k: "Handoff", v: "Your team owns the runbook; we document like we're embedding, not vending." },
+      { k: "Org reality", v: "Built around your structure, not a generic template." },
+      { k: "Budget aware", v: "Scoped to what actually creates value at your stage." },
+      { k: "Hands-on", v: "We stay practical and execution-focused from day one." },
     ],
-    outputs: ["Workflow automation", "Decision dashboards", "API integrations"],
+    outputs: ["Operational audits", "Process mapping", "Practical execution plans"],
   },
   {
-    id: "manual",
+    id: "technical",
     num: "02",
-    short: "Manual",
-    title: "Human ops where nuance wins",
-    lead: "Concierge checkpoints, white-glove handoffs, and manual QA when the stakes are reputation or revenue.",
-    body: "Esports runs on timing and relationships. We keep people in the loop for sponsor calls, crisis comms, roster moments, and anything where a wrong auto-send costs more than the labor saved.",
+    short: "Technical",
+    title: "Build, not just advise",
+    lead: "We implement the systems ourselves: automations, dashboards, prep tooling, integrations, and operational workflows.",
+    body: "Instead of reports and slide decks, you get working systems your team can use immediately and improve over time.",
     signals: [
-      { k: "Checkpoints", v: "Approval gates, call summaries, and escalation paths—not infinite Slack threads." },
-      { k: "Coverage", v: "Match-week war rooms, partner prep, and last-mile deliverable assembly." },
-      { k: "Quality", v: "Human review on outward-facing assets before they hit social or inboxes." },
+      { k: "Automation", v: "Remove repetitive manual operations." },
+      { k: "Dashboards", v: "Centralize team and org visibility." },
+      { k: "Tooling", v: "Create role-specific systems for faster execution." },
     ],
-    outputs: ["Concierge ops", "Partner prep", "QA & approvals"],
+    outputs: ["Workflow systems", "Custom dashboards", "Data and prep tools"],
   },
   {
     id: "network",
     num: "03",
     short: "Network",
-    title: "Connections you can't buy off a shelf",
-    lead: "Warm intros across partners, talent, vendors, and league ops—routes we've built by being in the room.",
-    body: "Your org gets access to paths that don't show up in a software catalog: sponsor bridges, scouting lanes, production crews, and vendor terms shaped by prior deals—not cold outreach.",
+    title: "Resource access that saves time and money",
+    lead: "Our esports network helps orgs source reliable people and vendors without expensive trial-and-error.",
+    body: "We can route staffing, creative, analyst, coaching, and service sourcing through known trusted channels that match your budget level.",
     signals: [
-      { k: "Partners", v: "Brand and endemic intros with context on what you've already delivered." },
-      { k: "Talent", v: "Grassroots and tier-2 pipelines before players price themselves out." },
-      { k: "Vendors", v: "Production, legal, and platform contacts with org-appropriate pricing." },
+      { k: "Talent", v: "Staff, editors, designers, analysts, players, and coaches." },
+      { k: "Vendors", v: "Reliable suppliers and service partners." },
+      { k: "Value", v: "Fit and cost-conscious options over hype picks." },
     ],
-    outputs: ["Sponsor bridges", "Talent lanes", "Vendor routing"],
+    outputs: ["Network sourcing", "Vendor routing", "Resource matchmaking"],
   },
   {
-    id: "operators",
+    id: "custom",
     num: "04",
-    short: "Operators",
-    title: "Experience you can staff against",
-    lead: "Former ops leads, analysts, and builders who've run your calendar—not consultants parachuting in.",
-    body: "The bench is people who've held the pager during roster moves, sponsor crunch, and split logistics. They bring pattern recognition your stack can't replicate.",
+    short: "Custom",
+    title: "No one-size-fits-all packaging",
+    lead: "Every org is different, so every engagement is scoped to your goals, operating model, and current capacity.",
+    body: "We build the right blend of systems, human support, and process optimization for your specific stage instead of forcing a fixed package.",
     signals: [
-      { k: "Bench", v: "Ops, data, and engineering leads with active-org backgrounds." },
-      { k: "Embed", v: "Slack-native, sprint rhythm, weekly demos—functionally part of your team." },
-      { k: "Accountability", v: "Milestones tied to things your GM and partnerships lead can verify." },
+      { k: "Flexible scope", v: "Start focused, then scale as results compound." },
+      { k: "Clear delivery", v: "Defined priorities, milestones, and ownership." },
+      { k: "Long-term support", v: "Iterate and optimize beyond launch." },
     ],
-    outputs: ["Embedded leads", "Season playbooks", "Executive reporting"],
+    outputs: ["Custom systems", "Scoped implementation", "Continuous optimization"],
   },
 ];
 
 const FLOW = [
   {
     n: "01",
-    title: "Diagnose",
-    desc: "Map where drag lives—tools, people, partners—and what not to touch.",
+    title: "Understand Your Org",
+    desc: "Learn your current structure, goals, constraints, and where operations feel heavy.",
   },
   {
     n: "02",
-    title: "Blend",
-    desc: "Pick the mix of systems, manual ops, network, and operators for this season.",
+    title: "Find The Friction",
+    desc: "Identify bottlenecks, repeated manual work, and process gaps causing delays or extra cost.",
   },
   {
     n: "03",
-    title: "Deploy",
-    desc: "Ship in tight loops with your staff in channel—not a black-box agency handoff.",
+    title: "Build The Right System",
+    desc: "Design and implement workflows, dashboards, tooling, and support around your team realities.",
   },
   {
     n: "04",
-    title: "Stay",
-    desc: "Iterate through match weeks; most orgs keep us for the next split.",
+    title: "Improve Over Time",
+    desc: "Iterate with your team and keep optimizing as your org scales to the next stage.",
   },
 ];
 
@@ -186,22 +186,22 @@ export default function WhatWeDo() {
             <KineticHeading
               tag="h2"
               rows={[
-                { text: "EXPERIENCE" },
-                { parts: [{ text: "× ", }, { text: "TECH.", accent: true }] },
+                { text: "WHY" },
+                { parts: [{ text: "WINRVTE ", }, { text: "TECH.", accent: true }] },
               ]}
             />
           </div>
           <p className="wwd-intro">
-            One compiled delivery model for competitive orgs: engineered systems, deliberate manual work,
-            a network we've earned in esports, and operators who've already run your kind of week.
+            We sit at the intersection of esports experience, technical execution, and industry network to build
+            custom systems that help organizations run cleaner, faster, and more cost-effectively.
           </p>
         </header>
 
         <div className="wwd-thesis" aria-hidden="true">
-          {["Systems", "Manual", "Network", "Operators"].map((label) => (
+          {["Esports Experience", "Technical Capability", "Industry Network", "Custom Solutions"].map((label) => (
             <span key={label} className="wwd-thesis-chip">{label}</span>
           ))}
-          <span className="wwd-thesis-chip wwd-thesis-chip--accent">Blended per engagement</span>
+          <span className="wwd-thesis-chip wwd-thesis-chip--accent">Scoped per organization</span>
         </div>
 
         <div className="wwd-stage">
@@ -236,7 +236,7 @@ export default function WhatWeDo() {
             <div className="wwd-panel-top">
               <span className="wwd-panel-num">{lane.num}</span>
               <span className="wwd-panel-tag">{lane.short}</span>
-              <span className="wwd-panel-hint">Select a lane</span>
+              <span className="wwd-panel-hint">Select to explore</span>
             </div>
 
             <div ref={panelCopyRef} className="wwd-panel-copy">
@@ -266,8 +266,8 @@ export default function WhatWeDo() {
 
         <div className="wwd-flow" ref={flowRef}>
           <div className="wwd-flow-head">
-            <span className="wwd-flow-k">Engagement flow</span>
-            <p>How we move from first call to in-season iteration—no theatre, no mystery phases.</p>
+            <span className="wwd-flow-k">How We Work</span>
+            <p>A practical process built for fast-moving esports environments.</p>
           </div>
           <ol className="wwd-flow-rail">
             {FLOW.map((step, i) => (

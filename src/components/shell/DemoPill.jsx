@@ -40,7 +40,7 @@ export default function DemoPill() {
 
   return (
     <a href="#contact" ref={ref} className="pill" data-cursor-label="GO" style={{ transform: "translateX(-50%)" }}>
-      <span className="pill-label">Get in Touch</span>
+      <span className="pill-label">Book a Call</span>
       <span className="pill-arrow">→</span>
     </a>
   );
