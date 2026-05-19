@@ -14,7 +14,7 @@ import Ticker from "@/components/sections/Ticker";
 import BridgeSection from "@/components/sections/BridgeSection";
 import Solutions from "@/components/sections/Solutions";
 import Stats from "@/components/sections/Stats";
-import ExperienceTech from "@/components/sections/ExperienceTech";
+import WhatWeDo from "@/components/sections/WhatWeDo";
 import Manifesto from "@/components/sections/Manifesto";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
@@ -43,7 +43,7 @@ export default function App() {
       <Solutions />
       <Ticker invert />
       <Stats />
-      <ExperienceTech />
+      <WhatWeDo />
       <Manifesto />
       <Contact />
       <Footer />

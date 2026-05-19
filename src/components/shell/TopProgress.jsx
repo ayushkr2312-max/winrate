@@ -4,10 +4,14 @@ export default function TopProgress() {
   const fillRef = useRef(null);
   useEffect(() => {
     let rafId = 0;
+    let lastPct = -1;
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const pct = max <= 0 ? 0 : (window.scrollY / max) * 100;
-      if (fillRef.current) fillRef.current.style.width = pct + "%";
+      const roundedPct = Math.round(pct * 10) / 10;
+      if (roundedPct === lastPct) return;
+      lastPct = roundedPct;
+      if (fillRef.current) fillRef.current.style.width = roundedPct + "%";
     };
     const requestOnScroll = () => {
       if (rafId) return;

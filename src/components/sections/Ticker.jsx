@@ -41,30 +41,32 @@ export default function Ticker({ invert = false }) {
 
     // bind speed to scroll velocity — speeds up on forward scroll, slows on reverse
     let lastY = window.scrollY;
-    let velo = 0;
+    let rafId = 0;
+    let settleTimeout;
     const onScroll = () => {
-      const y = window.scrollY;
-      velo = y - lastY;
-      lastY = y;
-      const target = 1 + Math.min(Math.abs(velo) / 18, 2.5);
-      const dir = velo >= 0 ? 1 : -0.5;
-      gsap.to(tween, { timeScale: target * dir, duration: 0.5, overwrite: true });
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const y = window.scrollY;
+        const velo = y - lastY;
+        lastY = y;
+        const target = 1 + Math.min(Math.abs(velo) / 18, 2.5);
+        const dir = velo >= 0 ? 1 : -0.5;
+        gsap.to(tween, { timeScale: target * dir, duration: 0.5, overwrite: true });
+      });
+
+      clearTimeout(settleTimeout);
+      settleTimeout = setTimeout(() => {
+        gsap.to(tween, { timeScale: 1, duration: 0.8, overwrite: true });
+      }, 180);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    // settle back to normal
-    let settle;
-    const onSettle = () => {
-      clearTimeout(settle);
-      settle = setTimeout(() => gsap.to(tween, { timeScale: 1, duration: 0.8 }), 180);
-    };
-    window.addEventListener("scroll", onSettle, { passive: true });
 
     return () => {
       tween.kill();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("scroll", onSettle);
-      clearTimeout(settle);
+      clearTimeout(settleTimeout);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [invert]);
 

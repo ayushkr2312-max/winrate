@@ -4,7 +4,7 @@ const LINKS = [
   { id: "problem", label: "Challenge", idx: "01" },
   { id: "solutions", label: "Solutions", idx: "02" },
   { id: "stats", label: "Readiness", idx: "03" },
-  { id: "experience", label: "Exp × Tech", idx: "04" },
+  { id: "what-we-do", label: "What We Do", idx: "04" },
   { id: "manifesto", label: "Manifesto", idx: "05" },
   { id: "contact", label: "Contact", idx: "06" },
 ];
@@ -14,10 +14,24 @@ export default function MobileNav() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    let rafId = 0;
+    let last = false;
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const next = window.scrollY > 40;
+        if (next === last) return;
+        last = next;
+        setScrolled(next);
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {

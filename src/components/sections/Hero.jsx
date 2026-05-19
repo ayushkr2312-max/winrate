@@ -55,20 +55,33 @@ export default function Hero({ playEntrance }) {
     const hero = heroRef.current;
     if (!hero) return;
     const xTo = gsap.quickTo(".hero-line-b, .hero-line-c", "x", { duration: 1, ease: "power2.out" });
+    let rafId = 0;
+    let nextX = 0;
     const onMove = (e) => {
-      const rx = (e.clientX / window.innerWidth  - 0.5) * 8;
-      xTo(rx * 0.18);
+      nextX = ((e.clientX / window.innerWidth - 0.5) * 8) * 0.18;
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        xTo(nextX);
+      });
     };
-    hero.addEventListener("mousemove", onMove);
-    return () => hero.removeEventListener("mousemove", onMove);
+    hero.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      hero.removeEventListener("mousemove", onMove);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
     let rafId = 0;
+    let lastPct = -1;
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const pct = max <= 0 ? 0 : Math.min(1, Math.max(0, window.scrollY / max));
-      if (cueFillRef.current) cueFillRef.current.style.height = `${pct * 100}%`;
+      const roundedPct = Math.round(pct * 1000) / 10;
+      if (roundedPct === lastPct) return;
+      lastPct = roundedPct;
+      if (cueFillRef.current) cueFillRef.current.style.height = `${roundedPct}%`;
     };
     const requestOnScroll = () => {
       if (rafId) return;

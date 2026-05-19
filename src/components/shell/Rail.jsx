@@ -10,7 +10,7 @@ const SECTIONS = [
   { id: "problem", label: "Challenge", num: "02" },
   { id: "solutions", label: "Solutions", num: "03" },
   { id: "stats", label: "Readiness", num: "04" },
-  { id: "experience", label: "Exp × Tech", num: "05" },
+  { id: "what-we-do", label: "What We Do", num: "05" },
   { id: "manifesto", label: "Manifesto", num: "06" },
   { id: "contact", label: "Contact", num: "07" },
 ];
@@ -116,6 +116,11 @@ export default function Rail() {
 
   useEffect(() => {
     let rafId = 0;
+    const sectionEls = SECTIONS.map((s) => ({ id: s.id, el: document.getElementById(s.id) }));
+    const heroEl = document.getElementById("hero");
+    const eqBars = eqRef.current ? Array.from(eqRef.current.querySelectorAll(".bar")) : [];
+    let lastEqKey = "";
+
     const onScroll = () => {
       if (lockRef.current) return;
       const scrolled = window.scrollY;
@@ -125,16 +130,15 @@ export default function Rail() {
 
       let cur = "hero";
       const half = window.innerHeight / 2;
-      for (const s of SECTIONS) {
-        const el = document.getElementById(s.id);
+      for (const s of sectionEls) {
+        const el = s.el;
         if (!el) continue;
         if (el.getBoundingClientRect().top - half <= 0) cur = s.id;
       }
       setActive((prev) => (prev === cur ? prev : cur));
 
-      const hero = document.getElementById("hero");
-      if (hero) {
-        const heroRect = hero.getBoundingClientRect();
+      if (heroEl) {
+        const heroRect = heroEl.getBoundingClientRect();
         const shouldDock = directionDown && heroRect.top < -200;
         const shouldUndock = dockedRef.current && directionUp && heroRect.top > -120;
 
@@ -145,11 +149,11 @@ export default function Rail() {
         }
       }
 
-      const eq = eqRef.current;
-      if (eq) {
-        const bars = eq.querySelectorAll(".bar");
-        const scrolled = window.scrollY;
-        bars.forEach((b, i) => {
+      if (eqBars.length > 0) {
+        const scrollBucket = Math.round(scrolled / 2);
+        if (String(scrollBucket) === lastEqKey) return;
+        lastEqKey = String(scrollBucket);
+        eqBars.forEach((b, i) => {
           const phase = (scrolled / 30) + i * 0.6;
           const h = 0.3 + 0.7 * Math.abs(Math.sin(phase));
           b.setAttribute("transform", `scaleY(${h.toFixed(3)})`);

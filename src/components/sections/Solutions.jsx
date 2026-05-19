@@ -3,141 +3,136 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import KineticHeading from "../primitives/KineticHeading";
 import SectionCoord from "../primitives/SectionCoord";
-import {
-  VisualAutomation,
-  VisualScouting,
-  VisualDashboard,
-  VisualSocial,
-  VisualWebBuild,
-  VisualRoster,
-} from "../solutions/SolutionVisuals";
+import { SolutionIcon } from "./SolutionIcons";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const SOLUTIONS = [
   {
     num: "01",
+    id: "workflow",
     name: "Workflow Automation",
-    impact: 4,
-    summary: <>Eliminate the manual ops chokepoints. We build <strong>custom flows</strong> across Make, n8n, Zapier and direct APIs that ship as part of your stack — not as another subscription.</>,
+    imageSrc: null,
+    summary:
+      "Eliminate the manual ops chokepoints. We build custom flows across Make, n8n, Zapier and direct APIs that ship as part of your stack — not as another subscription.",
     bullets: [
-      <><strong>Scheduling & comms:</strong> match-day cadence, scrim invites, recap DMs.</>,
-      <><strong>Task routing:</strong> auto-assign by role, escalate on SLA breach.</>,
-      <><strong>Reporting:</strong> nightly digests, weekly leadership reports.</>,
+      { label: "Scheduling & comms", text: "Match-day cadence, scrim invites, recap DMs." },
+      { label: "Task routing", text: "Auto-assign by role, escalate on SLA breach." },
+      { label: "Reporting", text: "Nightly digests, weekly leadership reports." },
     ],
     tags: ["Make.com", "n8n", "Zapier", "Custom APIs"],
     meta: [["Delivery", "7–14 d"], ["Impact", "85", "lime"], ["Type", "ADVANCED"]],
-    Visual: VisualAutomation,
   },
   {
     num: "02",
+    id: "scouting",
     name: "Talent Scouting Pipeline",
-    impact: 5,
-    summary: <>A <strong>structured discovery engine</strong> that ingests match data, VOD signals, and social pulse across multiple regions. Built so your scouting lead reviews <strong>candidates</strong>, not spreadsheets.</>,
+    imageSrc: null,
+    summary:
+      "A structured discovery engine that ingests match data, VOD signals, and social pulse across regions—so your scouting lead reviews candidates, not spreadsheets.",
     bullets: [
-      <><strong>Multi-source ingest:</strong> match logs, VOD tags, social ranks.</>,
-      <><strong>Scoring model:</strong> normalized across leagues and roles.</>,
-      <><strong>Watchlist:</strong> alerts when a prospect's metrics shift.</>,
+      { label: "Multi-source ingest", text: "Match logs, VOD tags, social ranks." },
+      { label: "Scoring model", text: "Normalized across leagues and roles." },
+      { label: "Watchlist", text: "Alerts when a prospect's metrics shift." },
     ],
     tags: ["Python", "Postgres", "Custom DB", "Scrapers"],
     meta: [["Delivery", "14–21 d"], ["Impact", "92", "lime"], ["Type", "COMPLEX"]],
-    Visual: VisualScouting,
   },
   {
     num: "03",
+    id: "data",
     name: "Data Visualization",
-    impact: 4,
-    summary: <>Live dashboards built around how coaches and GMs <strong>actually decide</strong>. We pull from your existing tools, normalize, and surface only what changes a call.</>,
+    imageSrc: null,
+    summary:
+      "Live dashboards built around how coaches and GMs actually decide. We pull from your existing tools, normalize, and surface only what changes a call.",
     bullets: [
-      <><strong>Coach view:</strong> player performance, side bias, agent fit.</>,
-      <><strong>GM view:</strong> ROI per signing, sponsor delivery, social trend.</>,
-      <><strong>Real-time alerts:</strong> SLO breaches, social anomalies.</>,
+      { label: "Coach view", text: "Player performance, side bias, agent fit." },
+      { label: "GM view", text: "ROI per signing, sponsor delivery, social trend." },
+      { label: "Real-time alerts", text: "SLO breaches, social anomalies." },
     ],
     tags: ["React", "D3.js", "REST APIs", "Postgres"],
     meta: [["Delivery", "10–18 d"], ["Impact", "88", "lime"], ["Type", "INTERMEDIATE"]],
-    Visual: VisualDashboard,
   },
   {
     num: "04",
+    id: "social",
     name: "Social Growth Tracking",
-    impact: 3,
-    summary: <>Monitor, benchmark, and grow your footprint across every platform — in <strong>one view</strong>. Stop refreshing five dashboards before every leadership meeting.</>,
+    imageSrc: null,
+    summary:
+      "Monitor, benchmark, and grow your footprint across every platform in one view. Stop refreshing five dashboards before every leadership meeting.",
     bullets: [
-      <><strong>Unified metrics:</strong> reach, engagement, retention.</>,
-      <><strong>Benchmark vs. peers:</strong> normalized against tier/region.</>,
-      <><strong>Content scoring:</strong> what's hitting, what to retire.</>,
+      { label: "Unified metrics", text: "Reach, engagement, retention." },
+      { label: "Benchmark vs. peers", text: "Normalized against tier and region." },
+      { label: "Content scoring", text: "What's hitting, what to retire." },
     ],
     tags: ["Meta API", "TikTok API", "Analytics", "CMS"],
     meta: [["Delivery", "5–10 d"], ["Impact", "76", "lime"], ["Type", "STANDARD"]],
-    Visual: VisualSocial,
   },
   {
     num: "05",
+    id: "web",
     name: "Web Build & Support",
-    impact: 5,
-    summary: <>Sites built for esports orgs — <strong>fast, dark, branded</strong>, and backed by ongoing support. Next.js stack. Built for sponsors to take you seriously in 0.9 seconds.</>,
+    imageSrc: null,
+    summary:
+      "Sites built for esports orgs—fast, dark, branded, and backed by ongoing support. Next.js stack. Built for sponsors to take you seriously in under a second.",
     bullets: [
-      <><strong>Performance budget:</strong> LCP &lt; 1s, CLS &lt; 0.05.</>,
-      <><strong>Editor-friendly CMS:</strong> your team ships posts, not tickets.</>,
-      <><strong>Ongoing iteration:</strong> not "deliver-and-bounce" agency work.</>,
+      { label: "Performance budget", text: "LCP under 1s, CLS under 0.05." },
+      { label: "Editor-friendly CMS", text: "Your team ships posts, not tickets." },
+      { label: "Ongoing iteration", text: "Not deliver-and-bounce agency work." },
     ],
     tags: ["Next.js", "Figma", "Sanity CMS", "CDN"],
     meta: [["Delivery", "14–28 d"], ["Impact", "90", "lime"], ["Type", "ADVANCED"]],
-    Visual: VisualWebBuild,
   },
   {
     num: "06",
+    id: "roster",
     name: "Roster Management",
-    impact: 5,
-    summary: <>One <strong>source of truth</strong> for your entire squad — contracts, performance history, transfers, renewals. Replaces the 4 spreadsheets your ops lead currently maintains.</>,
+    imageSrc: null,
+    summary:
+      "One source of truth for your entire squad—contracts, performance history, transfers, renewals. Replaces the spreadsheets your ops lead maintains by hand.",
     bullets: [
-      <><strong>Contract clocks:</strong> auto-flag renewal windows.</>,
-      <><strong>Performance ledger:</strong> tied to match outcomes & VOD.</>,
-      <><strong>Transfer history:</strong> internal CRM for player relationships.</>,
+      { label: "Contract clocks", text: "Auto-flag renewal windows." },
+      { label: "Performance ledger", text: "Tied to match outcomes and VOD." },
+      { label: "Transfer history", text: "Internal CRM for player relationships." },
     ],
     tags: ["Custom App", "DB Design", "Contracts", "API"],
     meta: [["Delivery", "21–35 d"], ["Impact", "94", "lime"], ["Type", "COMPLEX"]],
-    Visual: VisualRoster,
   },
 ];
 
 export default function Solutions() {
-  const [active, setActive] = useState(0);
-  const [sectionVisible, setSectionVisible] = useState(false);
+  const [active, setActive] = useState(-1);
   const stackRef = useRef(null);
   const sectionRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.utils.toArray(".sol-card").forEach((card, i) => {
-        gsap.set(card, { y: 20, opacity: 0 });
-        ScrollTrigger.create({
-          trigger: card,
-          start: "top 88%",
-          once: true,
-          onEnter: () => gsap.to(card, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", delay: i * 0.04 }),
-        });
-      });
-
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        onToggle: (self) => setSectionVisible(self.isActive),
-      });
+      gsap.fromTo(
+        ".sol-card",
+        { opacity: 0, y: 12 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          stagger: 0.05,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: stackRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        },
+      );
 
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
         end: "bottom top",
-        onLeave: () => {
-          document.documentElement.style.setProperty("--edge-line-grow", "0px");
-        },
-        onEnterBack: () => {
-          document.documentElement.style.setProperty("--edge-line-grow", "0px");
-        },
+        onLeave: () => document.documentElement.style.setProperty("--edge-line-grow", "0px"),
+        onEnterBack: () => document.documentElement.style.setProperty("--edge-line-grow", "0px"),
       });
     }, stackRef);
+
     return () => ctx.revert();
   }, []);
 
@@ -149,70 +144,81 @@ export default function Solutions() {
           <KineticHeading
             tag="h2"
             rows={[
-              { text: "WHAT" },
-              { parts: [{ text: "WE ", }, { text: "DO.", accent: true }] },
+              { text: "CAPABILITY" },
+              { parts: [{ text: "STACK.", accent: true }] },
             ]}
           />
           <div className="sol-head-meta">
-            <span className="section-tag"><span className="num">06</span> Our Solutions</span>
-            <p>Six precision tools. Zero bloat. Built around how esports orgs actually operate — not what a SaaS roadmap thought they needed.</p>
+            <span className="section-tag"><span className="num">03</span> Build Units</span>
+            <p>Hover a bar to expand. Six deliverables in one view—text left, your image on the right.</p>
           </div>
         </div>
 
-        <div className="sol-stack" ref={stackRef}>
+        <div
+          className="sol-stack"
+          ref={stackRef}
+          onMouseLeave={() => setActive(-1)}
+        >
           {SOLUTIONS.map((s, i) => {
-            const Visual = s.Visual;
-            const isOn = sectionVisible && i === active;
+            const isActive = active === i;
             return (
-              <div
-                key={i}
-                className={"sol-card" + (isOn ? " is-active" : "")}
+              <article
+                key={s.id}
+                className={"sol-card" + (isActive ? " is-active" : "")}
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
+                onClick={() => setActive((prev) => (prev === i ? -1 : i))}
                 tabIndex={0}
               >
-                <div className="sol-card-head">
+                <div className="sol-bar">
+                  <span className="sol-icon" aria-hidden="true">
+                    <SolutionIcon id={s.id} />
+                  </span>
                   <span className="sol-num">{s.num}</span>
                   <h3 className="sol-name">{s.name}</h3>
-                  <div className="sol-cap-dots">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <span key={j} className={"sol-cap-dot" + (j < s.impact ? " on" : "")} />
-                    ))}
-                  </div>
-                  <span className="sol-card-arr">↗</span>
+                  <span className="sol-bar-arr" aria-hidden="true">↗</span>
                 </div>
 
-                <div className="sol-card-body">
+                <div className="sol-panel">
                   <div className="sol-card-text">
                     <p>{s.summary}</p>
-                    <div className="sol-bullets">
-                      {s.bullets.map((b, j) => (
-                        <span className="sol-bullet" key={j}><span /><span>{b}</span></span>
+                    <ul className="sol-bullets">
+                      {s.bullets.map((b) => (
+                        <li className="sol-bullet" key={b.label}>
+                          <strong>{b.label}:</strong> {b.text}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="sol-tag-row">
+                      {s.tags.map((t) => (
+                        <span className="tg" key={t}>{t}</span>
                       ))}
                     </div>
-                    <div className="sol-tag-row">
-                      {s.tags.map((t, j) => <span className="tg" key={j}>{t}</span>)}
-                    </div>
                     <div className="sol-meta-row">
-                      {s.meta.map((m, j) => (
-                        <div className="sol-meta" key={j}>
+                      {s.meta.map((m) => (
+                        <div className="sol-meta" key={m[0]}>
                           <span className="k">{m[0]}</span>
-                          <span className={"v" + (m[2] === "lime" ? " lime" : "")}>{m[1]}{m[2] === "lime" ? "%" : ""}</span>
+                          <span className={"v" + (m[2] === "lime" ? " lime" : "")}>
+                            {m[1]}{m[2] === "lime" ? "%" : ""}
+                          </span>
                         </div>
                       ))}
                     </div>
                   </div>
+
                   <div className="sol-card-visual">
-                    <div className="prob-vis-frame">
-                      <span className="left"><span className="live-dot" /><span className="accent">{s.name.toUpperCase()}</span></span>
-                      <span>VIS.{s.num}</span>
-                    </div>
-                    <div className="prob-vis-body">
-                      <Visual active={isOn} />
-                    </div>
+                    {s.imageSrc ? (
+                      <img src={s.imageSrc} alt="" className="sol-media-img" />
+                    ) : (
+                      <div className="sol-media-placeholder">
+                        <span className="sol-media-k">IMG.{s.num}</span>
+                        <span className="sol-media-title">{s.name}</span>
+                        <span className="sol-media-hint">Add your image asset</span>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>
