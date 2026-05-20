@@ -8,33 +8,33 @@ gsap.registerPlugin(ScrollTrigger);
 const PROBLEMS = [
   {
     tag: "OPERATIONS",
-    title: "Repetitive work that could be running itself",
-    body: "Match-week logistics, roster updates, internal follow-ups — the same tasks get rebuilt manually every cycle. A lot of this operational overhead could be systemized once and freed from your team's daily plate.",
+    title: "Repetitive work that could be automated",
+    body: "The same tasks rebuilt manually every cycle — logistics, updates, follow-ups. Systemize once, free your team.",
   },
   {
     tag: "VISIBILITY",
-    title: "Decisions that should be faster with better data access",
-    body: "When key context lives across Discord, Notion, spreadsheets, and DMs, getting a clear picture takes longer than it should. Leads and managers could be making sharper calls if information was centralized and visible in real time.",
+    title: "Slow decisions from scattered data",
+    body: "Context spread across Discord, Notion, sheets, and DMs. One centralized view could change everything.",
   },
   {
     tag: "COORDINATION",
-    title: "Handoffs and ownership that could be more structured",
-    body: "As orgs grow, tasks naturally start falling between the cracks — unclear routing, overlapping responsibilities, and chat-based delegation. A structured workflow layer could turn chaotic handoffs into predictable execution.",
+    title: "Handoffs that break under pressure",
+    body: "Unclear routing, overlapping ownership, chat-based delegation. Structure turns chaos into execution.",
   },
   {
     tag: "PREP + ANALYSIS",
-    title: "Analyst workflows that should be faster and more reliable",
-    body: "Opponent prep, VOD review, and performance tracking often depend on scattered public data and manual cleanup. With the right tooling, analysts and coaches could spend more time on insight and less time on data collection.",
+    title: "Analyst workflows that should be faster",
+    body: "Opponent prep and VOD review built on scattered data and manual cleanup. Better tooling means more insight, less busywork.",
   },
   {
     tag: "COST + SCALE",
-    title: "Growth that could happen without proportionally growing costs",
-    body: "Many orgs scale by adding headcount instead of infrastructure — which means costs rise faster than output. The right systems foundation could help teams do more with the resources they already have, and grow more efficiently when they're ready.",
+    title: "Costs that scale faster than output",
+    body: "Adding headcount instead of infrastructure. The right systems let you do more with what you have.",
   },
   {
     tag: "RETENTION",
-    title: "Internal experience that should match the external brand",
-    body: "Players, staff, and partners notice how an org actually runs — not just how it looks online. Operational quality could be the thing that keeps top talent and closes better deals, instead of quietly working against you.",
+    title: "Internal ops that don't match the brand",
+    body: "Players, staff, and partners notice how an org actually runs. Operational quality keeps talent and closes deals.",
   },
 ];
 
@@ -61,22 +61,6 @@ export default function BridgeSection() {
         });
       });
 
-      const closerEls = sectionRef.current?.querySelectorAll(".cx-closer .inner");
-      if (closerEls) {
-        gsap.set(closerEls, { yPercent: 110 });
-        ScrollTrigger.create({
-          trigger: ".cx-closer",
-          start: "top 82%",
-          once: true,
-          onEnter: () =>
-            gsap.to(closerEls, {
-              yPercent: 0,
-              duration: 1.1,
-              ease: "expo.out",
-              stagger: 0.12,
-            }),
-        });
-      }
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -109,14 +93,6 @@ export default function BridgeSection() {
           ))}
         </div>
 
-        <div className="cx-closer">
-          <span className="cx-closer-a">
-            <span className="inner">We built the fix</span>
-          </span>
-          <span className="cx-closer-b">
-            <span className="inner">FOR ALL OF IT.</span>
-          </span>
-        </div>
       </div>
     </section>
   );

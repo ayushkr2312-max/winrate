@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import KineticHeading from "../primitives/KineticHeading";
 import SectionCoord from "../primitives/SectionCoord";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -109,7 +108,7 @@ function ServiceDetailPanel({ svc, exiting }) {
       <div className="svc-corner svc-corner--bl" />
       <div className="svc-corner svc-corner--br" />
 
-      {/* Ghost number inside panel */}
+      {/* Ghost watermark number */}
       <div className="svc-ghost-num" aria-hidden="true">{svc.n}</div>
 
       {/* HUD top bar */}
@@ -124,6 +123,7 @@ function ServiceDetailPanel({ svc, exiting }) {
 
       {/* Content */}
       <div className="svc-detail-body">
+        {/* Name */}
         <div className="svc-detail-head">
           <h3 className="svc-detail-name">{svc.name}</h3>
           <span className="svc-detail-tag">{svc.tag}</span>
@@ -133,19 +133,23 @@ function ServiceDetailPanel({ svc, exiting }) {
 
         <p className="svc-detail-desc">{svc.desc}</p>
 
+        {/* Tech tags */}
         <div className="svc-tech-tags">
           {svc.tags.map((t) => (
             <span key={t} className="svc-tech-tag">{t}</span>
           ))}
         </div>
 
+        {/* Stat + Process grid */}
         <div className="svc-bottom-grid">
+          {/* Stat block */}
           <div className="svc-stat-block">
             <div className="svc-stat-top-line" />
             <span className="svc-stat-val">{svc.stat}</span>
             <span className="svc-stat-label">{svc.statLabel}</span>
           </div>
 
+          {/* Process steps */}
           <div className="svc-process">
             <span className="svc-process-label">Process</span>
             {svc.steps.map((step, i) => (
@@ -157,13 +161,14 @@ function ServiceDetailPanel({ svc, exiting }) {
           </div>
         </div>
 
+        {/* Outcome */}
         <div className="svc-outcome">{svc.outcome}</div>
       </div>
     </div>
   );
 }
 
-export default function Solutions() {
+export default function ServicesSection() {
   const [active, setActive] = useState(0);
   const [exiting, setExiting] = useState(false);
   const sectionRef = useRef(null);
@@ -188,7 +193,7 @@ export default function Solutions() {
     const ctx = gsap.context(() => {
       gsap.set(".svc-index-item", { opacity: 0, x: -16 });
       ScrollTrigger.create({
-        trigger: ".sol-head",
+        trigger: ".svc-head",
         start: "top 82%",
         once: true,
         onEnter: () =>
@@ -198,8 +203,17 @@ export default function Solutions() {
             duration: 0.55,
             stagger: 0.07,
             ease: "power3.out",
-            delay: 0.35,
+            delay: 0.3,
           }),
+      });
+
+      gsap.set(".svc-head", { opacity: 0, y: 20 });
+      ScrollTrigger.create({
+        trigger: ".svc-head",
+        start: "top 85%",
+        once: true,
+        onEnter: () =>
+          gsap.to(".svc-head", { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }),
       });
 
       gsap.set(".svc-detail", { opacity: 0, y: 24 });
@@ -217,38 +231,35 @@ export default function Solutions() {
   const svc = SERVICES[active];
 
   return (
-    <section className="sect solutions" id="solutions" ref={sectionRef}>
-      <SectionCoord idx="03" label="SOLUTIONS" lat="34.0°N" lon="118.2°W" />
+    <section className="sect services-section" id="services" ref={sectionRef}>
+      <SectionCoord idx="03" label="SERVICES" lat="51.5°N" lon="0.1°W" />
 
-      {/* Ghost watermark — morphs per active service */}
-      <div
-        className="svc-watermark"
-        aria-hidden="true"
-        style={{ opacity: exiting ? 0 : 1 }}
-      >
+      {/* Ghost watermark — morphs on switch */}
+      <div className="svc-watermark" aria-hidden="true"
+        style={{ opacity: exiting ? 0 : 1 }}>
         {svc.name}
       </div>
 
       <div className="sect-inner">
-        {/* Header — keeps existing heading */}
-        <div className="sol-head">
-          <KineticHeading
-            tag="h2"
-            rows={[
-              { text: "SERVICES" },
-              { parts: [{ text: "BUILT TO FIT.", accent: true }] },
-            ]}
-          />
-          <div className="sol-head-meta">
+        {/* Header */}
+        <div className="svc-head">
+          <div className="svc-head-main">
+            <span className="section-tag"><span className="num">03</span> Services Built To Fit</span>
+            <h2 className="svc-heading">
+              Six Services.<br />
+              <span className="svc-heading-accent">One Partner.</span>
+            </h2>
+          </div>
+          <div className="svc-head-meta">
             <div className="svc-active-indicator">
               <span className="svc-pulse-dot" />
-              <span>Six Services. One Partner.</span>
+              06 Services Active
             </div>
-            <p>Hover any service to explore its scope and approach.</p>
+            <p className="svc-head-hint">Hover any service to explore its scope and approach.</p>
           </div>
         </div>
 
-        {/* New interactive layout */}
+        {/* Split layout */}
         <div className="svc-layout">
           {/* Left: service index */}
           <div className="svc-index">
@@ -262,7 +273,9 @@ export default function Solutions() {
             ))}
             <div className="svc-index-footer">
               <p>Every engagement is fully custom — no packages, no guesswork.</p>
-              <a href="#contact" className="svc-start-link">Start a Project →</a>
+              <a href="#contact" className="svc-start-link">
+                Start a Project →
+              </a>
             </div>
           </div>
 

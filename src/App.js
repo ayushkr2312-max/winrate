@@ -11,10 +11,10 @@ import HeroCanvas from "@/components/hero/HeroCanvas";
 import Hero from "@/components/sections/Hero";
 import Ticker from "@/components/sections/Ticker";
 import BridgeSection from "@/components/sections/BridgeSection";
+import ProblemToSolution from "@/components/sections/ProblemToSolution";
 import Solutions from "@/components/sections/Solutions";
 import Stats from "@/components/sections/Stats";
 import WhatWeDo from "@/components/sections/WhatWeDo";
-import EdgeSection from "@/components/sections/EdgeSection";
 import StackSection from "@/components/sections/StackSection";
 import Manifesto from "@/components/sections/Manifesto";
 import Contact from "@/components/sections/Contact";
@@ -40,10 +40,10 @@ export default function App() {
 
       <Hero playEntrance={booted} />
       <BridgeSection />
+      <ProblemToSolution />
       <Solutions />
       <Ticker invert />
       <Stats />
-      <EdgeSection />
       <WhatWeDo />
       <StackSection />
       <Manifesto />

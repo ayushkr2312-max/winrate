@@ -13,6 +13,12 @@ const STATS = [
   { val: 1, suf: "", label: "Clear Source Of Truth", sub: "Centralized dashboards replace scattered notes and disconnected sheets.", trend: "Aligned teams", spark: [4, 4, 5, 6, 7, 7, 8, 9, 10, 10, 11, 12] },
   { val: 2, suf: "X", label: "Faster Task Turnaround", sub: "Better routing, ownership, and reminders help requests move quickly.", trend: "Execution speed", spark: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] },
   { val: 3, suf: "P", label: "Scalable Ops Foundation", sub: "Process + systems + support creates stronger growth readiness.", trend: "Built to scale", spark: [6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12, 13] },
+  { val: 70, suf: "%", label: "Less Manual Work", sub: "Average reduction in repetitive manual tasks after workflow automation systems are implemented across org operations.", trend: "Efficiency", spark: [4, 6, 8, 11, 14, 17, 20, 24, 28, 32, 36, 40] },
+  { val: 3, suf: "×", label: "Faster Prep", sub: "Teams using our analyst prep tools run opponent research and data review significantly faster than before implementation.", trend: "Prep speed", spark: [5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 21, 23] },
+  { val: 0, suf: "", label: "Generic Packages", sub: "Every solution is custom-built for the org and its budget. No templates, no recycled solutions, no one-size-fits-all.", trend: "Custom only", spark: [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12] },
+  { val: 6, suf: "+", label: "Service Areas", sub: "Complete coverage across automation, dashboards, operations, prep tools, resource sourcing, and fully custom builds.", trend: "Coverage", spark: [3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 9] },
+  { val: 7, suf: "d", label: "Avg First Deploy", sub: "From discovery call to your first working system live. Built, connected, and handed off in under a week on average.", trend: "Fast delivery", spark: [20, 18, 16, 15, 13, 12, 11, 10, 9, 8, 8, 7] },
+  { val: 100, suf: "%", label: "Esports-Focused", sub: "We only work with esports organizations. Every tool, framework, and approach is built around competitive gaming realities.", trend: "Dedicated", spark: [10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12] },
 ];
 
 const LIVE_SIGNALS = [
