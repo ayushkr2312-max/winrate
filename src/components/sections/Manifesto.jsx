@@ -1,84 +1,87 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import KineticHeading from "../primitives/KineticHeading";
-import SectionCoord from "../primitives/SectionCoord";
+import { motion } from "framer-motion";
+import AnimatedHeading from "../primitives/AnimatedHeading";
 import Magnetic from "../primitives/Magnetic";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ROWS = [
   {
     n: "01",
     title: "Real esports operating experience",
-    body: "We understand how esports organizations actually function day-to-day because our team has worked in esports management environments directly.",
-    detail: "You get guidance and systems shaped by practical org realities, not generic frameworks.",
+    body: "We understand how esports orgs actually function day-to-day, because our team has worked inside them.",
     tag: "Esports-native",
   },
   {
     n: "02",
     title: "Technical execution that ships",
-    body: "We do more than recommend changes. We build and implement automations, dashboards, workflows, and data systems your team can use right away.",
-    detail: "The focus is practical delivery: less friction, faster execution, cleaner organization.",
+    body: "We build and implement the automations, dashboards, and workflows your team can use right away.",
     tag: "Build-first",
   },
   {
     n: "03",
     title: "Custom solutions, cost-conscious delivery",
-    body: "We adapt scope and pricing to each org's needs and available resources so teams can improve operations without overcommitting budget.",
-    detail: "Every engagement is tailored for your structure, growth stage, and biggest operational pressure points.",
+    body: "We adapt scope and pricing to each org's needs so teams can improve operations without overcommitting budget.",
     tag: "Practical value",
   },
 ];
 
+const rowVariants = {
+  hidden: {
+    opacity: 0, x: -32,
+    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+  },
+  show: (i) => ({
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24, transition: { duration: 0.3 } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+};
+
 export default function Manifesto() {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray(".manifesto-row").forEach((row, i) => {
-        gsap.set(row, { x: -40, opacity: 0 });
-        ScrollTrigger.create({
-          trigger: row,
-          start: "top 84%",
-          once: true,
-          onEnter: () => gsap.to(row, { x: 0, opacity: 1, duration: 0.8, delay: i * 0.1, ease: "power3.out" }),
-        });
-      });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section className="sect manifesto" id="manifesto" ref={ref}>
+    <section className="sect manifesto" id="manifesto">
       <div className="sect-inner">
-        <span className="section-tag invert"><span className="num" style={{ color: "var(--lime-2)" }}>06</span> About / Why Us</span>
+        <motion.span className="section-tag invert" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+          <span className="num" style={{ color: "var(--lime-2)" }}>06</span> About
+        </motion.span>
         <div className="manifesto-head">
-          <KineticHeading
+          <AnimatedHeading
             tag="h2"
             rows={[
               { text: "BUILT FOR" },
-              { parts: [{ text: "GROWING ", }, { text: "ORGS.", accent: true }] },
+              { parts: [{ text: "GROWING " }, { text: "ORGS.", accent: true }] },
             ]}
           />
-          <p>Winrvte Tech is a hands-on partner for organizations that need better systems, cleaner operations, and smarter use of limited budget.</p>
+          <motion.p initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+            A hands-on partner for organizations that need better systems, cleaner operations, and smarter use of limited budget.
+          </motion.p>
         </div>
 
         <div className="manifesto-rows">
           {ROWS.map((r, i) => (
-            <div className="manifesto-row" key={i}>
+            <motion.div
+              className="manifesto-row"
+              key={i}
+              custom={i}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: false, amount: 0.2 }}
+              variants={rowVariants}
+            >
               <div className="manifesto-row-num">{r.n}</div>
               <div>
                 <h3 className="manifesto-row-title">{r.title}</h3>
                 <p className="manifesto-row-body">{r.body}</p>
-                <p className="manifesto-row-detail">{r.detail}</p>
               </div>
               <div className="manifesto-row-tag"><span>{r.tag}</span></div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <div className="manifesto-cta">
+        <motion.div className="manifesto-cta" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.3 }} variants={fadeUp}>
           <div className="manifesto-cta-left">
             <h3>Let&apos;s discuss your org</h3>
             <p>Share your current setup, biggest bottlenecks, and budget range. We&apos;ll suggest the most practical first move.</p>
@@ -86,7 +89,7 @@ export default function Manifesto() {
           <Magnetic as="a" href="#contact" className="btn-dark" data-cursor-label="GO" strength={0.32}>
             Book a Call →
           </Magnetic>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

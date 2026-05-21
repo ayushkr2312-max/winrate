@@ -16,7 +16,6 @@ export default function Hero({ playEntrance }) {
     tl.to(".hero-line-b .inner", { y: 0, opacity: 1, duration: 1.0, ease: "expo.out" }, 0.32);
     tl.to(".hero-line-c .inner", { y: 0, opacity: 1, duration: 1.0, ease: "expo.out" }, 0.44);
     tl.to(".hero-cue", { opacity: 1, duration: 0.6 }, 1.0);
-    tl.to(".hero-foot", { opacity: 1, y: 0, duration: 0.6 }, 1.0);
   }, [playEntrance]);
 
   useEffect(() => {
@@ -42,11 +41,6 @@ export default function Hero({ playEntrance }) {
             gsap.to(".hero-swap-hover", { rotationX: -80, z: -400, scale: 0.8, opacity: 0, duration: 0.55, ease: "expo.out", overwrite: "auto" });
           }
         },
-      });
-
-      gsap.to(".ops-card", {
-        y: -50,
-        scrollTrigger: { trigger: heroRef.current, start: "top top", end: "bottom top", scrub: 1.6 },
       });
     }, heroRef);
     return () => ctx.revert();
@@ -135,14 +129,6 @@ export default function Hero({ playEntrance }) {
           <div className="hero-cue-fill" ref={cueFillRef} />
         </div>
         <span className="hero-cue-txt">Scroll</span>
-      </div>
-
-      <div className="hero-foot" style={{ opacity: 0, transform: "translateY(12px)" }}>
-        <div className="right">
-          <span className="tz"><span className="city">LA</span>02:14</span>
-          <span className="tz"><span className="city">BLN</span>11:14</span>
-          <span className="tz"><span className="city">SEL</span>19:14</span>
-        </div>
       </div>
     </section>
   );

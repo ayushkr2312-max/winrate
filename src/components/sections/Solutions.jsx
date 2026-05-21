@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import KineticHeading from "../primitives/KineticHeading";
-import SectionCoord from "../primitives/SectionCoord";
+import { useCallback, useState } from "react";
+import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
+import AnimatedHeading from "../primitives/AnimatedHeading";
 
-gsap.registerPlugin(ScrollTrigger);
+const fadeUp = {
+  hidden: { opacity: 0, y: 24, transition: { duration: 0.3 } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+};
 
 const SERVICES = [
   {
     n: "01",
     name: "Workflow Automation",
     tag: "Systems & Automation",
-    desc: "We build practical automations that eliminate repetitive manual work from your day-to-day. Request routing, data syncing, Discord workflows, approval flows — if your team does it manually every day, we can probably automate it.",
+    desc: "Practical automations that remove repetitive manual work from your day-to-day. Request routing, data syncing, Discord workflows, approval flows — if your team does it manually every day, we can probably automate it.",
     tags: ["Python", "Zapier", "APIs", "Discord Bots", "Google Sheets"],
     delivery: "Custom Scoped",
     stat: "↓70%",
@@ -23,11 +24,11 @@ const SERVICES = [
     n: "02",
     name: "Personalized Dashboards",
     tag: "Custom Data Systems",
-    desc: "One place for everything your org needs to see. We build custom dashboards connected to your sheets, Discord channels, and existing tools — so leadership always knows what's happening, who's doing what, and where things stand.",
+    desc: "One place for everything your org needs to see. Custom dashboards connected to your sheets, Discord channels and tools — so leadership always knows what's happening and where things stand.",
     tags: ["React", "Google Sheets", "Airtable", "REST APIs", "Supabase"],
     delivery: "Custom Scoped",
     stat: "1",
-    statLabel: "single source of truth for your org",
+    statLabel: "single source of truth",
     steps: ["Data Audit", "Structure", "Build", "Connect", "Train"],
     outcome: "No more hunting across tabs, channels, and spreadsheets.",
   },
@@ -35,7 +36,7 @@ const SERVICES = [
     n: "03",
     name: "Operations Optimization",
     tag: "Esports Ops",
-    desc: "We look at how your org actually runs, find the bottlenecks and inefficiencies costing you time and money, and fix them with better processes and tooling. Not generic consulting — built from real experience inside growing esports orgs.",
+    desc: "We look at how your org actually runs, find the bottlenecks and inefficiencies costing you time and money, and fix them with better processes and tooling. Built from real experience inside growing esports orgs.",
     tags: ["Process Design", "Staff Workflows", "Reporting", "Comms Structure", "Internal Tools"],
     delivery: "Custom Scoped",
     stat: "10+",
@@ -47,11 +48,11 @@ const SERVICES = [
     n: "04",
     name: "Analyst Support & Prep Tools",
     tag: "Performance Tech",
-    desc: "We build tools that simplify opponent prep and team data management — scraping public data, structuring it cleanly, and giving your analysts and coaches practical systems to work from instead of scattered notes.",
+    desc: "Tools that simplify opponent prep and team data management — scraping public data, structuring it cleanly, giving your analysts and coaches practical systems to work from instead of scattered notes.",
     tags: ["Python", "Data Scraping", "Notion", "Google Sheets", "Custom Tools"],
     delivery: "Custom Scoped",
     stat: "3×",
-    statLabel: "faster prep workflow execution",
+    statLabel: "faster prep workflow",
     steps: ["Define Needs", "Source Data", "Structure", "Build", "Handoff"],
     outcome: "Analysts and coaches spend less time organizing and more time finding the edge.",
   },
@@ -59,8 +60,8 @@ const SERVICES = [
     n: "05",
     name: "Network & Resource Sourcing",
     tag: "Industry Connections",
-    desc: "Finding the right people at the right price is harder than it should be. We have a strong network across the esports ecosystem and can connect your org with the staff, creatives, players, and vendors you actually need.",
-    tags: ["Staff", "Designers", "Editors", "Players", "Vendors & Manufacturers"],
+    desc: "Finding the right people at the right price is harder than it should be. We have a strong network across the esports ecosystem and can connect your org with the staff, creatives, players and vendors you actually need.",
+    tags: ["Staff", "Designers", "Editors", "Players", "Vendors"],
     delivery: "Ongoing",
     stat: "Wide",
     statLabel: "esports network access",
@@ -86,8 +87,16 @@ function ServiceIndexItem({ svc, isActive, onHover }) {
     <div
       className={"svc-index-item" + (isActive ? " is-active" : "")}
       onMouseEnter={onHover}
+      onFocus={onHover}
+      tabIndex={0}
     >
-      <div className="svc-index-bar" />
+      {isActive && (
+        <motion.div
+          layoutId="svc-active-bar"
+          className="svc-index-bar svc-index-bar--active"
+          transition={{ type: "spring", stiffness: 380, damping: 32 }}
+        />
+      )}
       <span className="svc-index-num">{svc.n}</span>
       <div className="svc-index-text">
         <span className="svc-index-name">{svc.name}</span>
@@ -100,29 +109,48 @@ function ServiceIndexItem({ svc, isActive, onHover }) {
   );
 }
 
-function ServiceDetailPanel({ svc, exiting }) {
+const panelVariants = {
+  hidden: { opacity: 0, y: 16, filter: "blur(6px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+    filter: "blur(6px)",
+    transition: { duration: 0.28, ease: [0.65, 0, 0.35, 1] },
+  },
+};
+
+function ServiceDetailPanel({ svc }) {
   return (
-    <div className={"svc-detail" + (exiting ? " is-exiting" : "")}>
-      {/* Corner brackets */}
+    <motion.div
+      key={svc.n}
+      className="svc-detail"
+      variants={panelVariants}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+    >
       <div className="svc-corner svc-corner--tl" />
       <div className="svc-corner svc-corner--tr" />
       <div className="svc-corner svc-corner--bl" />
       <div className="svc-corner svc-corner--br" />
 
-      {/* Ghost number inside panel */}
       <div className="svc-ghost-num" aria-hidden="true">{svc.n}</div>
 
-      {/* HUD top bar */}
       <div className="svc-hud-bar">
         <div className="svc-hud-top-line" />
-        <span className="svc-hud-sys">WINRVTE.SYS / {svc.n}</span>
+        <span className="svc-hud-sys">WINRVTE / {svc.n}</span>
         <div className="svc-hud-delivery">
           <span className="svc-hud-dot" />
           {svc.delivery}
         </div>
       </div>
 
-      {/* Content */}
       <div className="svc-detail-body">
         <div className="svc-detail-head">
           <h3 className="svc-detail-name">{svc.name}</h3>
@@ -159,118 +187,76 @@ function ServiceDetailPanel({ svc, exiting }) {
 
         <div className="svc-outcome">{svc.outcome}</div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 export default function Solutions() {
   const [active, setActive] = useState(0);
-  const [exiting, setExiting] = useState(false);
-  const sectionRef = useRef(null);
-  const timerRef = useRef(null);
 
-  const go = useCallback(
-    (i) => {
-      if (i === active || exiting) return;
-      clearTimeout(timerRef.current);
-      setExiting(true);
-      timerRef.current = setTimeout(() => {
-        setActive(i);
-        setExiting(false);
-      }, 280);
-    },
-    [active, exiting],
-  );
-
-  useEffect(() => () => clearTimeout(timerRef.current), []);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(".svc-index-item", { opacity: 0, x: -16 });
-      ScrollTrigger.create({
-        trigger: ".sol-head",
-        start: "top 82%",
-        once: true,
-        onEnter: () =>
-          gsap.to(".svc-index-item", {
-            opacity: 1,
-            x: 0,
-            duration: 0.55,
-            stagger: 0.07,
-            ease: "power3.out",
-            delay: 0.35,
-          }),
-      });
-
-      gsap.set(".svc-detail", { opacity: 0, y: 24 });
-      ScrollTrigger.create({
-        trigger: ".svc-detail",
-        start: "top 85%",
-        once: true,
-        onEnter: () =>
-          gsap.to(".svc-detail", { opacity: 1, y: 0, duration: 0.7, delay: 0.15, ease: "power3.out" }),
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+  const go = useCallback((i) => {
+    setActive((current) => (current === i ? current : i));
   }, []);
 
   const svc = SERVICES[active];
 
   return (
-    <section className="sect solutions" id="solutions" ref={sectionRef}>
-      <SectionCoord idx="03" label="SOLUTIONS" lat="34.0°N" lon="118.2°W" />
-
-      {/* Ghost watermark — morphs per active service */}
+    <section className="sect solutions" id="solutions">
       <div
         className="svc-watermark"
         aria-hidden="true"
-        style={{ opacity: exiting ? 0 : 1 }}
+        key={svc.name}
       >
         {svc.name}
       </div>
 
       <div className="sect-inner">
-        {/* Header — keeps existing heading */}
         <div className="sol-head">
-          <KineticHeading
-            tag="h2"
-            rows={[
-              { text: "SERVICES" },
-              { parts: [{ text: "BUILT TO FIT.", accent: true }] },
-            ]}
-          />
-          <div className="sol-head-meta">
+          <div>
+            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+              <span className="num">03</span> Solutions
+            </motion.span>
+            <AnimatedHeading
+              tag="h2"
+              rows={[
+                { text: "SERVICES" },
+                { parts: [{ text: "BUILT TO FIT.", accent: true }] },
+              ]}
+            />
+          </div>
+          <motion.div className="sol-head-meta" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
             <div className="svc-active-indicator">
               <span className="svc-pulse-dot" />
-              <span>Six Services. One Partner.</span>
+              <span>Six services. One partner.</span>
             </div>
             <p>Hover any service to explore its scope and approach.</p>
-          </div>
+          </motion.div>
         </div>
 
-        {/* New interactive layout */}
-        <div className="svc-layout">
-          {/* Left: service index */}
-          <div className="svc-index">
-            {SERVICES.map((s, i) => (
-              <ServiceIndexItem
-                key={i}
-                svc={s}
-                isActive={active === i}
-                onHover={() => go(i)}
-              />
-            ))}
-            <div className="svc-index-footer">
-              <p>Every engagement is fully custom — no packages, no guesswork.</p>
-              <a href="#contact" className="svc-start-link">Start a Project →</a>
+        <LayoutGroup>
+          <motion.div className="svc-layout" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.1 }} variants={fadeUp}>
+            <div className="svc-index">
+              {SERVICES.map((s, i) => (
+                <ServiceIndexItem
+                  key={s.n}
+                  svc={s}
+                  isActive={active === i}
+                  onHover={() => go(i)}
+                />
+              ))}
+              <div className="svc-index-footer">
+                <p>Every engagement is fully custom — no packages, no guesswork.</p>
+                <a href="#contact" className="svc-start-link">Start a Project →</a>
+              </div>
             </div>
-          </div>
 
-          {/* Right: sticky detail panel */}
-          <div className="svc-detail-wrap">
-            <ServiceDetailPanel svc={svc} exiting={exiting} />
-          </div>
-        </div>
+            <div className="svc-detail-wrap">
+              <AnimatePresence mode="wait">
+                <ServiceDetailPanel svc={svc} />
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </LayoutGroup>
       </div>
     </section>
   );

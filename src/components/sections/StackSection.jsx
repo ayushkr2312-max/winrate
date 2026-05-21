@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SplitText from "../primitives/SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,28 +30,29 @@ export default function StackSection() {
   const tween1Ref = useRef(null);
   const tween2Ref = useRef(null);
 
-  // Header scroll-reveal
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.set(".stack-head", { y: 28, opacity: 0 });
       ScrollTrigger.create({
         trigger: ".stack-head",
         start: "top 86%",
-        once: true,
+        end: "bottom 20%",
         onEnter: () =>
           gsap.to(".stack-head", { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" }),
+        onEnterBack: () =>
+          gsap.to(".stack-head", { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }),
+        onLeave: () => gsap.set(".stack-head", { y: 28, opacity: 0 }),
+        onLeaveBack: () => gsap.set(".stack-head", { y: 28, opacity: 0 }),
       });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
 
-  // Dual-direction marquee + scroll-velocity coupling
   useEffect(() => {
     const r1 = rail1Ref.current;
     const r2 = rail2Ref.current;
     if (!r1 || !r2) return;
 
-    // Clone the list inside each rail for a seamless loop
     const list1 = r1.firstElementChild;
     const list2 = r2.firstElementChild;
     r1.appendChild(list1.cloneNode(true));
@@ -59,17 +61,14 @@ export default function StackSection() {
     const w1 = list1.offsetWidth;
     const w2 = list2.offsetWidth;
 
-    // Row 1: forward (left)
     tween1Ref.current = gsap.to(r1, {
       x: -w1, duration: 38, ease: "none", repeat: -1,
     });
-    // Row 2: reverse (right) — start mid-way so the seam is invisible
     gsap.set(r2, { x: -w2 });
     tween2Ref.current = gsap.to(r2, {
       x: 0, duration: 46, ease: "none", repeat: -1,
     });
 
-    // Scroll-velocity: speed both rows on forward scroll, ease on backward
     let lastY = window.scrollY;
     let rafId  = 0;
     let settle;
@@ -111,11 +110,12 @@ export default function StackSection() {
         <div className="stack-head">
           <div className="stack-head-text">
             <span className="section-tag">Powered By</span>
-            <h2 className="stack-heading">THE STACK</h2>
+            <h2 className="stack-heading">
+              <SplitText text="THE STACK" splitBy="chars" stagger={0.04} duration={1.05} />
+            </h2>
           </div>
           <p className="stack-sub">
             Practical tools chosen for reliability and real-world performance.
-            Everything we use, we use because it works.
           </p>
         </div>
       </div>
@@ -126,7 +126,6 @@ export default function StackSection() {
         onMouseLeave={resumeAll}
         aria-hidden="true"
       >
-        {/* Row 1 — forward */}
         <div className="stack-track">
           <div className="stack-rail" ref={rail1Ref}>
             <div className="stack-list">
@@ -135,7 +134,6 @@ export default function StackSection() {
           </div>
         </div>
 
-        {/* Row 2 — reverse */}
         <div className="stack-track">
           <div className="stack-rail" ref={rail2Ref}>
             <div className="stack-list">
