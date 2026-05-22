@@ -1,51 +1,414 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        width: 1920px;
-        height: 1080px;
-        overflow: hidden;
-        background: #000;
-      }
-    </style>
-  </head>
-  <body>
-    <div
-      id="root"
-      data-composition-id="main"
-      data-start="0"
-      data-duration="10"
-      data-width="1920"
-      data-height="1080"
-    >
-      
-      
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: #080C16;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .scene {
+      position: absolute; top: 0; left: 0;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+    }
 
-      <!--
-        Add your clips here. Example:
-        <div id="title" class="clip" data-start="0" data-duration="5" data-track-index="1"
-             style="font-size: 64px; color: #fff; padding: 40px">
-          Hello World
-        </div>
-      -->
+    /* ── BG ── */
+    #bg-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(57,255,20,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(57,255,20,0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+    #bg-glow {
+      position: absolute; z-index: 0;
+      width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(57,255,20,0.08) 0%, transparent 68%);
+      top: -220px; right: -60px; pointer-events: none;
+    }
+    #bg-glow2 {
+      position: absolute; z-index: 0;
+      width: 520px; height: 520px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,101,242,0.05) 0%, transparent 70%);
+      bottom: -100px; left: 560px; pointer-events: none;
+    }
+    #scan-line {
+      position: absolute; left: 0; top: 64px;
+      width: 1920px; height: 1px; z-index: 8;
+      background: linear-gradient(90deg, transparent, rgba(57,255,20,0.25) 25%, rgba(57,255,20,0.45) 50%, rgba(57,255,20,0.25) 75%, transparent);
+      pointer-events: none; opacity: 0.4;
+    }
+
+    /* ── HEADER ── */
+    .dc-header {
+      position: absolute; left: 0; top: 0;
+      width: 1920px; height: 64px; z-index: 5;
+      background: rgba(7,10,20,0.97);
+      border-bottom: 1px solid rgba(57,255,20,0.12);
+      display: flex; align-items: center; padding: 0 48px; gap: 14px;
+    }
+    .hdr-hash { font-size: 26px; font-weight: 900; color: #39FF14; line-height: 1; }
+    .hdr-name { font-size: 19px; font-weight: 700; color: #E2E8F8; letter-spacing: -0.02em; }
+    .hdr-sep { width: 1px; height: 22px; background: rgba(57,255,20,0.16); margin: 0 6px; }
+    .hdr-topic { font-size: 14px; color: rgba(200,212,240,0.36); }
+    .live-badge {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 18px; border-radius: 6px;
+      border: 1px solid rgba(57,255,20,0.26);
+      background: rgba(57,255,20,0.035);
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #39FF14; box-shadow: 0 0 6px rgba(57,255,20,0.85);
+    }
+    .live-text {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+      color: rgba(200,212,240,0.62);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── CHAT ── */
+    .chat {
+      position: absolute; left: 0; top: 64px;
+      width: 1920px; height: 1016px;
+      padding: 64px 120px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+
+    /* ── MESSAGES ── */
+    .msg { display: flex; gap: 20px; align-items: flex-start; padding: 8px 0; }
+    .avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 800;
+    }
+    .av-user { background: linear-gradient(135deg,#5865F2,#7289da); color:#fff; }
+    .av-bot {
+      background: #09101E; border: 2px solid #39FF14; color: #39FF14;
+      font-size: 20px; font-weight: 900;
+      box-shadow: 0 0 10px rgba(57,255,20,0.2);
+    }
+    .msg-body { flex: 1; }
+    .msg-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .msg-name { font-size: 17px; font-weight: 700; }
+    .n-user { color: #7289da; }
+    .n-bot  { color: #39FF14; }
+    .bot-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      background: #39FF14; color: #080C16;
+      padding: 2px 7px; border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .msg-ts { font-size: 12px; color: rgba(200,212,240,0.26); font-family: 'JetBrains Mono', monospace; }
+    .msg-text { font-size: 24px; color: #CDD5EC; line-height: 1.5; }
+
+    /* ── TYPING ── */
+    .typing {
+      display: flex; align-items: center; gap: 7px;
+      margin-left: 68px; padding: 6px 0;
+    }
+    .t-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(57,255,20,0.5); }
+    .t-label { font-size: 14px; color: rgba(200,212,240,0.32); }
+
+    /* ── BOT RESPONSE ── */
+    .bot-intro { font-size: 24px; color: #CDD5EC; line-height: 1.5; margin-bottom: 18px; }
+    .matches { display: flex; flex-direction: column; gap: 10px; }
+
+    .match-card {
+      display: flex; align-items: center;
+      background: #0D1220;
+      border: 1px solid rgba(57,255,20,0.13);
+      border-left: 3px solid #39FF14;
+      border-radius: 8px;
+      padding: 20px 32px;
+      width: 1100px;
+    }
+    .m-day-col { width: 148px; flex-shrink: 0; }
+    .m-day {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #39FF14;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .m-date { font-size: 19px; font-weight: 700; color: #E2E8F8; margin-top: 3px; }
+    .m-vdiv { width: 1px; height: 40px; background: rgba(57,255,20,0.1); flex-shrink: 0; }
+    .m-time-col { width: 196px; flex-shrink: 0; padding: 0 30px; }
+    .m-lbl {
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(200,212,240,0.28); font-family: 'JetBrains Mono', monospace;
+    }
+    .m-time {
+      font-size: 20px; font-weight: 700; color: #E2E8F8; margin-top: 3px;
+      font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums;
+    }
+    .m-opp-col { flex: 1; padding: 0 30px; }
+    .m-opp { font-size: 23px; font-weight: 800; color: #E2E8F8; margin-top: 3px; letter-spacing: -0.02em; }
+    .m-league-col { width: 210px; flex-shrink: 0; text-align: right; }
+    .m-league {
+      font-size: 11px; color: rgba(57,255,20,0.62); letter-spacing: 0.07em;
+      text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+    }
+    .m-series { font-size: 13px; color: rgba(200,212,240,0.32); margin-top: 3px; }
+
+    .resp-footer {
+      display: flex; align-items: center; gap: 9px;
+      margin-top: 14px; width: 1100px;
+      padding-top: 12px; border-top: 1px solid rgba(57,255,20,0.07);
+    }
+    .rf-dot { width: 5px; height: 5px; border-radius: 50%; background: #39FF14; flex-shrink: 0; }
+    .rf-text { font-size: 12px; color: rgba(200,212,240,0.26); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; }
+  </style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+
+  <!-- Background -->
+  <div id="bg-grid"  data-layout-ignore></div>
+  <div id="bg-glow"  data-layout-ignore></div>
+  <div id="bg-glow2" data-layout-ignore></div>
+  <div id="scan-line" data-layout-ignore></div>
+
+  <!-- ══ SCENE 1: User question ══ -->
+  <div id="scene1" class="scene" style="z-index:1;">
+    <div class="dc-header" id="hdr1">
+      <span class="hdr-hash">#</span>
+      <span class="hdr-name">valorant-schedule</span>
+      <div class="hdr-sep"></div>
+      <span class="hdr-topic">Ask anything about upcoming matches</span>
+      <div class="live-badge">
+        <div class="live-dot" id="ldot1"></div>
+        <span class="live-text">WINRVTE.AI LIVE</span>
+      </div>
     </div>
+    <div class="chat">
+      <div class="msg" id="umsg">
+        <div class="avatar av-user" id="uav">AK</div>
+        <div class="msg-body">
+          <div class="msg-head">
+            <span class="msg-name n-user" id="uname">AyushK</span>
+            <span class="msg-ts" id="uts">Today at 2:41 PM</span>
+          </div>
+          <div class="msg-text" id="utext"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <script>
-      window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      // Example: tl.from("#title", { opacity: 0, y: -50, duration: 1 }, 0);
-      window.__timelines["main"] = tl;
-    </script>
-  </body>
+  <!-- ══ SCENE 2: Bot response ══ -->
+  <div id="scene2" class="scene" style="z-index:2; opacity:0;">
+    <div class="dc-header" id="hdr2">
+      <span class="hdr-hash">#</span>
+      <span class="hdr-name">valorant-schedule</span>
+      <div class="hdr-sep"></div>
+      <span class="hdr-topic">Ask anything about upcoming matches</span>
+      <div class="live-badge">
+        <div class="live-dot" id="ldot2"></div>
+        <span class="live-text">WINRVTE.AI LIVE</span>
+      </div>
+    </div>
+    <div class="chat">
+      <!-- User msg (dimmed) -->
+      <div class="msg" style="opacity:0.4;">
+        <div class="avatar av-user">AK</div>
+        <div class="msg-body">
+          <div class="msg-head">
+            <span class="msg-name n-user">AyushK</span>
+            <span class="msg-ts">Today at 2:41 PM</span>
+          </div>
+          <div class="msg-text">What is the valorant schedule looking like for this week?</div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="typing" id="typing">
+        <div class="t-dot" id="td1"></div>
+        <div class="t-dot" id="td2"></div>
+        <div class="t-dot" id="td3"></div>
+        <span class="t-label">WINRVTE Bot is typing...</span>
+      </div>
+
+      <!-- Bot message -->
+      <div class="msg" id="botmsg" style="opacity:0;">
+        <div class="avatar av-bot" id="bav">W</div>
+        <div class="msg-body">
+          <div class="msg-head">
+            <span class="msg-name n-bot" id="bname">WINRVTE Bot</span>
+            <span class="bot-badge">BOT</span>
+            <span class="msg-ts">Today at 2:41 PM</span>
+          </div>
+          <div class="bot-intro" id="bintro">Here's your Valorant schedule for this week 🎯</div>
+          <div class="matches">
+            <div class="match-card" id="card1">
+              <div class="m-day-col">
+                <div class="m-day">MON</div>
+                <div class="m-date">May 26</div>
+              </div>
+              <div class="m-vdiv"></div>
+              <div class="m-time-col">
+                <div class="m-lbl">TIME</div>
+                <div class="m-time">3:00 PM EST</div>
+              </div>
+              <div class="m-vdiv"></div>
+              <div class="m-opp-col">
+                <div class="m-lbl">OPPONENT</div>
+                <div class="m-opp">vs. Cloud9</div>
+              </div>
+              <div class="m-league-col">
+                <div class="m-league">VCT Americas</div>
+                <div class="m-series">Split 2 · Week 4</div>
+              </div>
+            </div>
+            <div class="match-card" id="card2">
+              <div class="m-day-col">
+                <div class="m-day">WED</div>
+                <div class="m-date">May 28</div>
+              </div>
+              <div class="m-vdiv"></div>
+              <div class="m-time-col">
+                <div class="m-lbl">TIME</div>
+                <div class="m-time">6:00 PM EST</div>
+              </div>
+              <div class="m-vdiv"></div>
+              <div class="m-opp-col">
+                <div class="m-lbl">OPPONENT</div>
+                <div class="m-opp">vs. NRG Esports</div>
+              </div>
+              <div class="m-league-col">
+                <div class="m-league">VCT Americas</div>
+                <div class="m-series">Split 2 · Week 4</div>
+              </div>
+            </div>
+            <div class="match-card" id="card3">
+              <div class="m-day-col">
+                <div class="m-day">FRI</div>
+                <div class="m-date">May 30</div>
+              </div>
+              <div class="m-vdiv"></div>
+              <div class="m-time-col">
+                <div class="m-lbl">TIME</div>
+                <div class="m-time">8:00 PM EST</div>
+              </div>
+              <div class="m-vdiv"></div>
+              <div class="m-opp-col">
+                <div class="m-lbl">OPPONENT</div>
+                <div class="m-opp">vs. LOUD</div>
+              </div>
+              <div class="m-league-col">
+                <div class="m-league">VCT Americas</div>
+                <div class="m-series">Split 2 · Week 4</div>
+              </div>
+            </div>
+          </div>
+          <div class="resp-footer" id="rfooter">
+            <div class="rf-dot"></div>
+            <span class="rf-text">Connected to live schedule API · Updated 2 min ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+  // Build typing chars
+  const TEXT = "What is the valorant schedule looking like for this week?";
+  const textEl = document.getElementById('utext');
+  const chars = TEXT.split('').map(c => {
+    const s = document.createElement('span');
+    s.textContent = c; s.style.opacity = '0';
+    textEl.appendChild(s); return s;
+  });
+
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  const TOTAL   = 12;
+  const TRANS_T = 3.2;   // transition start
+  const TRANS_D = 0.35;
+  const S2      = TRANS_T + TRANS_D;  // 3.55
+  const BOT_T   = S2 + 0.9;           // 4.45
+
+  // ── AMBIENT ──
+  tl.to('#bg-glow',  { scale: 1.15, duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 0);
+  tl.to('#bg-glow2', { scale: 1.1,  duration: 4.2, ease: 'sine.inOut', yoyo: true, repeat: 2 }, 0.9);
+  tl.to('#scan-line', { y: 1016, duration: 5.2, ease: 'none', repeat: 1 }, 0);
+  tl.to(['#ldot1','#ldot2'], { opacity: 0.1, duration: 0.8, ease: 'sine.inOut', yoyo: true, repeat: 7 }, 0);
+
+  // ── SCENE 1 ──
+  tl.fromTo('#hdr1',  { y: -64, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'expo.out' }, 0.1);
+  tl.fromTo('#uav',   { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(2)' }, 0.5);
+  tl.fromTo('#uname', { x: -14, opacity: 0 }, { x: 0, opacity: 1, duration: 0.28, ease: 'power2.out' }, 0.65);
+  tl.fromTo('#uts',   { x: -8, opacity: 0 },  { x: 0, opacity: 1, duration: 0.24, ease: 'power2.out' }, 0.76);
+
+  // Fast typing
+  chars.forEach((s, i) => {
+    tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.03, ease: 'none' }, 0.85 + i * 0.026);
+  });
+
+  // ── TRANSITION: blur crossfade ──
+  tl.to('#scene1', { filter: 'blur(10px)', scale: 1.02, opacity: 0, duration: TRANS_D, ease: 'power2.inOut' }, TRANS_T);
+  tl.set('#scene1', { visibility: 'hidden' }, TRANS_T + TRANS_D);
+  tl.fromTo('#scene2',
+    { opacity: 0, filter: 'blur(10px)', scale: 0.98 },
+    { opacity: 1, filter: 'blur(0px)',  scale: 1, duration: TRANS_D, ease: 'power2.inOut' },
+    TRANS_T + 0.07
+  );
+
+  // ── SCENE 2 ──
+  // Typing dots
+  tl.fromTo('#typing', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.28, ease: 'power2.out' }, S2 + 0.2);
+  tl.to('#td1', { y: -5, duration: 0.22, ease: 'power1.inOut', yoyo: true, repeat: 2 }, S2 + 0.28);
+  tl.to('#td2', { y: -5, duration: 0.22, ease: 'power1.inOut', yoyo: true, repeat: 2 }, S2 + 0.42);
+  tl.to('#td3', { y: -5, duration: 0.22, ease: 'power1.inOut', yoyo: true, repeat: 2 }, S2 + 0.56);
+
+  // Hide typing, show bot
+  tl.to('#typing', { opacity: 0, y: -6, duration: 0.18, ease: 'power2.in', overwrite: 'auto' }, BOT_T - 0.1);
+  tl.set('#typing', { visibility: 'hidden' }, BOT_T + 0.09);
+
+  // Instant reveal of botmsg container, then animate children cleanly (no parent/child opacity overlap)
+  tl.set('#botmsg', { opacity: 1 }, BOT_T);
+  tl.fromTo('#bav',   { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.34, ease: 'back.out(2)' }, BOT_T + 0.05);
+  tl.fromTo('#bname', { x: -14, opacity: 0 }, { x: 0, opacity: 1, duration: 0.26, ease: 'power2.out' }, BOT_T + 0.20);
+  tl.fromTo('#bintro',{ y: 10, opacity: 0 },  { y: 0, opacity: 1, duration: 0.36, ease: 'power3.out' }, BOT_T + 0.30);
+
+  // Cards cascade
+  tl.fromTo('#card1', { x: -64, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'expo.out' }, BOT_T + 0.50);
+  tl.fromTo('#card2', { x: -64, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'expo.out' }, BOT_T + 0.70);
+  tl.fromTo('#card3', { x: -64, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'expo.out' }, BOT_T + 0.90);
+
+  // Footer
+  tl.fromTo('#rfooter', { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.30, ease: 'power2.out' }, BOT_T + 1.10);
+
+  // Neon pulse on cards
+  const PULSE_T = BOT_T + 1.45;
+  const PULSE_C = 1.5;
+  const PULSE_R = Math.max(0, Math.ceil((TOTAL - PULSE_T) / PULSE_C) - 1);
+  tl.to(['#card1','#card2','#card3'], {
+    boxShadow: '0 0 16px rgba(57,255,20,0.16)',
+    duration: PULSE_C, ease: 'sine.inOut', yoyo: true, repeat: PULSE_R
+  }, PULSE_T);
+
+  // Bot avatar glow
+  tl.to('#bav', {
+    boxShadow: '0 0 20px rgba(57,255,20,0.42)',
+    duration: 1.8, ease: 'sine.inOut', yoyo: true,
+    repeat: Math.max(0, Math.ceil((TOTAL - BOT_T) / 1.8) - 1)
+  }, BOT_T + 0.05);
+
+  // Visibility kill — prevents scene2 ghosting when scrubbing
+  tl.set('#scene2', { visibility: 'hidden' }, TOTAL);
+
+  window.__timelines['main'] = tl;
+</script>
+</body>
 </html>

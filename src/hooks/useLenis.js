@@ -6,10 +6,25 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 let _lenis = null;
+let _anchorNavUntil = 0;
 
 export function getLenis() {
   return _lenis;
 }
+
+export function markAnchorNavigation(durationMs = 2800) {
+  _anchorNavUntil = Date.now() + durationMs;
+}
+
+export function clearAnchorNavigation() {
+  _anchorNavUntil = 0;
+}
+
+export function isAnchorNavigationActive() {
+  return Date.now() < _anchorNavUntil;
+}
+
+const DOCK_BAR_H = 42;
 
 export function useLenis() {
   const ref = useRef(null);
@@ -45,7 +60,13 @@ export function useLenis() {
       const el = document.querySelector(id);
       if (!el) return;
       e.preventDefault();
-      lenis.scrollTo(el, { offset: 0, duration: 1.4 });
+
+      markAnchorNavigation(2800);
+      lenis.scrollTo(el, {
+        offset: id === "#hero" ? 0 : -DOCK_BAR_H,
+        duration: 1.4,
+        onComplete: clearAnchorNavigation,
+      });
     };
     document.addEventListener("click", onAnchorClick);
 

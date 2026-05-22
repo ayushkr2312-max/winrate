@@ -44,15 +44,16 @@ export default function Manifesto() {
   return (
     <section className="sect manifesto" id="manifesto">
       <div className="sect-inner">
-        <motion.span className="section-tag invert" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
-          <span className="num" style={{ color: "var(--lime-2)" }}>06</span> About
+        <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+          <span className="num">06</span> About
         </motion.span>
         <div className="manifesto-head">
           <AnimatedHeading
             tag="h2"
             rows={[
               { text: "BUILT FOR" },
-              { parts: [{ text: "GROWING " }, { text: "ORGS.", accent: true }] },
+              { text: "GROWING" },
+              { parts: [{ text: "ORGS.", accent: true }] },
             ]}
           />
           <motion.p initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
@@ -86,7 +87,7 @@ export default function Manifesto() {
             <h3>Let&apos;s discuss your org</h3>
             <p>Share your current setup, biggest bottlenecks, and budget range. We&apos;ll suggest the most practical first move.</p>
           </div>
-          <Magnetic as="a" href="#contact" className="btn-dark" data-cursor-label="GO" strength={0.32}>
+          <Magnetic as="a" href="#contact" className="btn-submit" data-cursor-label="GO" strength={0.32}>
             Book a Call →
           </Magnetic>
         </motion.div>

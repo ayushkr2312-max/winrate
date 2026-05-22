@@ -34,36 +34,40 @@ export default function AnimatedHeading({
           let cumulative = 0;
           return (
             <span key={i} className="row">
-              {row.parts.map((p, j) => {
-                const cls = p.accent ? "accent" : p.stroke ? "stroke" : "";
-                const delay = baseDelay + cumulative * stagger;
-                cumulative += lengthOf(p.text);
-                return (
-                  <SplitText
-                    key={j}
-                    text={p.text}
-                    className={cls}
-                    splitBy="chars"
-                    stagger={stagger}
-                    duration={1.0}
-                    delay={delay}
-                    trigger={triggerStart}
-                  />
-                );
-              })}
+              <span className="inner">
+                {row.parts.map((p, j) => {
+                  const cls = p.accent ? "accent" : p.stroke ? "stroke" : "";
+                  const delay = baseDelay + cumulative * stagger;
+                  cumulative += lengthOf(p.text);
+                  return (
+                    <SplitText
+                      key={j}
+                      text={p.text}
+                      className={cls}
+                      splitBy="chars"
+                      stagger={stagger}
+                      duration={1.0}
+                      delay={delay}
+                      trigger={triggerStart}
+                    />
+                  );
+                })}
+              </span>
             </span>
           );
         }
         return (
           <span key={i} className="row">
-            <SplitText
-              text={row.text}
-              splitBy="chars"
-              stagger={stagger}
-              duration={1.0}
-              delay={baseDelay}
-              trigger={triggerStart}
-            />
+            <span className="inner">
+              <SplitText
+                text={row.text}
+                splitBy="chars"
+                stagger={stagger}
+                duration={1.0}
+                delay={baseDelay}
+                trigger={triggerStart}
+              />
+            </span>
           </span>
         );
       })}

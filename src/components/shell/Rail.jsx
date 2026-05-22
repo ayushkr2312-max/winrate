@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { getLenis } from "@/hooks/useLenis";
+import { getLenis, isAnchorNavigationActive } from "@/hooks/useLenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const SECTIONS = [
-  { id: "hero", label: "Index", num: "01" },
+  { id: "hero", label: "Home", num: "01" },
   { id: "problem", label: "Problems", num: "02" },
   { id: "solutions", label: "Solutions", num: "03" },
   { id: "stats", label: "Outcomes", num: "04" },
@@ -20,6 +20,8 @@ function pad(n) { return String(n).padStart(2, "0"); }
 const DOCK_BAR_H = 42;
 
 function scrollProblemIntoDockView() {
+  if (isAnchorNavigationActive()) return;
+
   const problem = document.getElementById("problem");
   if (!problem) return;
 
@@ -143,7 +145,13 @@ export default function Rail() {
         const shouldUndock = dockedRef.current && directionUp && heroRect.top > -120;
 
         if (shouldDock && !dockedRef.current) {
-          runSweep(true);
+          if (isAnchorNavigationActive()) {
+            setDocked(true);
+            dockedRef.current = true;
+            document.documentElement.style.setProperty("--rail", "0px");
+          } else {
+            runSweep(true);
+          }
         } else if (shouldUndock) {
           runSweep(false);
         }
@@ -224,9 +232,13 @@ export default function Rail() {
         onMouseEnter={() => { if (docked) setMenuHover(true); }}
         onMouseLeave={() => { if (docked) setMenuHover(false); }}
       >
-        <a href="#hero" className="rail-logo" data-cursor-label="HOME">
-          <span className="short">W<span className="a">I</span></span>
-          <span className="full">NRVTE</span>
+        <a href="#hero" className="rail-logo" data-cursor-label="HOME" aria-label="WINRVTE Home">
+          <span className="logo-mark" aria-hidden="true">
+            <span className="logo-w">W</span>
+            <span className="logo-in">IN</span>
+            <span className="logo-r">R</span>
+            <span className="logo-vte">VTE</span>
+          </span>
         </a>
 
         {!docked && (
