@@ -4,6 +4,17 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const MOBILE_MQ = "(max-width: 768px)";
+const TOUCH_MQ = "(hover: none), (pointer: coarse)";
+
+function isMobileViewport() {
+  return window.matchMedia(MOBILE_MQ).matches;
+}
+
+function isTouchDevice() {
+  return window.matchMedia(TOUCH_MQ).matches;
+}
+
 export default function Hero({ playEntrance }) {
   const heroRef = useRef(null);
   const cueFillRef = useRef(null);
@@ -19,36 +30,155 @@ export default function Hero({ playEntrance }) {
   }, [playEntrance]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(".hero-swap-hover", { rotationX: -80, z: -400, scale: 0.8, opacity: 0 });
+    const hero = heroRef.current;
+    if (!hero) return;
 
-      let swapped = false;
-      ScrollTrigger.create({
-        trigger: heroRef.current,
-        start: "top top",
-        end: "+=120",
-        pin: true,
-        onUpdate: (self) => {
-          if (self.progress > 0.15 && !swapped) {
-            swapped = true;
-            gsap.to(".hero-line-a", { scale: 2, fontWeight: 500, duration: 0.55, ease: "expo.out", overwrite: "auto" });
-            gsap.to(".hero-swap-default", { rotationX: 80, z: -400, scale: 0.8, opacity: 0, duration: 0.55, ease: "expo.out", overwrite: "auto" });
-            gsap.to(".hero-swap-hover", { rotationX: 0, z: 0, scale: 1, opacity: 1, duration: 0.55, ease: "expo.out", overwrite: "auto" });
-          } else if (self.progress <= 0.15 && swapped) {
-            swapped = false;
-            gsap.to(".hero-line-a", { scale: 1, fontWeight: 300, duration: 0.55, ease: "expo.out", overwrite: "auto" });
-            gsap.to(".hero-swap-default", { rotationX: 0, z: 0, scale: 1, opacity: 1, duration: 0.55, ease: "expo.out", overwrite: "auto" });
-            gsap.to(".hero-swap-hover", { rotationX: -80, z: -400, scale: 0.8, opacity: 0, duration: 0.55, ease: "expo.out", overwrite: "auto" });
-          }
-        },
+    const mobileMql = window.matchMedia(MOBILE_MQ);
+    let scrollTrigger = null;
+    let swapped = false;
+    let setupScrollSwap = () => {};
+
+    const swapToHover = (mobile) => {
+      swapped = true;
+      gsap.to(".hero-line-a", {
+        scale: mobile ? 1.08 : 2,
+        fontWeight: 500,
+        duration: mobile ? 0.42 : 0.55,
+        ease: "expo.out",
+        overwrite: "auto",
       });
+
+      if (mobile) {
+        gsap.to(".hero-swap-default", {
+          opacity: 0,
+          y: -10,
+          duration: 0.42,
+          ease: "expo.out",
+          overwrite: "auto",
+        });
+        gsap.to(".hero-swap-hover", {
+          opacity: 1,
+          y: 0,
+          rotationX: 0,
+          z: 0,
+          scale: 1,
+          duration: 0.42,
+          ease: "expo.out",
+          overwrite: "auto",
+        });
+        return;
+      }
+
+      gsap.to(".hero-swap-default", {
+        rotationX: 80,
+        z: -400,
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.55,
+        ease: "expo.out",
+        overwrite: "auto",
+      });
+      gsap.to(".hero-swap-hover", {
+        rotationX: 0,
+        z: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 0.55,
+        ease: "expo.out",
+        overwrite: "auto",
+      });
+    };
+
+    const swapToDefault = (mobile) => {
+      swapped = false;
+      gsap.to(".hero-line-a", {
+        scale: 1,
+        fontWeight: 300,
+        duration: mobile ? 0.42 : 0.55,
+        ease: "expo.out",
+        overwrite: "auto",
+      });
+
+      if (mobile) {
+        gsap.to(".hero-swap-default", {
+          opacity: 1,
+          y: 0,
+          duration: 0.42,
+          ease: "expo.out",
+          overwrite: "auto",
+        });
+        gsap.to(".hero-swap-hover", {
+          opacity: 0,
+          y: 8,
+          duration: 0.42,
+          ease: "expo.out",
+          overwrite: "auto",
+        });
+        return;
+      }
+
+      gsap.to(".hero-swap-default", {
+        rotationX: 0,
+        z: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 0.55,
+        ease: "expo.out",
+        overwrite: "auto",
+      });
+      gsap.to(".hero-swap-hover", {
+        rotationX: -80,
+        z: -400,
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.55,
+        ease: "expo.out",
+        overwrite: "auto",
+      });
+    };
+
+    const ctx = gsap.context(() => {
+      setupScrollSwap = () => {
+        scrollTrigger?.kill();
+        swapped = false;
+
+        const mobile = isMobileViewport();
+        gsap.set(".hero-swap-hover", mobile
+          ? { opacity: 0, y: 8, rotationX: 0, z: 0, scale: 1 }
+          : { rotationX: -80, z: -400, scale: 0.8, opacity: 0, y: 0 });
+        gsap.set(".hero-swap-default", { opacity: 1, y: 0, rotationX: 0, z: 0, scale: 1 });
+        gsap.set(".hero-line-a", { scale: 1, fontWeight: 300 });
+
+        scrollTrigger = ScrollTrigger.create({
+          trigger: hero,
+          start: "top top",
+          end: mobile ? "bottom top" : "+=120",
+          pin: !mobile,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const threshold = mobile ? 0.04 : 0.15;
+            if (self.progress > threshold && !swapped) swapToHover(mobile);
+            else if (self.progress <= threshold && swapped) swapToDefault(mobile);
+          },
+        });
+      };
+
+      setupScrollSwap();
+      mobileMql.addEventListener("change", setupScrollSwap);
     }, heroRef);
-    return () => ctx.revert();
+
+    return () => {
+      mobileMql.removeEventListener("change", setupScrollSwap);
+      scrollTrigger?.kill();
+      ctx.revert();
+    };
   }, []);
 
   useEffect(() => {
     const hero = heroRef.current;
-    if (!hero) return;
+    if (!hero || isTouchDevice()) return;
+
     const xTo = gsap.quickTo(".hero-line-b, .hero-line-c", "x", { duration: 1, ease: "power2.out" });
     let rafId = 0;
     let nextX = 0;
@@ -103,9 +233,9 @@ export default function Hero({ playEntrance }) {
       <div className="hero-left">
         <div className="hero-pre">
           <span className="pulse" />
-          <span>Esports Operations + Systems Agency</span>
-          <span className="pipe">/</span>
-          <span>Custom-Built For Growing Orgs</span>
+          <span className="hero-pre-main">Esports Operations + Systems Agency</span>
+          <span className="pipe" aria-hidden="true">/</span>
+          <span className="hero-pre-sub">Custom-Built For Growing Orgs</span>
         </div>
 
         <div className="hero-title">
