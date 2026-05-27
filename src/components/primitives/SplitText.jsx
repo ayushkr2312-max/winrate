@@ -95,7 +95,7 @@ export default function SplitText({
     }
     playedRef.current = false;
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 768px)").matches;
     if (prefersReduced) {
       gsap.set(units, { yPercent: 0, opacity: 1 });
       playedRef.current = true;
@@ -131,7 +131,7 @@ export default function SplitText({
     const el = ref.current;
     if (!el) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 768px)").matches) return;
 
     if (once) {
       const play = () => {

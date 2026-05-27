@@ -1,6 +1,22 @@
 import { useCallback, useState } from "react";
 import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
 import AnimatedHeading from "../primitives/AnimatedHeading";
+import LazyVideo from "../primitives/LazyVideo";
+import {
+  VisualAutomation,
+  VisualDashboard,
+  VisualScouting,
+  VisualNetworkSourcing,
+  VisualGrowthTracking,
+} from "../solutions/SolutionVisuals";
+
+const VISUAL_MAP = {
+  "01": { Component: VisualAutomation,      label: "WORKFLOW ENGINE",   aspect: "7/4" },
+  "02": { Component: VisualDashboard,       label: "LIVE DASHBOARD",    aspect: "7/4" },
+  "03": { Component: VisualScouting,        label: "ANALYST WORKSTATION", aspect: "7/4" },
+  "04": { Component: VisualNetworkSourcing, label: "TALENT NETWORK", aspect: "5/4", showLabel: false },
+  "06": { Component: VisualGrowthTracking,  label: "GROWTH HUB",        aspect: "auto" },
+};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24, transition: { duration: 0.3 } },
@@ -22,7 +38,7 @@ const SERVICES = [
   },
   {
     n: "02",
-    name: "Personalized Dashboards",
+    name: "Personalized Dashboards & Reports",
     tag: "Custom Data Systems",
     desc: "One place for everything your org needs to see. Custom dashboards connected to your sheets, Discord channels and tools — so leadership always knows what's happening and where things stand.",
     tags: ["React", "Google Sheets", "Airtable", "REST APIs", "Supabase"],
@@ -34,21 +50,9 @@ const SERVICES = [
   },
   {
     n: "03",
-    name: "Operations Optimization",
-    tag: "Esports Ops",
-    desc: "We look at how your org actually runs, find the bottlenecks and inefficiencies costing you time and money, and fix them with better processes and tooling. Built from real experience inside growing esports orgs.",
-    tags: ["Process Design", "Staff Workflows", "Reporting", "Comms Structure", "Internal Tools"],
-    delivery: "Custom Scoped",
-    stat: "10+",
-    statLabel: "types of org inefficiencies solved",
-    steps: ["Diagnose", "Prioritize", "Design", "Implement", "Optimize"],
-    outcome: "Your org runs leaner, faster, and with significantly less friction.",
-  },
-  {
-    n: "04",
     name: "Analyst Support & Prep Tools",
     tag: "Performance Tech",
-    desc: "Tools that simplify opponent prep and team data management — scraping public data, structuring it cleanly, giving your analysts and coaches practical systems to work from instead of scattered notes.",
+    desc: "Tools that simplify opponent prep and team data management — scraping public data, structuring it cleanly, giving your players and teams practical systems to work from instead of scattered notes.",
     tags: ["Python", "Data Scraping", "Notion", "Google Sheets", "Custom Tools"],
     delivery: "Custom Scoped",
     stat: "3×",
@@ -57,7 +61,7 @@ const SERVICES = [
     outcome: "Analysts and coaches spend less time organizing and more time finding the edge.",
   },
   {
-    n: "05",
+    n: "04",
     name: "Network & Resource Sourcing",
     tag: "Industry Connections",
     desc: "Finding the right people at the right price is harder than it should be. We have a strong network across the esports ecosystem and can connect your org with the staff, creatives, players and vendors you actually need.",
@@ -69,25 +73,46 @@ const SERVICES = [
     outcome: "Get the right people and resources for what you can actually afford.",
   },
   {
+    n: "05",
+    name: "Website Development & Management",
+    tag: "Web & Digital Presence",
+    desc: "Websites that actually reflect your brand and vision — custom design and storytelling that feel unmistakably yours, not another template with your logo swapped in. A digital presence built to match how your org sees itself and how you want players, fans, and sponsors to experience you.",
+    tags: ["React", "Next.js", "UI/UX", "CMS", "SEO", "Maintenance"],
+    delivery: "Sprint + Retainer",
+    stat: "Full",
+    statLabel: "stack — design to deploy",
+    steps: ["Discover", "Design", "Build", "Launch", "Maintain"],
+    outcome: "A site that reflects your brand and vision — unmistakably yours, not a generic esports skin.",
+  },
+  {
     n: "06",
-    name: "Custom Solutions",
-    tag: "Bespoke Builds",
-    desc: "Not every problem fits a standard service. We work with individual teams and orgs to build exactly what they need — unique tooling, specific workflow improvements, data management setups, or operational frameworks built from scratch.",
-    tags: ["Full Custom", "Flexible Scope", "Any Stack", "Team-Level", "Org-Level"],
-    delivery: "Custom Scoped",
-    stat: "0",
-    statLabel: "generic packages — ever",
-    steps: ["Discovery", "Plan", "Build", "Review", "Deliver"],
-    outcome: "Built specifically for your org and budget. Not recycled from someone else's.",
+    name: "Growth Tracking",
+    tag: "Cross-Platform Intelligence",
+    desc: "All your growth signals — social reach, content performance, sponsor deliverables, roster impact — pulled into one live view. Connected across every platform your org touches, updated in real time, and built to give leadership and sponsors the proof they need.",
+    tags: ["X / Twitter", "Twitch", "YouTube", "Instagram", "TikTok", "Custom APIs"],
+    delivery: "Ongoing",
+    stat: "1",
+    statLabel: "unified growth view",
+    steps: ["Connect", "Aggregate", "Visualize", "Report", "Optimize"],
+    outcome: "Every growth metric your org cares about — visible, verified, and ready for sponsors.",
   },
 ];
 
-function ServiceIndexItem({ svc, isActive, onHover }) {
+function ServiceIndexItem({ svc, isActive, onSelect }) {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect();
+    }
+  };
+
   return (
     <div
+      role="button"
+      aria-pressed={isActive}
       className={"svc-index-item" + (isActive ? " is-active" : "")}
-      onMouseEnter={onHover}
-      onFocus={onHover}
+      onClick={onSelect}
+      onKeyDown={handleKeyDown}
       tabIndex={0}
     >
       {isActive && (
@@ -110,22 +135,24 @@ function ServiceIndexItem({ svc, isActive, onHover }) {
 }
 
 const panelVariants = {
-  hidden: { opacity: 0, y: 16, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 16 },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
   },
   exit: {
     opacity: 0,
     y: -10,
-    filter: "blur(6px)",
     transition: { duration: 0.28, ease: [0.65, 0, 0.35, 1] },
   },
 };
 
 function ServiceDetailPanel({ svc }) {
+  const isWebDev = svc.n === "05";
+  const visualEntry = VISUAL_MAP[svc.n];
+  const VisualComponent = visualEntry?.Component;
+
   return (
     <motion.div
       key={svc.n}
@@ -161,31 +188,71 @@ function ServiceDetailPanel({ svc }) {
 
         <p className="svc-detail-desc">{svc.desc}</p>
 
-        <div className="svc-tech-tags">
-          {svc.tags.map((t) => (
-            <span key={t} className="svc-tech-tag">{t}</span>
-          ))}
-        </div>
-
-        <div className="svc-bottom-grid">
-          <div className="svc-stat-block">
-            <div className="svc-stat-top-line" />
-            <span className="svc-stat-val">{svc.stat}</span>
-            <span className="svc-stat-label">{svc.statLabel}</span>
-          </div>
-
-          <div className="svc-process">
-            <span className="svc-process-label">Process</span>
-            {svc.steps.map((step, i) => (
-              <div key={i} className={"svc-process-step" + (i === 0 ? " is-first" : "")}>
-                <span className="svc-process-dot" />
-                <span className="svc-process-text">{step}</span>
+        {visualEntry ? (
+          <div className={`svc-reel-wrap${visualEntry.showLabel === false ? " svc-reel-wrap--no-label" : ""}`}>
+            {visualEntry.showLabel !== false && (
+              <div className="svc-reel-label">
+                <span className="svc-reel-dot" />
+                <span>{visualEntry.label}</span>
               </div>
-            ))}
+            )}
+            <div
+              className="svc-reel-frame"
+              style={{
+                background: "rgba(6,6,8,.95)",
+                aspectRatio: visualEntry.aspect === "auto" ? undefined : visualEntry.aspect,
+                overflow: "hidden",
+              }}
+            >
+              <VisualComponent active />
+            </div>
+            <div className="svc-reel-footer">
+              <span>{svc.outcome}</span>
+            </div>
           </div>
-        </div>
+        ) : isWebDev ? (
+          <div className="svc-reel-wrap">
+            <div className="svc-reel-label">
+              <span className="svc-reel-dot" />
+              <span>WORK SAMPLES</span>
+            </div>
+            <div className="svc-reel-frame">
+              <LazyVideo
+                className="svc-reel-video"
+                src="/new-web.webm"
+                autoPlayWhenVisible
+                loop
+              />
+              <div className="svc-reel-overlay-tl" aria-hidden="true" />
+              <div className="svc-reel-overlay-br" aria-hidden="true" />
+            </div>
+            <div className="svc-reel-footer">
+              <span>A site that reflects your brand and vision — unmistakably yours, not a generic esports skin.</span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="svc-bottom-grid">
+              <div className="svc-stat-block">
+                <div className="svc-stat-top-line" />
+                <span className="svc-stat-val">{svc.stat}</span>
+                <span className="svc-stat-label">{svc.statLabel}</span>
+              </div>
 
-        <div className="svc-outcome">{svc.outcome}</div>
+              <div className="svc-process">
+                <span className="svc-process-label">Process</span>
+                {svc.steps.map((step, i) => (
+                  <div key={i} className={"svc-process-step" + (i === 0 ? " is-first" : "")}>
+                    <span className="svc-process-dot" />
+                    <span className="svc-process-text">{step}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="svc-outcome">{svc.outcome}</div>
+          </>
+        )}
       </div>
     </motion.div>
   );
@@ -229,21 +296,23 @@ export default function Solutions() {
               <span className="svc-pulse-dot" />
               <span>Six services. One partner.</span>
             </div>
-            <p>Hover any service to explore its scope and approach.</p>
+            <p>Click any service to explore its scope and approach.</p>
           </motion.div>
         </div>
 
         <LayoutGroup>
           <motion.div className="svc-layout" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.1 }} variants={fadeUp}>
             <div className="svc-index">
-              {SERVICES.map((s, i) => (
-                <ServiceIndexItem
-                  key={s.n}
-                  svc={s}
-                  isActive={active === i}
-                  onHover={() => go(i)}
-                />
-              ))}
+              <div className="svc-index-list">
+                {SERVICES.map((s, i) => (
+                  <ServiceIndexItem
+                    key={s.n}
+                    svc={s}
+                    isActive={active === i}
+                    onSelect={() => go(i)}
+                  />
+                ))}
+              </div>
               <div className="svc-index-footer">
                 <p>Every engagement is fully custom — no packages, no guesswork.</p>
                 <a href="#contact" className="svc-start-link">Start a Project →</a>

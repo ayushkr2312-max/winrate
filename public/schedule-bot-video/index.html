@@ -1,0 +1,1653 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hyperframes/core/dist/hyperframe.runtime.iife.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hyperframes/shader-transitions/dist/index.global.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;600;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg:         #060606;
+        --bg-2:       #0e0f11;
+        --bg-3:       #111315;
+        --ink:        #e8ecf0;
+        --ink-muted:  #8a9099;
+        --accent:     #B6FF1E;
+        --accent-dim: rgba(182,255,30,0.12);
+        --accent-mid: rgba(182,255,30,0.25);
+        --ion:        #66E8FF;
+        --ion-dim:    rgba(102,232,255,0.12);
+        --muted:      #3a3a40;
+        --danger:     #FF5365;
+        --font-display: "Unbounded", sans-serif;
+        --font-body:    "DM Sans", sans-serif;
+        --font-data:    "JetBrains Mono", monospace;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .scene {
+        position: absolute;
+        top: 0; left: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+
+      .scene-content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .clip {}
+
+      /* ── Grain ── */
+      .grain {
+        position: absolute; inset: 0;
+        pointer-events: none; z-index: 50; opacity: 0.14;
+        background-image:
+          radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1.2px),
+          radial-gradient(rgba(0,0,0,0.16) 1px, transparent 1.2px);
+        background-size: 3px 3px, 5px 5px;
+        background-position: 0 0, 1px 2px;
+        mix-blend-mode: overlay;
+      }
+
+      /* ── Vignette ── */
+      .vignette {
+        position: absolute; inset: 0;
+        pointer-events: none; z-index: 49;
+        background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.55) 100%);
+      }
+
+      /* ── Dot-grid background ── */
+      .dot-grid {
+        position: absolute; inset: 0;
+        pointer-events: none; z-index: 0;
+        background-image: radial-gradient(circle, rgba(182,255,30,0.07) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+
+      /* ── Accent glow line ── */
+      .glow-line {
+        height: 2px;
+        background: var(--accent);
+        box-shadow: 0 0 12px 3px rgba(182,255,30,0.6);
+        border-radius: 2px;
+      }
+
+      /* ──────────────────────────────────────────
+         SCENE 1 — Hero
+      ────────────────────────────────────────── */
+      #s1 .scene-content {
+        padding: 0 180px;
+        align-items: flex-start;
+      }
+
+      #s1-eyebrow {
+        font-family: var(--font-data);
+        font-size: 16px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 28px;
+      }
+
+      #s1-title {
+        font-family: var(--font-display);
+        font-size: 96px;
+        font-weight: 800;
+        line-height: 1.0;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+        margin-bottom: 32px;
+      }
+
+      #s1-title .word { display: inline-block; }
+
+      #s1-sub {
+        font-family: var(--font-body);
+        font-size: 24px;
+        font-weight: 300;
+        color: var(--ink-muted);
+        line-height: 1.5;
+        max-width: 620px;
+      }
+
+      #s1-line {
+        width: 0;
+        margin-top: 44px;
+      }
+
+      #s1-badge {
+        position: absolute;
+        bottom: 80px;
+        right: 180px;
+        font-family: var(--font-data);
+        font-size: 13px;
+        letter-spacing: 0.12em;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+
+      /* ──────────────────────────────────────────
+         DISCORD SHARED STYLES
+      ────────────────────────────────────────── */
+      .discord-shell {
+        background: #111215;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 32px 80px rgba(0,0,0,0.6);
+      }
+
+      .discord-topbar {
+        background: #0f1012;
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        flex-shrink: 0;
+      }
+
+      .discord-topbar-dot {
+        width: 12px; height: 12px; border-radius: 50%;
+      }
+      .dot-red   { background: #FF5365; }
+      .dot-amber { background: #FFB547; }
+      .dot-green { background: var(--accent); }
+
+      .discord-channel-name {
+        font-family: var(--font-body);
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--ink);
+        margin-left: 8px;
+      }
+
+      .discord-channel-name .hash {
+        color: var(--ink-muted);
+        margin-right: 4px;
+      }
+
+      .discord-messages {
+        flex: 1;
+        padding: 28px 28px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow: hidden;
+      }
+
+      .msg-row {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .avatar {
+        width: 42px; height: 42px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-display);
+        font-size: 13px; font-weight: 800;
+        flex-shrink: 0;
+      }
+
+      .avatar-user { background: #2a2a35; color: var(--ink-muted); }
+      .avatar-bot  { background: var(--accent); color: #000; }
+
+      .msg-body { flex: 1; }
+
+      .msg-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+
+      .msg-username {
+        font-family: var(--font-body);
+        font-size: 17px;
+        font-weight: 500;
+      }
+
+      .msg-username-user { color: #a0a8b8; }
+      .msg-username-bot  { color: var(--accent); }
+
+      .bot-badge {
+        background: rgba(182,255,30,0.15);
+        border: 1px solid rgba(182,255,30,0.3);
+        color: var(--accent);
+        font-family: var(--font-data);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+
+      .msg-timestamp {
+        font-family: var(--font-data);
+        font-size: 12px;
+        color: var(--ink-muted);
+        opacity: 0.5;
+      }
+
+      .msg-text {
+        font-family: var(--font-body);
+        font-size: 19px;
+        font-weight: 300;
+        color: var(--ink);
+        line-height: 1.55;
+      }
+
+      .msg-text .mention {
+        color: var(--accent);
+        background: var(--accent-dim);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      /* ── Typing indicator ── */
+      .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 0;
+      }
+
+      .typing-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--ink-muted);
+        opacity: 0.5;
+      }
+
+      .typing-label {
+        font-family: var(--font-body);
+        font-size: 14px;
+        color: var(--ink-muted);
+        margin-left: 4px;
+      }
+
+      /* ── Bot embed card ── */
+      .bot-embed {
+        background: #0d0e11;
+        border-left: 3px solid var(--accent);
+        border-radius: 0 8px 8px 0;
+        padding: 18px 22px;
+        margin-top: 6px;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+      }
+
+      .embed-header {
+        font-family: var(--font-display);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .embed-icon { font-size: 15px; }
+
+      .embed-row {
+        display: grid;
+        grid-template-columns: 160px 180px 150px;
+        gap: 0;
+        padding: 10px 0;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        align-items: center;
+      }
+
+      .embed-row:first-of-type { border-top: none; }
+
+      .embed-cell {
+        font-family: var(--font-data);
+        font-size: 16px;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+        padding-right: 16px;
+      }
+
+      .embed-cell-label {
+        font-family: var(--font-data);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-muted);
+      }
+
+      .embed-cell-date  { color: var(--ion); }
+      .embed-cell-opp   { color: var(--ink); font-weight: 500; }
+      .embed-cell-time  { color: var(--accent); }
+
+      .embed-footer {
+        margin-top: 14px;
+        font-family: var(--font-data);
+        font-size: 11px;
+        color: var(--ink-muted);
+        opacity: 0.5;
+        letter-spacing: 0.06em;
+      }
+
+      /* ── Confirm message ── */
+      .msg-confirm {
+        font-family: var(--font-body);
+        font-size: 19px;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .confirm-icon {
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #000;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+
+      /* ──────────────────────────────────────────
+         SCENE 2 — Discord full-width
+      ────────────────────────────────────────── */
+      #s2 .scene-content { padding: 60px 120px; }
+
+      #s2-shell {
+        width: 100%;
+        height: 860px;
+      }
+
+      /* ──────────────────────────────────────────
+         SCENE 3 — Discord with bot response
+      ────────────────────────────────────────── */
+      #s3 .scene-content { padding: 60px 120px; }
+
+      #s3-shell {
+        width: 100%;
+        height: 860px;
+      }
+
+      #s3-glow {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px; height: 200px;
+        background: radial-gradient(ellipse, rgba(182,255,30,0.06) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ──────────────────────────────────────────
+         SCENE 4 — Split: Discord + Spreadsheet
+      ────────────────────────────────────────── */
+      #s4 .scene-content {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 50px 60px;
+        gap: 0;
+      }
+
+      #s4-discord-panel {
+        width: 720px;
+        height: 900px;
+      }
+
+      #s4-connector {
+        width: 240px;
+        height: 900px;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      #s4-connector svg {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        overflow: visible;
+      }
+
+      #s4-spreadsheet-panel {
+        width: 820px;
+        height: 900px;
+      }
+
+      /* shared spreadsheet panel */
+      .spreadsheet-shell {
+        background: #0b0c0f;
+        border: 1px solid rgba(182,255,30,0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 0 1px rgba(182,255,30,0.05), 0 0 40px rgba(182,255,30,0.06);
+      }
+
+      .sheet-topbar {
+        background: #0e0f12;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(182,255,30,0.12);
+        flex-shrink: 0;
+      }
+
+      .sheet-title {
+        font-family: var(--font-data);
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+
+      .sheet-grid-icon {
+        width: 16px; height: 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 2px;
+      }
+
+      .sheet-grid-cell {
+        background: var(--accent);
+        border-radius: 1px;
+        opacity: 0.7;
+      }
+
+      .sheet-header-row {
+        display: grid;
+        grid-template-columns: 180px 200px 160px 1fr;
+        padding: 12px 20px;
+        background: rgba(102,232,255,0.05);
+        border-bottom: 1px solid rgba(102,232,255,0.12);
+        flex-shrink: 0;
+      }
+
+      .sheet-header-cell {
+        font-family: var(--font-data);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ion);
+      }
+
+      .sheet-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+      .sheet-row {
+        display: grid;
+        grid-template-columns: 180px 200px 160px 1fr;
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        align-items: center;
+        transition: background 0.3s;
+      }
+
+      .sheet-row:nth-child(even) { background: rgba(255,255,255,0.01); }
+
+      .sheet-row.highlight {
+        background: rgba(182,255,30,0.08);
+        border-left: 2px solid var(--accent);
+      }
+
+      .sheet-row.removed {
+        background: rgba(255,83,101,0.06);
+        border-left: 2px solid var(--danger);
+        opacity: 0.5;
+      }
+
+      .sheet-cell {
+        font-family: var(--font-data);
+        font-size: 15px;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .sheet-cell-date  { color: var(--ion); }
+      .sheet-cell-opp   { color: var(--ink); }
+      .sheet-cell-time  { color: var(--accent); font-weight: 500; }
+      .sheet-cell-status {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 4px;
+        display: inline-block;
+      }
+      .status-confirmed { background: rgba(182,255,30,0.12); color: var(--accent); }
+      .status-added     { background: rgba(182,255,30,0.2);  color: var(--accent); border: 1px solid rgba(182,255,30,0.4); }
+      .status-removed   { background: rgba(255,83,101,0.12); color: var(--danger); text-decoration: line-through; }
+      .status-updated   { background: rgba(102,232,255,0.12); color: var(--ion); }
+
+      /* ──────────────────────────────────────────
+         SCENE 4 — Connector label
+      ────────────────────────────────────────── */
+      #s4-sync-label {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        background: #0e0f12;
+        border: 1px solid rgba(182,255,30,0.3);
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-family: var(--font-data);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        white-space: nowrap;
+        z-index: 10;
+      }
+
+      /* ──────────────────────────────────────────
+         SCENES 5-7 — Split interactions
+      ────────────────────────────────────────── */
+      .split-scene .scene-content {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 50px 60px;
+        gap: 40px;
+      }
+
+      .split-discord {
+        width: 900px;
+        height: 900px;
+        flex-shrink: 0;
+      }
+
+      .split-sheet {
+        flex: 1;
+        height: 900px;
+      }
+
+      /* scenes 5-7: initial states managed by GSAP tl.from() immediateRender */
+
+      /* ──────────────────────────────────────────
+         SCENE 8 — Updated schedule
+      ────────────────────────────────────────── */
+      #s8 .scene-content { padding: 60px 120px; }
+
+      #s8-shell { width: 100%; height: 860px; }
+
+      /* ──────────────────────────────────────────
+         SCENE 9 — Feature callout
+      ────────────────────────────────────────── */
+      #s9 .scene-content { padding: 60px 180px; gap: 0; }
+
+      #s9-label {
+        font-family: var(--font-data);
+        font-size: 13px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 40px;
+      }
+
+      #s9-headline {
+        font-family: var(--font-display);
+        font-size: 62px;
+        font-weight: 800;
+        line-height: 1.05;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+        margin-bottom: 64px;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        width: 100%;
+      }
+
+      .feature-pill {
+        background: #0e0f12;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 12px;
+        padding: 28px 32px;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+
+      .feature-icon-wrap {
+        width: 44px; height: 44px;
+        border-radius: 10px;
+        background: var(--accent-dim);
+        border: 1px solid rgba(182,255,30,0.2);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+        font-size: 20px;
+      }
+
+      .feature-text { display: flex; flex-direction: column; gap: 6px; }
+
+      .feature-title {
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .feature-desc {
+        font-family: var(--font-body);
+        font-size: 15px;
+        font-weight: 300;
+        color: var(--ink-muted);
+        line-height: 1.5;
+      }
+
+      /* ──────────────────────────────────────────
+         SCENE 10 — CTA
+      ────────────────────────────────────────── */
+      /* s10 needs opaque bg to cover lingering s9 shader anchor on hard cut */
+      #s10 { background: var(--bg); }
+      #s10 .scene-content { padding: 0 180px; align-items: flex-start; }
+
+      #s10-kicker {
+        font-family: var(--font-data);
+        font-size: 14px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 24px;
+      }
+
+      #s10-headline {
+        font-family: var(--font-display);
+        font-size: 76px;
+        font-weight: 800;
+        line-height: 1.05;
+        color: var(--ink);
+        letter-spacing: -0.025em;
+        margin-bottom: 28px;
+      }
+
+      #s10-headline .word { display: inline-block; }
+
+      #s10-sub {
+        font-family: var(--font-body);
+        font-size: 22px;
+        font-weight: 300;
+        color: var(--ink-muted);
+        max-width: 640px;
+        line-height: 1.55;
+        margin-bottom: 52px;
+      }
+
+      #s10-cta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      #s10-cta-btn {
+        background: var(--accent);
+        color: #000;
+        font-family: var(--font-display);
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 18px 40px;
+        border-radius: 6px;
+        box-shadow: 0 0 30px rgba(182,255,30,0.35);
+      }
+
+      #s10-built {
+        font-family: var(--font-data);
+        font-size: 13px;
+        letter-spacing: 0.12em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+      }
+
+      #s10-built span { color: var(--accent); }
+
+      #s10-corner-glow {
+        position: absolute;
+        bottom: 0; right: 0;
+        width: 700px; height: 500px;
+        background: radial-gradient(ellipse at bottom right, rgba(182,255,30,0.08) 0%, transparent 65%);
+        pointer-events: none;
+        z-index: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="main"
+      data-composition-id="main"
+      data-width="1920"
+      data-height="1080"
+      data-start="0"
+      data-duration="45"
+    >
+
+      <!-- ════════════════════════════════════════
+           SCENE 1 — Hero (0 – 3.5s)
+      ════════════════════════════════════════ -->
+      <div class="scene clip" id="s1" data-start="0" data-duration="3.5" data-track-index="0">
+        <div class="dot-grid"></div>
+        <div class="grain"></div>
+        <div class="vignette"></div>
+        <div class="scene-content">
+          <p id="s1-eyebrow">WINRVTE · Esports Tech Agency</p>
+          <h1 id="s1-title">
+            <span class="word">SCHEDULE&nbsp;</span><span class="word">INTELLIGENCE</span>
+          </h1>
+          <div id="s1-line" class="glow-line"></div>
+          <p id="s1-sub">A Discord bot that connects your org's match data to your team — live, accurate, and always up to date.</p>
+          <p id="s1-badge">winrvte.tech</p>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 2 — Discord: user question (3.5 – 8s)
+      ════════════════════════════════════════ -->
+      <div class="scene clip" id="s2" data-start="3.5" data-duration="4.5" data-track-index="0" style="visibility:hidden;">
+        <div class="grain"></div>
+        <div class="scene-content">
+          <div id="s2-shell" class="discord-shell">
+            <div class="discord-topbar">
+              <div class="discord-topbar-dot dot-red"></div>
+              <div class="discord-topbar-dot dot-amber"></div>
+              <div class="discord-topbar-dot dot-green"></div>
+              <div class="discord-channel-name"><span class="hash">#</span>schedule-bot</div>
+            </div>
+            <div class="discord-messages">
+
+              <!-- User message -->
+              <div class="msg-row" id="s2-msg-user">
+                <div class="avatar avatar-user">JD</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-user">jordan.davis</span>
+                    <span class="msg-timestamp">Today at 10:14 AM</span>
+                  </div>
+                  <p class="msg-text">What is the valorant schedule looking like for this week?</p>
+                </div>
+              </div>
+
+              <!-- Typing indicator -->
+              <div class="msg-row" id="s2-msg-bot-typing">
+                <div class="avatar avatar-bot">S</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-bot">ScheduleBot</span>
+                    <span class="bot-badge">BOT</span>
+                    <span class="msg-timestamp">Today at 10:14 AM</span>
+                  </div>
+                  <div class="typing-indicator">
+                    <div class="typing-dot" id="s2-dot-1"></div>
+                    <div class="typing-dot" id="s2-dot-2"></div>
+                    <div class="typing-dot" id="s2-dot-3"></div>
+                    <span class="typing-label">ScheduleBot is typing…</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 3 — Discord: bot schedule response (8 – 14s) [SHADER ANCHOR]
+      ════════════════════════════════════════ -->
+      <div class="scene clip" id="s3" data-start="8" data-duration="6" data-track-index="0" style="opacity:0;">
+        <div id="s3-glow"></div>
+        <div class="grain"></div>
+        <div class="scene-content">
+          <div id="s3-shell" class="discord-shell">
+            <div class="discord-topbar">
+              <div class="discord-topbar-dot dot-red"></div>
+              <div class="discord-topbar-dot dot-amber"></div>
+              <div class="discord-topbar-dot dot-green"></div>
+              <div class="discord-channel-name"><span class="hash">#</span>schedule-bot</div>
+            </div>
+            <div class="discord-messages">
+
+              <!-- User message (already shown) -->
+              <div class="msg-row">
+                <div class="avatar avatar-user">JD</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-user">jordan.davis</span>
+                    <span class="msg-timestamp">Today at 10:14 AM</span>
+                  </div>
+                  <p class="msg-text">What is the valorant schedule looking like for this week?</p>
+                </div>
+              </div>
+
+              <!-- Bot response -->
+              <div class="msg-row">
+                <div class="avatar avatar-bot">S</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-bot">ScheduleBot</span>
+                    <span class="bot-badge">BOT</span>
+                    <span class="msg-timestamp">Today at 10:14 AM</span>
+                  </div>
+                  <div class="bot-embed" id="s3-embed">
+                    <div class="embed-header">
+                      <span class="embed-icon">&#x1F4C5;</span>
+                      VALORANT SCHEDULE — WEEK OF MAY 25
+                    </div>
+                    <!-- Header labels -->
+                    <div class="embed-row" style="opacity:0.45; padding-bottom:4px;">
+                      <div class="embed-cell embed-cell-label">DATE</div>
+                      <div class="embed-cell embed-cell-label">OPPONENT</div>
+                      <div class="embed-cell embed-cell-label">TIME</div>
+                    </div>
+                    <div class="embed-row" id="s3-row-1">
+                      <div class="embed-cell embed-cell-date">Mon, May 25</div>
+                      <div class="embed-cell embed-cell-opp">vs NRG</div>
+                      <div class="embed-cell embed-cell-time">3:00 PM PST</div>
+                    </div>
+                    <div class="embed-row" id="s3-row-2">
+                      <div class="embed-cell embed-cell-date">Wed, May 27</div>
+                      <div class="embed-cell embed-cell-opp">vs Cloud9</div>
+                      <div class="embed-cell embed-cell-time">5:00 PM PST</div>
+                    </div>
+                    <div class="embed-row" id="s3-row-3">
+                      <div class="embed-cell embed-cell-date">Sat, May 30</div>
+                      <div class="embed-cell embed-cell-opp">vs Team Liquid</div>
+                      <div class="embed-cell embed-cell-time">7:00 PM PST</div>
+                    </div>
+                    <div class="embed-footer">Fetched live from schedule database · 3 matches found</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 4 — Split: Discord + connection lines + Spreadsheet (14 – 19.5s) [SHADER ANCHOR]
+      ════════════════════════════════════════ -->
+      <div class="scene clip" id="s4" data-start="14" data-duration="5.5" data-track-index="0" style="opacity:0;">
+        <div class="grain"></div>
+        <div class="scene-content">
+
+          <!-- Discord panel (left) -->
+          <div id="s4-discord-panel" class="discord-shell">
+            <div class="discord-topbar">
+              <div class="discord-topbar-dot dot-red"></div>
+              <div class="discord-topbar-dot dot-amber"></div>
+              <div class="discord-topbar-dot dot-green"></div>
+              <div class="discord-channel-name"><span class="hash">#</span>schedule-bot</div>
+            </div>
+            <div class="discord-messages">
+              <div class="msg-row">
+                <div class="avatar avatar-user">JD</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-user">jordan.davis</span>
+                  </div>
+                  <p class="msg-text" style="font-size:15px;">What is the valorant schedule…</p>
+                </div>
+              </div>
+              <div class="msg-row">
+                <div class="avatar avatar-bot">S</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-bot">ScheduleBot</span>
+                    <span class="bot-badge">BOT</span>
+                  </div>
+                  <div class="bot-embed" style="padding:14px 18px;">
+                    <div class="embed-header" style="font-size:11px; margin-bottom:10px;">
+                      &#x1F4C5; WEEK OF MAY 25
+                    </div>
+                    <div class="embed-row" id="s4-d-row1" style="padding:6px 0;">
+                      <div class="embed-cell embed-cell-date" style="font-size:13px;">Mon, May 25</div>
+                      <div class="embed-cell embed-cell-opp" style="font-size:13px;">vs NRG</div>
+                      <div class="embed-cell embed-cell-time" style="font-size:13px;">3:00 PM</div>
+                    </div>
+                    <div class="embed-row" id="s4-d-row2" style="padding:6px 0;">
+                      <div class="embed-cell embed-cell-date" style="font-size:13px;">Wed, May 27</div>
+                      <div class="embed-cell embed-cell-opp" style="font-size:13px;">vs Cloud9</div>
+                      <div class="embed-cell embed-cell-time" style="font-size:13px;">5:00 PM</div>
+                    </div>
+                    <div class="embed-row" id="s4-d-row3" style="padding:6px 0;">
+                      <div class="embed-cell embed-cell-date" style="font-size:13px;">Sat, May 30</div>
+                      <div class="embed-cell embed-cell-opp" style="font-size:13px;">vs Liquid</div>
+                      <div class="embed-cell embed-cell-time" style="font-size:13px;">7:00 PM</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SVG connector (center) -->
+          <div id="s4-connector">
+            <div id="s4-sync-label">LIVE SYNC</div>
+            <svg id="s4-svg" viewBox="0 0 240 900" preserveAspectRatio="none">
+              <!-- Path 1: row 1 → sheet row 1 -->
+              <path id="s4-path1"
+                d="M 0,295 C 120,295 120,260 240,260"
+                stroke="#B6FF1E" stroke-width="1.5" fill="none"
+                stroke-dasharray="300" stroke-dashoffset="300"
+                stroke-linecap="round" opacity="0.7"/>
+              <!-- Path 2: row 2 → sheet row 2 -->
+              <path id="s4-path2"
+                d="M 0,380 C 120,380 120,360 240,360"
+                stroke="#B6FF1E" stroke-width="1.5" fill="none"
+                stroke-dasharray="300" stroke-dashoffset="300"
+                stroke-linecap="round" opacity="0.7"/>
+              <!-- Path 3: row 3 → sheet row 3 -->
+              <path id="s4-path3"
+                d="M 0,465 C 120,465 120,460 240,460"
+                stroke="#B6FF1E" stroke-width="1.5" fill="none"
+                stroke-dasharray="300" stroke-dashoffset="300"
+                stroke-linecap="round" opacity="0.7"/>
+              <!-- Glow dots -->
+              <circle id="s4-dot1" cx="0" cy="295" r="5" fill="#B6FF1E" opacity="0" filter="url(#glow)"/>
+              <circle id="s4-dot2" cx="0" cy="380" r="5" fill="#B6FF1E" opacity="0" filter="url(#glow)"/>
+              <circle id="s4-dot3" cx="0" cy="465" r="5" fill="#B6FF1E" opacity="0" filter="url(#glow)"/>
+              <defs>
+                <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+                  <feGaussianBlur stdDeviation="4" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- Spreadsheet panel (right) -->
+          <div id="s4-spreadsheet-panel" class="spreadsheet-shell">
+            <div class="sheet-topbar">
+              <div class="sheet-grid-icon">
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+              </div>
+              <span class="sheet-title">Schedule Database — VCT 2025</span>
+            </div>
+            <div class="sheet-header-row">
+              <div class="sheet-header-cell">DATE</div>
+              <div class="sheet-header-cell">OPPONENT</div>
+              <div class="sheet-header-cell">TIME (PST)</div>
+              <div class="sheet-header-cell">STATUS</div>
+            </div>
+            <div class="sheet-body">
+              <div class="sheet-row" id="s4-s-row1">
+                <div class="sheet-cell sheet-cell-date">Mon, May 25</div>
+                <div class="sheet-cell sheet-cell-opp">vs NRG</div>
+                <div class="sheet-cell sheet-cell-time">3:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <div class="sheet-row" id="s4-s-row2">
+                <div class="sheet-cell sheet-cell-date">Wed, May 27</div>
+                <div class="sheet-cell sheet-cell-opp">vs Cloud9</div>
+                <div class="sheet-cell sheet-cell-time">5:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <div class="sheet-row" id="s4-s-row3">
+                <div class="sheet-cell sheet-cell-date">Sat, May 30</div>
+                <div class="sheet-cell sheet-cell-opp">vs Team Liquid</div>
+                <div class="sheet-cell sheet-cell-time">7:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 5 — Add a match (19.5 – 23.5s)
+      ════════════════════════════════════════ -->
+      <div class="scene clip split-scene" id="s5" data-start="19.5" data-duration="4" data-track-index="0" style="visibility:hidden;">
+        <div class="grain"></div>
+        <div class="scene-content">
+
+          <!-- Discord panel -->
+          <div class="split-discord discord-shell">
+            <div class="discord-topbar">
+              <div class="discord-topbar-dot dot-red"></div>
+              <div class="discord-topbar-dot dot-amber"></div>
+              <div class="discord-topbar-dot dot-green"></div>
+              <div class="discord-channel-name"><span class="hash">#</span>schedule-bot</div>
+            </div>
+            <div class="discord-messages">
+              <div class="msg-row" id="s5-msg-user">
+                <div class="avatar avatar-user">JD</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-user">jordan.davis</span>
+                    <span class="msg-timestamp">Today at 10:17 AM</span>
+                  </div>
+                  <p class="msg-text"><span class="mention">@ScheduleBot</span> add match — Fri May 29 vs Sentinels at 5pm PST</p>
+                </div>
+              </div>
+              <div class="msg-row" id="s5-msg-bot">
+                <div class="avatar avatar-bot">S</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-bot">ScheduleBot</span>
+                    <span class="bot-badge">BOT</span>
+                  </div>
+                  <div class="msg-confirm">
+                    <span class="confirm-icon">&#x2713;</span>
+                    Match added: <strong>&nbsp;Fri May 29 · vs Sentinels · 5:00 PM PST</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spreadsheet panel -->
+          <div class="split-sheet spreadsheet-shell">
+            <div class="sheet-topbar">
+              <div class="sheet-grid-icon">
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+              </div>
+              <span class="sheet-title">Schedule Database — VCT 2025</span>
+            </div>
+            <div class="sheet-header-row">
+              <div class="sheet-header-cell">DATE</div>
+              <div class="sheet-header-cell">OPPONENT</div>
+              <div class="sheet-header-cell">TIME (PST)</div>
+              <div class="sheet-header-cell">STATUS</div>
+            </div>
+            <div class="sheet-body">
+              <div class="sheet-row">
+                <div class="sheet-cell sheet-cell-date">Mon, May 25</div>
+                <div class="sheet-cell sheet-cell-opp">vs NRG</div>
+                <div class="sheet-cell sheet-cell-time">3:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <div class="sheet-row">
+                <div class="sheet-cell sheet-cell-date">Wed, May 27</div>
+                <div class="sheet-cell sheet-cell-opp">vs Cloud9</div>
+                <div class="sheet-cell sheet-cell-time">5:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <div class="sheet-row">
+                <div class="sheet-cell sheet-cell-date">Sat, May 30</div>
+                <div class="sheet-cell sheet-cell-opp">vs Team Liquid</div>
+                <div class="sheet-cell sheet-cell-time">7:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <!-- New row (animated in) -->
+              <div class="sheet-row highlight" id="s5-sheet-row-new">
+                <div class="sheet-cell sheet-cell-date">Fri, May 29</div>
+                <div class="sheet-cell sheet-cell-opp">vs Sentinels</div>
+                <div class="sheet-cell sheet-cell-time">5:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-added">Added</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 6 — Remove a match (23.5 – 27.5s)
+      ════════════════════════════════════════ -->
+      <div class="scene clip split-scene" id="s6" data-start="23.5" data-duration="4" data-track-index="0" style="visibility:hidden;">
+        <div class="grain"></div>
+        <div class="scene-content">
+
+          <!-- Discord panel -->
+          <div class="split-discord discord-shell">
+            <div class="discord-topbar">
+              <div class="discord-topbar-dot dot-red"></div>
+              <div class="discord-topbar-dot dot-amber"></div>
+              <div class="discord-topbar-dot dot-green"></div>
+              <div class="discord-channel-name"><span class="hash">#</span>schedule-bot</div>
+            </div>
+            <div class="discord-messages">
+              <div class="msg-row" id="s6-msg-user">
+                <div class="avatar avatar-user">JD</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-user">jordan.davis</span>
+                    <span class="msg-timestamp">Today at 10:19 AM</span>
+                  </div>
+                  <p class="msg-text"><span class="mention">@ScheduleBot</span> remove the Saturday match vs Team Liquid</p>
+                </div>
+              </div>
+              <div class="msg-row" id="s6-msg-bot">
+                <div class="avatar avatar-bot">S</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-bot">ScheduleBot</span>
+                    <span class="bot-badge">BOT</span>
+                  </div>
+                  <div class="msg-confirm" style="color:var(--danger);">
+                    <span class="confirm-icon" style="background:var(--danger);">&#x2715;</span>
+                    Match removed: <strong>&nbsp;Sat May 30 · vs Team Liquid</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spreadsheet panel -->
+          <div class="split-sheet spreadsheet-shell">
+            <div class="sheet-topbar">
+              <div class="sheet-grid-icon">
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+              </div>
+              <span class="sheet-title">Schedule Database — VCT 2025</span>
+            </div>
+            <div class="sheet-header-row">
+              <div class="sheet-header-cell">DATE</div>
+              <div class="sheet-header-cell">OPPONENT</div>
+              <div class="sheet-header-cell">TIME (PST)</div>
+              <div class="sheet-header-cell">STATUS</div>
+            </div>
+            <div class="sheet-body">
+              <div class="sheet-row">
+                <div class="sheet-cell sheet-cell-date">Mon, May 25</div>
+                <div class="sheet-cell sheet-cell-opp">vs NRG</div>
+                <div class="sheet-cell sheet-cell-time">3:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <div class="sheet-row">
+                <div class="sheet-cell sheet-cell-date">Wed, May 27</div>
+                <div class="sheet-cell sheet-cell-opp">vs Cloud9</div>
+                <div class="sheet-cell sheet-cell-time">5:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <div class="sheet-row removed" id="s6-removed-row">
+                <div class="sheet-cell sheet-cell-date">Sat, May 30</div>
+                <div class="sheet-cell sheet-cell-opp">vs Team Liquid</div>
+                <div class="sheet-cell sheet-cell-time" style="color:var(--danger);">7:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-removed">Removed</span></div>
+              </div>
+              <div class="sheet-row highlight" style="opacity:0.4;">
+                <div class="sheet-cell sheet-cell-date">Fri, May 29</div>
+                <div class="sheet-cell sheet-cell-opp">vs Sentinels</div>
+                <div class="sheet-cell sheet-cell-time">5:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-added">Added</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 7 — Change timing (27.5 – 31.5s)
+      ════════════════════════════════════════ -->
+      <div class="scene clip split-scene" id="s7" data-start="27.5" data-duration="4" data-track-index="0" style="visibility:hidden;">
+        <div class="grain"></div>
+        <div class="scene-content">
+
+          <!-- Discord panel -->
+          <div class="split-discord discord-shell">
+            <div class="discord-topbar">
+              <div class="discord-topbar-dot dot-red"></div>
+              <div class="discord-topbar-dot dot-amber"></div>
+              <div class="discord-topbar-dot dot-green"></div>
+              <div class="discord-channel-name"><span class="hash">#</span>schedule-bot</div>
+            </div>
+            <div class="discord-messages">
+              <div class="msg-row" id="s7-msg-user">
+                <div class="avatar avatar-user">JD</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-user">jordan.davis</span>
+                    <span class="msg-timestamp">Today at 10:21 AM</span>
+                  </div>
+                  <p class="msg-text"><span class="mention">@ScheduleBot</span> change Wednesday match vs Cloud9 to 7pm PST</p>
+                </div>
+              </div>
+              <div class="msg-row" id="s7-msg-bot">
+                <div class="avatar avatar-bot">S</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-bot">ScheduleBot</span>
+                    <span class="bot-badge">BOT</span>
+                  </div>
+                  <div class="msg-confirm" style="color:var(--ion);">
+                    <span class="confirm-icon" style="background:var(--ion); color:#000;">&#x2192;</span>
+                    Updated: Wed May 27 · vs Cloud9 · <strong>7:00 PM PST</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spreadsheet panel -->
+          <div class="split-sheet spreadsheet-shell">
+            <div class="sheet-topbar">
+              <div class="sheet-grid-icon">
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+                <div class="sheet-grid-cell"></div>
+              </div>
+              <span class="sheet-title">Schedule Database — VCT 2025</span>
+            </div>
+            <div class="sheet-header-row">
+              <div class="sheet-header-cell">DATE</div>
+              <div class="sheet-header-cell">OPPONENT</div>
+              <div class="sheet-header-cell">TIME (PST)</div>
+              <div class="sheet-header-cell">STATUS</div>
+            </div>
+            <div class="sheet-body">
+              <div class="sheet-row">
+                <div class="sheet-cell sheet-cell-date">Mon, May 25</div>
+                <div class="sheet-cell sheet-cell-opp">vs NRG</div>
+                <div class="sheet-cell sheet-cell-time">3:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-confirmed">Confirmed</span></div>
+              </div>
+              <div class="sheet-row highlight" id="s7-updated-row">
+                <div class="sheet-cell sheet-cell-date">Wed, May 27</div>
+                <div class="sheet-cell sheet-cell-opp">vs Cloud9</div>
+                <div class="sheet-cell sheet-cell-time" id="s7-time-cell">5:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-updated" id="s7-status-cell">Updated</span></div>
+              </div>
+              <div class="sheet-row" style="opacity:0.3;">
+                <div class="sheet-cell sheet-cell-date">Sat, May 30</div>
+                <div class="sheet-cell sheet-cell-opp">vs Team Liquid</div>
+                <div class="sheet-cell sheet-cell-time" style="color:var(--danger);">7:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-removed">Removed</span></div>
+              </div>
+              <div class="sheet-row">
+                <div class="sheet-cell sheet-cell-date">Fri, May 29</div>
+                <div class="sheet-cell sheet-cell-opp">vs Sentinels</div>
+                <div class="sheet-cell sheet-cell-time">5:00 PM</div>
+                <div class="sheet-cell"><span class="sheet-cell-status status-added">Added</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 8 — Updated full schedule (31.5 – 37s) [SHADER ANCHOR]
+      ════════════════════════════════════════ -->
+      <div class="scene clip" id="s8" data-start="31.5" data-duration="5.5" data-track-index="0" style="opacity:0;">
+        <div class="grain"></div>
+        <div class="scene-content">
+          <div id="s8-shell" class="discord-shell">
+            <div class="discord-topbar">
+              <div class="discord-topbar-dot dot-red"></div>
+              <div class="discord-topbar-dot dot-amber"></div>
+              <div class="discord-topbar-dot dot-green"></div>
+              <div class="discord-channel-name"><span class="hash">#</span>schedule-bot</div>
+            </div>
+            <div class="discord-messages">
+
+              <div class="msg-row">
+                <div class="avatar avatar-user">JD</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-user">jordan.davis</span>
+                    <span class="msg-timestamp">Today at 10:22 AM</span>
+                  </div>
+                  <p class="msg-text"><span class="mention">@ScheduleBot</span> show me the updated schedule please</p>
+                </div>
+              </div>
+
+              <div class="msg-row">
+                <div class="avatar avatar-bot">S</div>
+                <div class="msg-body">
+                  <div class="msg-meta">
+                    <span class="msg-username msg-username-bot">ScheduleBot</span>
+                    <span class="bot-badge">BOT</span>
+                    <span class="msg-timestamp">Today at 10:22 AM</span>
+                  </div>
+                  <div class="bot-embed" id="s8-embed-updated">
+                    <div class="embed-header">
+                      <span class="embed-icon">&#x2705;</span>
+                      UPDATED SCHEDULE — WEEK OF MAY 25
+                    </div>
+                    <div class="embed-row" style="opacity:0.45; padding-bottom:4px;">
+                      <div class="embed-cell embed-cell-label">DATE</div>
+                      <div class="embed-cell embed-cell-label">OPPONENT</div>
+                      <div class="embed-cell embed-cell-label">TIME</div>
+                    </div>
+                    <div class="embed-row" id="s8-row-u1">
+                      <div class="embed-cell embed-cell-date">Mon, May 25</div>
+                      <div class="embed-cell embed-cell-opp">vs NRG</div>
+                      <div class="embed-cell embed-cell-time">3:00 PM PST</div>
+                    </div>
+                    <div class="embed-row" id="s8-row-u2" style="border-left: 2px solid var(--ion); padding-left: 10px; margin-left: -10px;">
+                      <div class="embed-cell embed-cell-date">Wed, May 27</div>
+                      <div class="embed-cell embed-cell-opp">vs Cloud9</div>
+                      <div class="embed-cell embed-cell-time">7:00 PM PST &#x2192;</div>
+                    </div>
+                    <div class="embed-row" id="s8-row-u3" style="border-left: 2px solid var(--accent); padding-left: 10px; margin-left: -10px;">
+                      <div class="embed-cell embed-cell-date">Fri, May 29</div>
+                      <div class="embed-cell embed-cell-opp">vs Sentinels</div>
+                      <div class="embed-cell embed-cell-time">5:00 PM PST &#x2b;</div>
+                    </div>
+                    <div class="embed-footer">3 active matches · 1 updated · 1 added · 1 removed</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 9 — Feature callout (37 – 41s) [SHADER ANCHOR]
+      ════════════════════════════════════════ -->
+      <div class="scene clip" id="s9" data-start="37" data-duration="4" data-track-index="0" style="opacity:0;">
+        <div class="dot-grid"></div>
+        <div class="grain"></div>
+        <div class="vignette"></div>
+        <div class="scene-content" style="align-items:flex-start; padding: 80px 180px;">
+          <p id="s9-label">What your org gets</p>
+          <h2 id="s9-headline">Built for how<br/>esports ops work.</h2>
+          <div class="feature-grid">
+            <div class="feature-pill" id="s9-pill-1">
+              <div class="feature-icon-wrap">&#x26A1;</div>
+              <div class="feature-text">
+                <div class="feature-title">Real-time sync</div>
+                <div class="feature-desc">Discord reflects your schedule database instantly. No manual copy-paste.</div>
+              </div>
+            </div>
+            <div class="feature-pill" id="s9-pill-2">
+              <div class="feature-icon-wrap">&#x1F4AC;</div>
+              <div class="feature-text">
+                <div class="feature-title">Natural language commands</div>
+                <div class="feature-desc">Add, remove, or update matches in plain English. No training required.</div>
+              </div>
+            </div>
+            <div class="feature-pill" id="s9-pill-3">
+              <div class="feature-icon-wrap">&#x1F4CA;</div>
+              <div class="feature-text">
+                <div class="feature-title">Always accurate</div>
+                <div class="feature-desc">Single source of truth — your spreadsheet and Discord stay in lock-step.</div>
+              </div>
+            </div>
+            <div class="feature-pill" id="s9-pill-4">
+              <div class="feature-icon-wrap">&#x1F527;</div>
+              <div class="feature-text">
+                <div class="feature-title">Fully customisable</div>
+                <div class="feature-desc">We wire it to your data stack — Google Sheets, Notion, or any API.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════
+           SCENE 10 — CTA (41 – 45s)
+      ════════════════════════════════════════ -->
+      <div class="scene clip" id="s10" data-start="41" data-duration="4" data-track-index="0" style="visibility:hidden;">
+        <div class="dot-grid"></div>
+        <div class="grain"></div>
+        <div class="vignette"></div>
+        <div id="s10-corner-glow"></div>
+        <div class="scene-content">
+          <p id="s10-kicker">WINRVTE · Esports Tech Agency</p>
+          <h2 id="s10-headline">
+            <span class="word">What could</span><br/>
+            <span class="word">your org do</span><br/>
+            <span class="word">with this?</span>
+          </h2>
+          <p id="s10-sub">We build custom Discord bots, data pipelines, and ops tooling for esports organisations. Shipped in days, not months.</p>
+          <div id="s10-cta">
+            <div id="s10-cta-btn">GET IN TOUCH</div>
+            <div id="s10-built">Built by <span>WINRVTE</span> &nbsp;·&nbsp; winrvte.tech</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /#main -->
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      // ─────────────────────────────────────────────────────────
+      // VISIBILITY TOGGLES (non-anchor scenes use autoAlpha)
+      // ─────────────────────────────────────────────────────────
+      tl.set("#s1",  { autoAlpha: 0 },  3.5);
+      tl.set("#s2",  { autoAlpha: 1 },  3.5);
+      tl.set("#s2",  { autoAlpha: 0 },  8.0);
+      // s3 is first shader anchor — must be explicitly shown
+      tl.set("#s3",  { opacity: 1 },    8.0);
+      // s3, s4 managed by HyperShader after transitions
+      tl.set("#s5",  { autoAlpha: 1 }, 19.5);
+      tl.set("#s5",  { autoAlpha: 0 }, 23.5);
+      tl.set("#s6",  { autoAlpha: 1 }, 23.5);
+      tl.set("#s6",  { autoAlpha: 0 }, 27.5);
+      tl.set("#s7",  { autoAlpha: 1 }, 27.5);
+      tl.set("#s7",  { autoAlpha: 0 }, 31.5);
+      // s8 is second shader group's first anchor — must be explicitly shown
+      tl.set("#s8",  { opacity: 1 },   31.5);
+      // s8, s9 managed by HyperShader after transition
+      tl.set("#s10", { autoAlpha: 1 }, 41.0);
+
+      // ── Pre-set initial states for tl.to() targets ──────────
+      // s5 new row: tl.to() needs explicit initial state at scene start
+      tl.set("#s5-sheet-row-new", { autoAlpha: 0, y: -20 }, 19.5);
+      // s3 glow: start dim so pulse reads correctly
+      tl.set("#s3-glow", { opacity: 0.08 }, 8.0);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 1 — Hero (0 – 3.5s)
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s1-eyebrow", { y: 16, autoAlpha: 0, duration: 0.5, ease: "power3.out" }, 0.15);
+      tl.from("#s1-title .word", {
+        y: 60, autoAlpha: 0, duration: 0.7, ease: "expo.out",
+        stagger: { each: 0.14, from: "start" }
+      }, 0.4);
+      tl.to("#s1-line", { width: 280, duration: 0.7, ease: "power3.out" }, 0.9);
+      tl.from("#s1-sub",   { y: 20, autoAlpha: 0, duration: 0.6, ease: "power2.out" }, 1.1);
+      tl.from("#s1-badge", { autoAlpha: 0, duration: 0.6, ease: "sine.inOut" }, 1.6);
+      // Breathing glow on the line
+      tl.to("#s1-line", { opacity: 0.4, duration: 0.9, ease: "sine.inOut", yoyo: true, repeat: 1 }, 1.8);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 2 — Discord: user question (3.5 – 8s)
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s2-shell", { y: 30, autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 3.7);
+      tl.from("#s2-msg-user", { y: 20, autoAlpha: 0, duration: 0.5, ease: "power2.out" }, 4.1);
+      // Typing indicator appears
+      tl.from("#s2-msg-bot-typing", { autoAlpha: 0, duration: 0.3, ease: "sine.out" }, 5.2);
+      // Dots pulse (deterministic — 2 repeats each)
+      tl.to("#s2-dot-1", { opacity: 1, duration: 0.28, ease: "sine.inOut", yoyo: true, repeat: 5 }, 5.4);
+      tl.to("#s2-dot-2", { opacity: 1, duration: 0.28, ease: "sine.inOut", yoyo: true, repeat: 5 }, 5.56);
+      tl.to("#s2-dot-3", { opacity: 1, duration: 0.28, ease: "sine.inOut", yoyo: true, repeat: 5 }, 5.72);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 3 — Bot response (8 – 14s) [SHADER ANCHOR, no exit tweens]
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s3-embed",  { y: 30, autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 8.2);
+      tl.from("#s3-row-1",  { x: -16, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 8.65);
+      tl.from("#s3-row-2",  { x: -16, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 8.85);
+      tl.from("#s3-row-3",  { x: -16, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 9.05);
+      // Glow pulse on embed border (mid-scene)
+      tl.to("#s3-glow", { opacity: 0.4, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 10.0);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 4 — Split view + connections (14 – 19.5s) [SHADER ANCHOR, no exit tweens]
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s4-discord-panel",     { x: -40, autoAlpha: 0, duration: 0.65, ease: "power3.out" }, 14.2);
+      tl.from("#s4-spreadsheet-panel", { x:  40, autoAlpha: 0, duration: 0.65, ease: "power3.out" }, 14.2);
+      tl.from("#s4-connector",         { autoAlpha: 0, duration: 0.4, ease: "sine.out" }, 14.7);
+
+      // SVG paths draw in sequence
+      tl.to("#s4-path1", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 15.0);
+      tl.to("#s4-path2", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 15.2);
+      tl.to("#s4-path3", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 15.4);
+
+      // Glow dots traverse paths (attr-based SVG animation — no MotionPath plugin needed)
+      // path1: M 0,295 → end ~240,260
+      tl.fromTo("#s4-dot1",
+        { attr: { cx: 0, cy: 295 }, opacity: 0 },
+        { attr: { cx: 240, cy: 260 }, opacity: 1, duration: 0.65, ease: "power1.inOut" }, 15.6);
+      // path2: M 0,380 → end ~240,360
+      tl.fromTo("#s4-dot2",
+        { attr: { cx: 0, cy: 380 }, opacity: 0 },
+        { attr: { cx: 240, cy: 360 }, opacity: 1, duration: 0.65, ease: "power1.inOut" }, 15.8);
+      // path3: M 0,465 → end ~240,460
+      tl.fromTo("#s4-dot3",
+        { attr: { cx: 0, cy: 465 }, opacity: 0 },
+        { attr: { cx: 240, cy: 460 }, opacity: 1, duration: 0.65, ease: "power1.inOut" }, 16.0);
+
+      // Dots fade after traversal
+      tl.to("#s4-dot1", { opacity: 0, duration: 0.3, ease: "power2.in" }, 16.3);
+      tl.to("#s4-dot2", { opacity: 0, duration: 0.3, ease: "power2.in" }, 16.5);
+      tl.to("#s4-dot3", { opacity: 0, duration: 0.3, ease: "power2.in" }, 16.7);
+
+      // "LIVE SYNC" label fades in above connector
+      tl.from("#s4-sync-label", { autoAlpha: 0, y: 8, duration: 0.4, ease: "power2.out" }, 16.8);
+
+      // Rows pulse in the spreadsheet (breathing highlight)
+      tl.to("#s4-s-row1", { background: "rgba(182,255,30,0.1)", duration: 0.3, ease: "power2.out", yoyo: true, repeat: 1 }, 17.2);
+      tl.to("#s4-s-row2", { background: "rgba(182,255,30,0.1)", duration: 0.3, ease: "power2.out", yoyo: true, repeat: 1 }, 17.5);
+      tl.to("#s4-s-row3", { background: "rgba(182,255,30,0.1)", duration: 0.3, ease: "power2.out", yoyo: true, repeat: 1 }, 17.8);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 5 — Add match (19.5 – 23.5s)
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s5-msg-user", { y: 20, autoAlpha: 0, duration: 0.45, ease: "power3.out" }, 19.7);
+      tl.from("#s5-msg-bot",  { y: 16, autoAlpha: 0, duration: 0.4,  ease: "power2.out" }, 20.4);
+      // New spreadsheet row slides in
+      tl.to("#s5-sheet-row-new", { autoAlpha: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, 20.8);
+      // Flash highlight on new row
+      tl.to("#s5-sheet-row-new", { background: "rgba(182,255,30,0.22)", duration: 0.25, ease: "power2.out", yoyo: true, repeat: 1 }, 21.0);
+      // Float the confirm icon slightly
+      tl.to("#s5-msg-bot", { y: -3, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 1 }, 21.5);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 6 — Remove match (23.5 – 27.5s)
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s6-msg-user",    { y: 20, autoAlpha: 0, duration: 0.45, ease: "power3.out" }, 23.7);
+      tl.from("#s6-msg-bot",     { y: 16, autoAlpha: 0, duration: 0.4,  ease: "power2.out" }, 24.4);
+      // Flash danger color on removed row, then collapse
+      tl.to("#s6-removed-row", { background: "rgba(255,83,101,0.15)", duration: 0.3, ease: "power2.out" }, 24.7);
+      tl.to("#s6-removed-row", { scaleY: 0, autoAlpha: 0, transformOrigin: "top", duration: 0.4, ease: "power3.in" }, 25.4);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 7 — Change timing (27.5 – 31.5s)
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s7-msg-user", { y: 20, autoAlpha: 0, duration: 0.45, ease: "power3.out" }, 27.7);
+      tl.from("#s7-msg-bot",  { y: 16, autoAlpha: 0, duration: 0.4,  ease: "power2.out" }, 28.4);
+      // Flash highlight on updated row
+      tl.to("#s7-updated-row", { background: "rgba(102,232,255,0.18)", duration: 0.3, ease: "power2.out", yoyo: true, repeat: 1 }, 28.8);
+      // Morph the time value text (counter-style using onUpdate)
+      (function () {
+        var timeSteps = ["5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM"];
+        var stepObj = { v: 0 };
+        tl.to(stepObj, {
+          v: 4,
+          duration: 0.8,
+          ease: "steps(4)",
+          onUpdate: function () {
+            var el = document.getElementById("s7-time-cell");
+            if (el) el.textContent = timeSteps[Math.round(stepObj.v)];
+          }
+        }, 29.0);
+      }());
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 8 — Updated schedule (31.5 – 37s) [SHADER ANCHOR, no exit tweens]
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s8-embed-updated", { y: 28, autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 31.7);
+      tl.from("#s8-row-u1", { x: -14, autoAlpha: 0, duration: 0.4, ease: "power2.out" }, 32.2);
+      tl.from("#s8-row-u2", { x: -14, autoAlpha: 0, duration: 0.4, ease: "power2.out" }, 32.45);
+      tl.from("#s8-row-u3", { x: -14, autoAlpha: 0, duration: 0.4, ease: "power2.out" }, 32.7);
+      // Glow breathe on updated/added rows
+      tl.to("#s8-row-u2", { background: "rgba(102,232,255,0.12)", duration: 1.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 33.2);
+      tl.to("#s8-row-u3", { background: "rgba(182,255,30,0.15)",  duration: 1.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 33.5);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 9 — Feature callout (37 – 41s) [SHADER ANCHOR]
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s9-label",    { y: 14, autoAlpha: 0, duration: 0.45, ease: "power3.out" }, 37.2);
+      tl.from("#s9-headline", { y: 30, autoAlpha: 0, duration: 0.6,  ease: "expo.out"   }, 37.5);
+      tl.from("#s9-pill-1",   { y: 22, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 38.1);
+      tl.from("#s9-pill-2",   { y: 22, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 38.25);
+      tl.from("#s9-pill-3",   { y: 22, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 38.4);
+      tl.from("#s9-pill-4",   { y: 22, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 38.55);
+      // Breathing float on icon wraps
+      tl.to(".feature-icon-wrap", { y: -4, duration: 1.2, ease: "sine.inOut", yoyo: true, repeat: 1, stagger: { each: 0.2, from: "start" } }, 39.2);
+
+      // ─────────────────────────────────────────────────────────
+      // SCENE 10 — CTA (41 – 45s)
+      // ─────────────────────────────────────────────────────────
+      tl.from("#s10-kicker", { y: 14, autoAlpha: 0, duration: 0.4, ease: "power3.out" }, 41.2);
+      tl.from("#s10-headline .word", {
+        y: 50, autoAlpha: 0, duration: 0.65, ease: "expo.out",
+        stagger: { each: 0.16, from: "start" }
+      }, 41.5);
+      tl.from("#s10-sub",    { y: 18, autoAlpha: 0, duration: 0.5, ease: "power2.out" }, 42.2);
+      tl.from("#s10-cta",    { scale: 0.92, autoAlpha: 0, duration: 0.5, ease: "back.out(1.5)" }, 42.8);
+      tl.from("#s10-corner-glow", { autoAlpha: 0, duration: 1.0, ease: "sine.inOut" }, 41.5);
+      // CTA button glow pulse
+      tl.to("#s10-cta-btn",  { boxShadow: "0 0 50px rgba(182,255,30,0.6)", duration: 0.9, ease: "sine.inOut", yoyo: true, repeat: 1 }, 43.2);
+
+      // ─────────────────────────────────────────────────────────
+      // HYPERSHADER — 3 transitions across 4 anchor scenes
+      // Anchors: s3, s4 (hero reveal) · s8, s9 (close)
+      // Invariant: scenes.length (4) === transitions.length (3) + 1 ✓
+      // ─────────────────────────────────────────────────────────
+      window.HyperShader.init({
+        bgColor: getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#060606",
+        scenes: ["s3", "s4", "s8", "s9"],
+        timeline: tl,
+        transitions: [
+          { time: 13.75, shader: "cinematic-zoom",   duration: 0.5 },
+          { time: 19.25, shader: "light-leak",        duration: 0.5 },
+          { time: 36.75, shader: "cross-warp-morph",  duration: 0.5 }
+        ]
+      });
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

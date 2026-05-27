@@ -13,24 +13,24 @@ const PROBLEMS = [
     body: "Context spread across Discord, Notion, sheets and DMs. One centralized view changes everything.",
   },
   {
-    tag: "COORDINATION",
-    title: "Handoffs that break under pressure",
-    body: "Unclear routing, overlapping ownership, chat-based delegation. Structure turns chaos into execution.",
+    tag: "SCOUTING",
+    title: "Signing hype, not value",
+    body: "Rosters get built on clips and gut feel. The orgs winning the signing race are tracking prospects with real data — before the price goes up.",
   },
   {
-    tag: "PREP + ANALYSIS",
-    title: "Analyst workflows that should be faster",
-    body: "Opponent prep built on scattered data and manual cleanup. Better tooling means more insight, less busywork.",
+    tag: "CONTENT + SPEND",
+    title: "Content budget with no feedback loop",
+    body: "Posts, campaigns, content drops — money goes out but nobody knows what's actually working. Without clear numbers, every spend is a coin flip.",
   },
   {
-    tag: "COST + SCALE",
-    title: "Costs that scale faster than output",
-    body: "Adding headcount instead of infrastructure. The right systems let you do more with what you have.",
+    tag: "PROCUREMENT",
+    title: "Urgency costing more than the problem",
+    body: "When things move fast, orgs grab the first vendor, tool, or hire available instead of finding the best fit for their budget. That means paying more, getting less, or both.",
   },
   {
-    tag: "RETENTION",
-    title: "Internal ops that don't match the brand",
-    body: "Players, staff and partners notice how an org actually runs. Operational quality keeps talent.",
+    tag: "SPONSORSHIP",
+    title: "Sponsors need proof, not promises",
+    body: "Sponsors don't care about hype. If you can't show real growth and proven delivery with data to back it up — you're invisible to serious capital.",
   },
 ];
 
@@ -64,7 +64,7 @@ export default function BridgeSection() {
         <div className="challenge-head">
           <div>
             <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
-              <span className="num">02</span> Problems
+              <span className="num">03</span> Problems
             </motion.span>
             <AnimatedHeading
               tag="h2"

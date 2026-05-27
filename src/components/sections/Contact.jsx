@@ -72,10 +72,6 @@ export default function Contact() {
               </span>
             </div>
 
-            <motion.p className="contact-intro" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
-              Tell us which problems you're trying to crack. We'll respond within 24 hours with a 30-min slot — usually with a 1-page audit of what we'd build first.
-            </motion.p>
-
             <motion.div className="contact-chips" data-cursor-label="PICK" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.3 }} variants={staggerContainer}>
               {TOPICS.map((t) => {
                 const isOn = topics.has(t);
@@ -133,19 +129,15 @@ export default function Contact() {
               </div>
               <div className="contact-detail">
                 <span className="k">Email</span>
-                <span className="v"><a href="mailto:hello@winrvte.tech">hello@winrvte.tech</a></span>
+                <span className="v"><a href="mailto:elendilm2m@gmail.com">elendilm2m@gmail.com</a></span>
               </div>
               <div className="contact-detail">
                 <span className="k">Discord</span>
-                <span className="v">winrvte.tech</span>
+                <span className="v">elendil_x</span>
               </div>
               <div className="contact-detail">
                 <span className="k">Region</span>
                 <span className="v">NA · EU · APAC</span>
-              </div>
-              <div className="contact-detail">
-                <span className="k">Status</span>
-                <span className="v"><span style={{ color: "var(--lime)" }}>● Booking Q1 / 2026</span></span>
               </div>
             </div>
           </motion.div>

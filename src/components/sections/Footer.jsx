@@ -33,9 +33,9 @@ export default function Footer() {
         <motion.div variants={staggerChild}>
           <div className="footer-col-title">Navigate</div>
           <div className="footer-col-list">
+            <a href="#about" className="footer-link">About Us</a>
             <a href="#problem" className="footer-link">Problems</a>
             <a href="#solutions" className="footer-link">Solutions</a>
-            <a href="#stats" className="footer-link">Outcomes</a>
             <a href="#what-we-do" className="footer-link">Why Winrvte</a>
           </div>
         </motion.div>
@@ -44,8 +44,8 @@ export default function Footer() {
           <div className="footer-col-title">Services</div>
           <div className="footer-col-list">
             <a href="#solutions" className="footer-link">Automation</a>
+            <a href="#solutions" className="footer-link">Websites</a>
             <a href="#solutions" className="footer-link">Dashboards</a>
-            <a href="#solutions" className="footer-link">Analyst Tools</a>
             <a href="#solutions" className="footer-link">Custom Builds</a>
           </div>
         </motion.div>
@@ -53,8 +53,8 @@ export default function Footer() {
         <motion.div variants={staggerChild}>
           <div className="footer-col-title">Get in touch</div>
           <div className="footer-col-list">
-            <a href="mailto:hello@winrvte.tech" className="footer-link">hello@winrvte.tech</a>
-            <a href="#" className="footer-link">Discord · winrvte.tech</a>
+            <a href="mailto:elendilm2m@gmail.com" className="footer-link">elendilm2m@gmail.com</a>
+            <span className="footer-link">Discord · elendil_x</span>
             <a href="#contact" className="footer-link">Book a Call</a>
           </div>
         </motion.div>

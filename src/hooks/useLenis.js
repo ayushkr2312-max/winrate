@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { shouldUseLenis } from "@/lib/device";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,21 +25,27 @@ export function isAnchorNavigationActive() {
   return Date.now() < _anchorNavUntil;
 }
 
-const DOCK_BAR_H = 42;
+const DOCK_BAR_H = 48;
 
 export function useLenis() {
   const ref = useRef(null);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
+    const enableLenis = shouldUseLenis();
+
+    if (!enableLenis) {
+      const onScroll = () => ScrollTrigger.update();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      return () => window.removeEventListener("scroll", onScroll);
+    }
 
     const lenis = new Lenis({
-      duration: 1.0,
+      duration: 1.05,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.1,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1,
+      syncTouch: false,
     });
     _lenis = lenis;
     ref.current = lenis;
@@ -49,9 +56,8 @@ export function useLenis() {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(raf);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 16);
 
-    // expose scrollTo on anchors
     const onAnchorClick = (e) => {
       const a = e.target.closest('a[href^="#"]');
       if (!a) return;
@@ -64,7 +70,7 @@ export function useLenis() {
       markAnchorNavigation(2800);
       lenis.scrollTo(el, {
         offset: id === "#hero" ? 0 : -DOCK_BAR_H,
-        duration: 1.4,
+        duration: 1.2,
         onComplete: clearAnchorNavigation,
       });
     };

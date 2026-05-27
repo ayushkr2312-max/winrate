@@ -4,11 +4,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const MOBILE_MQ = "(max-width: 768px)";
+import { MQ_TABLET } from "@/lib/device";
+
+const LAYOUT_MQ = MQ_TABLET;
 const TOUCH_MQ = "(hover: none), (pointer: coarse)";
 
-function isMobileViewport() {
-  return window.matchMedia(MOBILE_MQ).matches;
+function isCompactLayout() {
+  return window.matchMedia(LAYOUT_MQ).matches;
 }
 
 function isTouchDevice() {
@@ -33,7 +35,7 @@ export default function Hero({ playEntrance }) {
     const hero = heroRef.current;
     if (!hero) return;
 
-    const mobileMql = window.matchMedia(MOBILE_MQ);
+    const mobileMql = window.matchMedia(LAYOUT_MQ);
     let scrollTrigger = null;
     let swapped = false;
     let setupScrollSwap = () => {};
@@ -142,7 +144,7 @@ export default function Hero({ playEntrance }) {
         scrollTrigger?.kill();
         swapped = false;
 
-        const mobile = isMobileViewport();
+        const mobile = isCompactLayout();
         gsap.set(".hero-swap-hover", mobile
           ? { opacity: 0, y: 8, rotationX: 0, z: 0, scale: 1 }
           : { rotationX: -80, z: -400, scale: 0.8, opacity: 0, y: 0 });

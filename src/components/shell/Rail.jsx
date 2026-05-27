@@ -2,30 +2,151 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getLenis, isAnchorNavigationActive } from "@/hooks/useLenis";
+import { MQ_MOBILE, isMobileViewport } from "@/lib/device";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const SECTIONS = [
-  { id: "hero", label: "Home", num: "01" },
-  { id: "problem", label: "Problems", num: "02" },
-  { id: "solutions", label: "Solutions", num: "03" },
-  { id: "stats", label: "Outcomes", num: "04" },
+  { id: "hero",       label: "Home",        num: "01" },
+  { id: "about",      label: "About Us",    num: "02" },
+  { id: "problem",    label: "Problems",    num: "03" },
+  { id: "solutions",  label: "Solutions",   num: "04" },
   { id: "what-we-do", label: "Why Winrvte", num: "05" },
-  { id: "manifesto", label: "About", num: "06" },
-  { id: "contact", label: "Contact", num: "07" },
+  { id: "manifesto",  label: "Manifesto",   num: "06" },
+  { id: "contact",    label: "Contact",     num: "07" },
 ];
 
-function pad(n) { return String(n).padStart(2, "0"); }
+const DOCK_BAR_H = 48;
+const LOGO_VIDEO = "/luma-dot-bg.webm";
 
-const DOCK_BAR_H = 42;
+function RailLogo() {
+  const videoRef = useRef(null);
+  const playPromiseRef = useRef(null);
+  const [mobile, setMobile] = useState(false);
 
-function scrollProblemIntoDockView() {
+  useEffect(() => {
+    const sync = () => setMobile(isMobileViewport());
+    sync();
+    const mq = window.matchMedia(MQ_MOBILE);
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  const seekToEnd = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (!Number.isFinite(v.duration) || v.duration <= 0) return;
+    v.pause();
+    v.currentTime = Math.max(0, v.duration - 0.04);
+  }, []);
+
+  const parkAtEnd = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (Number.isFinite(v.duration) && v.duration > 0) {
+      seekToEnd();
+      return;
+    }
+    const onMeta = () => seekToEnd();
+    v.addEventListener("loadedmetadata", onMeta, { once: true });
+  }, [seekToEnd]);
+
+  useEffect(() => {
+    if (mobile) return;
+    const v = videoRef.current;
+    if (!v) return;
+
+    const onReady = () => parkAtEnd();
+    v.addEventListener("loadeddata", onReady);
+    v.addEventListener("loadedmetadata", onReady);
+    if (v.readyState >= HTMLMediaElement.HAVE_METADATA) onReady();
+    v.load();
+
+    return () => {
+      v.removeEventListener("loadeddata", onReady);
+      v.removeEventListener("loadedmetadata", onReady);
+    };
+  }, [mobile, parkAtEnd]);
+
+  const handleEnter = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    const play = () => {
+      v.currentTime = 0;
+      const result = v.play();
+      playPromiseRef.current =
+        result && typeof result.then === "function" ? result : null;
+    };
+    if (v.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      play();
+    } else {
+      v.addEventListener("canplay", play, { once: true });
+    }
+  };
+
+  const handleLeave = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    const finish = () => parkAtEnd();
+    const p = playPromiseRef.current;
+    playPromiseRef.current = null;
+    if (p && typeof p.then === "function") {
+      p.then(finish).catch(finish);
+    } else {
+      v.pause();
+      finish();
+    }
+  };
+
+  const handleEnded = () => {
+    parkAtEnd();
+    playPromiseRef.current = null;
+  };
+
+  if (mobile) {
+    return (
+      <a
+        href="#hero"
+        className="rail-logo rail-logo--static"
+        data-cursor-label="HOME"
+        aria-label="WINRVTE Home"
+      >
+        <span className="rail-logo-mark" aria-hidden="true">W</span>
+      </a>
+    );
+  }
+
+  return (
+    <a
+      href="#hero"
+      className="rail-logo"
+      data-cursor-label="HOME"
+      aria-label="WINRVTE Home"
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <video
+        ref={videoRef}
+        className="rail-logo-video"
+        src={LOGO_VIDEO}
+        muted
+        playsInline
+        preload="auto"
+        onLoadedData={parkAtEnd}
+        onLoadedMetadata={parkAtEnd}
+        onEnded={handleEnded}
+      />
+    </a>
+  );
+}
+
+function scrollAboutIntoDockView() {
   if (isAnchorNavigationActive()) return;
 
-  const problem = document.getElementById("problem");
-  if (!problem) return;
+  const about = document.getElementById("about");
+  if (!about) return;
 
-  const rect = problem.getBoundingClientRect();
+  const rect = about.getBoundingClientRect();
   const y = window.scrollY + rect.top - DOCK_BAR_H;
 
   const lenis = getLenis();
@@ -39,7 +160,6 @@ function scrollProblemIntoDockView() {
 export default function Rail() {
   const [active, setActive] = useState("hero");
   const [docked, setDocked] = useState(false);
-  const [clock, setClock] = useState("00:00 UTC");
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuHover, setMenuHover] = useState(false);
   const eqRef = useRef(null);
@@ -52,17 +172,6 @@ export default function Rail() {
 
   const activeSection = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
   const menuVisible = menuOpen || menuHover;
-
-  useEffect(() => {
-    const upd = () => {
-      const d = new Date();
-      const utc = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
-      setClock(`${pad(utc.getHours())}:${pad(utc.getMinutes())} UTC`);
-    };
-    upd();
-    const iv = setInterval(upd, 1000 * 30);
-    return () => clearInterval(iv);
-  }, []);
 
   const runSweep = useCallback((toDocked) => {
     if (lockRef.current) return;
@@ -78,7 +187,7 @@ export default function Rail() {
         ScrollTrigger.refresh();
         if (toDocked) {
           requestAnimationFrame(() => {
-            requestAnimationFrame(scrollProblemIntoDockView);
+            requestAnimationFrame(scrollAboutIntoDockView);
           });
         }
       },
@@ -91,7 +200,7 @@ export default function Rail() {
           setDocked(true);
           dockedRef.current = true;
           document.documentElement.style.setProperty("--rail", "0px");
-          requestAnimationFrame(scrollProblemIntoDockView);
+          requestAnimationFrame(scrollAboutIntoDockView);
         })
         .to(sw, { opacity: 0, duration: 0.25, ease: "power2.out" })
         .set(sw, { scaleX: 0, opacity: 1 });
@@ -218,6 +327,7 @@ export default function Rail() {
 
   const cls = [
     "rail",
+    active === "hero" && !docked && "is-on-hero",
     isInverted && !docked && "is-inverted",
     docked && "is-docked",
     docked && menuVisible && "is-menu-visible",
@@ -232,14 +342,7 @@ export default function Rail() {
         onMouseEnter={() => { if (docked) setMenuHover(true); }}
         onMouseLeave={() => { if (docked) setMenuHover(false); }}
       >
-        <a href="#hero" className="rail-logo" data-cursor-label="HOME" aria-label="WINRVTE Home">
-          <span className="logo-mark" aria-hidden="true">
-            <span className="logo-w">W</span>
-            <span className="logo-in">IN</span>
-            <span className="logo-r">R</span>
-            <span className="logo-vte">VTE</span>
-          </span>
-        </a>
+        <RailLogo />
 
         {!docked && (
           <div className="rail-eq" ref={eqRef} aria-hidden="true">
@@ -300,8 +403,13 @@ export default function Rail() {
 
         {docked ? (
           <div className="rail-dock-right" aria-live="polite">
-            <span className="rail-dock-right-k">Current</span>
-            <span className="rail-dock-right-v">{activeSection.label}</span>
+            <div className="rail-dock-status">
+              <span className="rail-dock-right-k">Section</span>
+              <span className="rail-dock-right-v">{activeSection.label}</span>
+            </div>
+            <a href="#contact" className="rail-dock-cta" onClick={closeMenu}>
+              Contact
+            </a>
           </div>
         ) : (
           <div className="rail-foot">

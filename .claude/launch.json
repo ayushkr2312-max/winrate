@@ -13,6 +13,13 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3003
+    },
+    {
+      "name": "schedule-bot-video",
+      "cwd": "public/schedule-bot-video",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", ".", "--listen", "3099", "--no-clipboard"],
+      "port": 3099
     }
   ]
 }

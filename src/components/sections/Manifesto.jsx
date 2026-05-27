@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import AnimatedHeading from "../primitives/AnimatedHeading";
-import Magnetic from "../primitives/Magnetic";
 
 const ROWS = [
   {
@@ -45,7 +44,7 @@ export default function Manifesto() {
     <section className="sect manifesto" id="manifesto">
       <div className="sect-inner">
         <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
-          <span className="num">06</span> About
+          <span className="num">06</span> Manifesto
         </motion.span>
         <div className="manifesto-head">
           <AnimatedHeading
@@ -81,16 +80,6 @@ export default function Manifesto() {
             </motion.div>
           ))}
         </div>
-
-        <motion.div className="manifesto-cta" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.3 }} variants={fadeUp}>
-          <div className="manifesto-cta-left">
-            <h3>Let&apos;s discuss your org</h3>
-            <p>Share your current setup, biggest bottlenecks, and budget range. We&apos;ll suggest the most practical first move.</p>
-          </div>
-          <Magnetic as="a" href="#contact" className="btn-submit" data-cursor-label="GO" strength={0.32}>
-            Book a Call →
-          </Magnetic>
-        </motion.div>
       </div>
     </section>
   );

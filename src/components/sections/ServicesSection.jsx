@@ -32,21 +32,9 @@ const SERVICES = [
   },
   {
     n: "03",
-    name: "Operations Optimization",
-    tag: "Esports Ops",
-    desc: "We look at how your org actually runs, find the bottlenecks and inefficiencies costing you time and money, and fix them with better processes and tooling. Not generic consulting — built from real experience inside growing esports orgs.",
-    tags: ["Process Design", "Staff Workflows", "Reporting", "Comms Structure", "Internal Tools"],
-    delivery: "Custom Scoped",
-    stat: "10+",
-    statLabel: "types of org inefficiencies solved",
-    steps: ["Diagnose", "Prioritize", "Design", "Implement", "Optimize"],
-    outcome: "Your org runs leaner, faster, and with significantly less friction.",
-  },
-  {
-    n: "04",
     name: "Analyst Support & Prep Tools",
     tag: "Performance Tech",
-    desc: "We build tools that simplify opponent prep and team data management — scraping public data, structuring it cleanly, and giving your analysts and coaches practical systems to work from instead of scattered notes.",
+    desc: "We build tools that simplify opponent prep and team data management — scraping public data, structuring it cleanly, and giving your players and teams practical systems to work from instead of scattered notes.",
     tags: ["Python", "Data Scraping", "Notion", "Google Sheets", "Custom Tools"],
     delivery: "Custom Scoped",
     stat: "3×",
@@ -55,7 +43,7 @@ const SERVICES = [
     outcome: "Analysts and coaches spend less time organizing and more time finding the edge.",
   },
   {
-    n: "05",
+    n: "04",
     name: "Network & Resource Sourcing",
     tag: "Industry Connections",
     desc: "Finding the right people at the right price is harder than it should be. We have a strong network across the esports ecosystem and can connect your org with the staff, creatives, players, and vendors you actually need.",
@@ -67,7 +55,7 @@ const SERVICES = [
     outcome: "Get the right people and resources for what you can actually afford.",
   },
   {
-    n: "06",
+    n: "05",
     name: "Custom Solutions",
     tag: "Bespoke Builds",
     desc: "Not every problem fits a standard service. We work with individual teams and orgs to build exactly what they need — unique tooling, specific workflow improvements, data management setups, or operational frameworks built from scratch.",
@@ -80,11 +68,22 @@ const SERVICES = [
   },
 ];
 
-function ServiceIndexItem({ svc, isActive, onHover }) {
+function ServiceIndexItem({ svc, isActive, onSelect }) {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect();
+    }
+  };
+
   return (
     <div
+      role="button"
+      aria-pressed={isActive}
       className={"svc-index-item" + (isActive ? " is-active" : "")}
-      onMouseEnter={onHover}
+      onClick={onSelect}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
     >
       <div className="svc-index-bar" />
       <span className="svc-index-num">{svc.n}</span>
@@ -255,7 +254,7 @@ export default function ServicesSection() {
               <span className="svc-pulse-dot" />
               06 Services Active
             </div>
-            <p className="svc-head-hint">Hover any service to explore its scope and approach.</p>
+            <p className="svc-head-hint">Click any service to explore its scope and approach.</p>
           </div>
         </div>
 
@@ -263,14 +262,16 @@ export default function ServicesSection() {
         <div className="svc-layout">
           {/* Left: service index */}
           <div className="svc-index">
-            {SERVICES.map((s, i) => (
-              <ServiceIndexItem
-                key={i}
-                svc={s}
-                isActive={active === i}
-                onHover={() => go(i)}
-              />
-            ))}
+            <div className="svc-index-list">
+              {SERVICES.map((s, i) => (
+                <ServiceIndexItem
+                  key={i}
+                  svc={s}
+                  isActive={active === i}
+                  onSelect={() => go(i)}
+                />
+              ))}
+            </div>
             <div className="svc-index-footer">
               <p>Every engagement is fully custom — no packages, no guesswork.</p>
               <a href="#contact" className="svc-start-link">

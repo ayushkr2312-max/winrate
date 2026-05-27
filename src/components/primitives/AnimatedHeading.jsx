@@ -36,7 +36,11 @@ export default function AnimatedHeading({
             <span key={i} className="row">
               <span className="inner">
                 {row.parts.map((p, j) => {
-                  const cls = p.accent ? "accent" : p.stroke ? "stroke" : "";
+                  const cls = [
+                    p.accent && "accent",
+                    p.stroke && "stroke",
+                    p.className,
+                  ].filter(Boolean).join(" ");
                   const delay = baseDelay + cumulative * stagger;
                   cumulative += lengthOf(p.text);
                   return (
