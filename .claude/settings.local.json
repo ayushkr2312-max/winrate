@@ -3,7 +3,8 @@
     "allow": [
       "PowerShell(npm install --no-audit --no-fund --legacy-peer-deps 2>&1)",
       "Bash(\"/c/Program Files/nodejs/npm.cmd\" install --no-audit --no-fund --legacy-peer-deps)",
-      "Bash(\"/c/Program Files/nodejs/npm.cmd\" run build)"
+      "Bash(\"/c/Program Files/nodejs/npm.cmd\" run build)",
+      "Bash(npx craco *)"
     ]
   }
 }

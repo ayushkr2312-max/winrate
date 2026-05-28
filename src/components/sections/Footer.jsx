@@ -19,7 +19,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="footer">
-      <motion.div className="footer-inner" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.15 }} variants={staggerContainer}>
+      <motion.div className="footer-inner" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} variants={staggerContainer}>
         <motion.div variants={staggerChild}>
           <div className="footer-brand-mark">WIN<span className="a">R</span>VTE</div>
           <p className="footer-brand-line">Esports operations and systems agency. Built in it, not adapted for it.</p>
@@ -36,7 +36,7 @@ export default function Footer() {
             <a href="#about" className="footer-link">About Us</a>
             <a href="#problem" className="footer-link">Problems</a>
             <a href="#solutions" className="footer-link">Solutions</a>
-            <a href="#what-we-do" className="footer-link">Why Winrvte</a>
+            <a href="#what-we-do" className="footer-link">Process</a>
           </div>
         </motion.div>
 
@@ -60,7 +60,7 @@ export default function Footer() {
         </motion.div>
       </motion.div>
 
-      <motion.div className="footer-bottom" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+      <motion.div className="footer-bottom" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
         <span>© {year} WINRVTE TECH AGENCY. All rights reserved.</span>
         <span>Made for esports. <span className="lime">Not adapted for it.</span></span>
       </motion.div>

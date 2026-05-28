@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
 import AnimatedHeading from "../primitives/AnimatedHeading";
 import LazyVideo from "../primitives/LazyVideo";
@@ -148,7 +148,7 @@ const panelVariants = {
   },
 };
 
-function ServiceDetailPanel({ svc }) {
+function ServiceDetailPanel({ svc, playVisuals }) {
   const isWebDev = svc.n === "05";
   const visualEntry = VISUAL_MAP[svc.n];
   const VisualComponent = visualEntry?.Component;
@@ -204,7 +204,7 @@ function ServiceDetailPanel({ svc }) {
                 overflow: "hidden",
               }}
             >
-              <VisualComponent active />
+              <VisualComponent active={playVisuals} />
             </div>
             <div className="svc-reel-footer">
               <span>{svc.outcome}</span>
@@ -219,7 +219,8 @@ function ServiceDetailPanel({ svc }) {
             <div className="svc-reel-frame">
               <LazyVideo
                 className="svc-reel-video"
-                src="/new-web.webm"
+                src="/new-web-reel.webm"
+                poster="/new-web-reel-poster.webp"
                 autoPlayWhenVisible
                 loop
               />
@@ -260,15 +261,28 @@ function ServiceDetailPanel({ svc }) {
 
 export default function Solutions() {
   const [active, setActive] = useState(0);
+  const [playVisuals, setPlayVisuals] = useState(false);
+  const sectionRef = useRef(null);
 
   const go = useCallback((i) => {
     setActive((current) => (current === i ? current : i));
   }, []);
 
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => setPlayVisuals(entry.isIntersecting),
+      { threshold: 0.08, rootMargin: "0px 0px -10% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const svc = SERVICES[active];
 
   return (
-    <section className="sect solutions" id="solutions">
+    <section className="sect solutions" id="solutions" ref={sectionRef}>
       <div
         className="svc-watermark"
         aria-hidden="true"
@@ -280,7 +294,7 @@ export default function Solutions() {
       <div className="sect-inner">
         <div className="sol-head">
           <div>
-            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
               <span className="num">03</span> Solutions
             </motion.span>
             <AnimatedHeading
@@ -291,7 +305,7 @@ export default function Solutions() {
               ]}
             />
           </div>
-          <motion.div className="sol-head-meta" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+          <motion.div className="sol-head-meta" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
             <div className="svc-active-indicator">
               <span className="svc-pulse-dot" />
               <span>Six services. One partner.</span>
@@ -301,7 +315,7 @@ export default function Solutions() {
         </div>
 
         <LayoutGroup>
-          <motion.div className="svc-layout" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.1 }} variants={fadeUp}>
+          <motion.div className="svc-layout" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={fadeUp}>
             <div className="svc-index">
               <div className="svc-index-list">
                 {SERVICES.map((s, i) => (
@@ -321,7 +335,7 @@ export default function Solutions() {
 
             <div className="svc-detail-wrap">
               <AnimatePresence mode="wait">
-                <ServiceDetailPanel svc={svc} />
+                <ServiceDetailPanel svc={svc} playVisuals={playVisuals} />
               </AnimatePresence>
             </div>
           </motion.div>

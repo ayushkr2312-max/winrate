@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getLenis, isAnchorNavigationActive } from "@/hooks/useLenis";
-import { MQ_MOBILE, isMobileViewport } from "@/lib/device";
+import RailLogo from "./RailLogo";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,134 +11,12 @@ const SECTIONS = [
   { id: "about",      label: "About Us",    num: "02" },
   { id: "problem",    label: "Problems",    num: "03" },
   { id: "solutions",  label: "Solutions",   num: "04" },
-  { id: "what-we-do", label: "Why Winrvte", num: "05" },
+  { id: "what-we-do", label: "Process", num: "05" },
   { id: "manifesto",  label: "Manifesto",   num: "06" },
   { id: "contact",    label: "Contact",     num: "07" },
 ];
 
 const DOCK_BAR_H = 48;
-const LOGO_VIDEO = "/luma-dot-bg.webm";
-
-function RailLogo() {
-  const videoRef = useRef(null);
-  const playPromiseRef = useRef(null);
-  const [mobile, setMobile] = useState(false);
-
-  useEffect(() => {
-    const sync = () => setMobile(isMobileViewport());
-    sync();
-    const mq = window.matchMedia(MQ_MOBILE);
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  const seekToEnd = useCallback(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (!Number.isFinite(v.duration) || v.duration <= 0) return;
-    v.pause();
-    v.currentTime = Math.max(0, v.duration - 0.04);
-  }, []);
-
-  const parkAtEnd = useCallback(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (Number.isFinite(v.duration) && v.duration > 0) {
-      seekToEnd();
-      return;
-    }
-    const onMeta = () => seekToEnd();
-    v.addEventListener("loadedmetadata", onMeta, { once: true });
-  }, [seekToEnd]);
-
-  useEffect(() => {
-    if (mobile) return;
-    const v = videoRef.current;
-    if (!v) return;
-
-    const onReady = () => parkAtEnd();
-    v.addEventListener("loadeddata", onReady);
-    v.addEventListener("loadedmetadata", onReady);
-    if (v.readyState >= HTMLMediaElement.HAVE_METADATA) onReady();
-    v.load();
-
-    return () => {
-      v.removeEventListener("loadeddata", onReady);
-      v.removeEventListener("loadedmetadata", onReady);
-    };
-  }, [mobile, parkAtEnd]);
-
-  const handleEnter = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    const play = () => {
-      v.currentTime = 0;
-      const result = v.play();
-      playPromiseRef.current =
-        result && typeof result.then === "function" ? result : null;
-    };
-    if (v.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-      play();
-    } else {
-      v.addEventListener("canplay", play, { once: true });
-    }
-  };
-
-  const handleLeave = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    const finish = () => parkAtEnd();
-    const p = playPromiseRef.current;
-    playPromiseRef.current = null;
-    if (p && typeof p.then === "function") {
-      p.then(finish).catch(finish);
-    } else {
-      v.pause();
-      finish();
-    }
-  };
-
-  const handleEnded = () => {
-    parkAtEnd();
-    playPromiseRef.current = null;
-  };
-
-  if (mobile) {
-    return (
-      <a
-        href="#hero"
-        className="rail-logo rail-logo--static"
-        data-cursor-label="HOME"
-        aria-label="WINRVTE Home"
-      >
-        <span className="rail-logo-mark" aria-hidden="true">W</span>
-      </a>
-    );
-  }
-
-  return (
-    <a
-      href="#hero"
-      className="rail-logo"
-      data-cursor-label="HOME"
-      aria-label="WINRVTE Home"
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-    >
-      <video
-        ref={videoRef}
-        className="rail-logo-video"
-        src={LOGO_VIDEO}
-        muted
-        playsInline
-        preload="auto"
-        onLoadedData={parkAtEnd}
-        onLoadedMetadata={parkAtEnd}
-        onEnded={handleEnded}
-      />
-    </a>
-  );
-}
 
 function scrollAboutIntoDockView() {
   if (isAnchorNavigationActive()) return;
@@ -267,7 +145,7 @@ export default function Rail() {
       }
 
       if (eqBars.length > 0) {
-        const scrollBucket = Math.round(scrolled / 2);
+        const scrollBucket = Math.round(scrolled / 12);
         if (String(scrollBucket) === lastEqKey) return;
         lastEqKey = String(scrollBucket);
         eqBars.forEach((b, i) => {

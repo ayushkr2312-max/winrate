@@ -4,7 +4,7 @@ const LINKS = [
   { id: "about", label: "About Us", idx: "01" },
   { id: "problem", label: "Problems", idx: "02" },
   { id: "solutions", label: "Solutions", idx: "03" },
-  { id: "what-we-do", label: "Why Winrvte", idx: "04" },
+  { id: "what-we-do", label: "Process", idx: "04" },
   { id: "manifesto", label: "Manifesto", idx: "05" },
   { id: "contact", label: "Contact", idx: "06" },
 ];

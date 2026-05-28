@@ -57,7 +57,7 @@ export default function Contact() {
       <div className="sect-inner">
         <div className="contact-inner-grid">
           <div>
-            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
               <span className="num">07</span> Contact
             </motion.span>
             <div className="contact-headline">
@@ -72,7 +72,7 @@ export default function Contact() {
               </span>
             </div>
 
-            <motion.div className="contact-chips" data-cursor-label="PICK" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.3 }} variants={staggerContainer}>
+            <motion.div className="contact-chips" data-cursor-label="PICK" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }} variants={staggerContainer}>
               {TOPICS.map((t) => {
                 const isOn = topics.has(t);
                 return (
@@ -95,7 +95,7 @@ export default function Contact() {
               })}
             </motion.div>
 
-            <motion.form className="contact-form" onSubmit={onSubmit} noValidate initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.15 }} variants={staggerContainer}>
+            <motion.form className="contact-form" onSubmit={onSubmit} noValidate initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} variants={staggerContainer}>
               <motion.div className="cf-field" variants={staggerChild}>
                 <label htmlFor="cf-name">Name</label>
                 <input type="text" id="cf-name" name="name" placeholder="Your full name" required autoComplete="name" />
@@ -121,7 +121,7 @@ export default function Contact() {
             </motion.form>
           </div>
 
-          <motion.div className="contact-right" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}>
+          <motion.div className="contact-right" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
             <div className="contact-card">
               <div className="contact-card-head">
                 <span>// DIRECT LINE</span>

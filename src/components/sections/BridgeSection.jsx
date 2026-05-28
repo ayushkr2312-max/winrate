@@ -63,7 +63,7 @@ export default function BridgeSection() {
       <div className="sect-inner">
         <div className="challenge-head">
           <div>
-            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
               <span className="num">03</span> Problems
             </motion.span>
             <AnimatedHeading
@@ -73,7 +73,7 @@ export default function BridgeSection() {
               ]}
             />
           </div>
-          <motion.p initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+          <motion.p initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
             These aren't failures — they're growth signals. Most orgs hit the
             same walls once they start scaling past the founding team.
           </motion.p>
@@ -88,7 +88,7 @@ export default function BridgeSection() {
               initial="hidden"
               whileInView="show"
               whileHover={{ x: -6, y: -6, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
-              viewport={{ once: false, amount: 0.15 }}
+              viewport={{ once: true, amount: 0.15 }}
               variants={cardVariants}
               style={{ transformPerspective: 1200 }}
             >

@@ -77,9 +77,21 @@ export default function HeroCanvas() {
     const GATHER_F = 20;
 
     let rafId;
+    let heroVisible = true;
+    const heroEl = document.getElementById("hero");
+    const heroObserver = heroEl
+      ? new IntersectionObserver(
+          ([entry]) => {
+            heroVisible = entry.isIntersecting;
+          },
+          { threshold: 0, rootMargin: "120px 0px" },
+        )
+      : null;
+    heroObserver?.observe(heroEl);
+
     function draw() {
       const now = performance.now();
-      if (document.hidden) {
+      if (document.hidden || !heroVisible) {
         rafId = requestAnimationFrame(draw);
         return;
       }
@@ -144,6 +156,7 @@ export default function HeroCanvas() {
     return () => {
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(pillAttachId);
+      heroObserver?.disconnect();
       window.removeEventListener("resize", resize);
       if (canvas._pill) {
         canvas._pill.removeEventListener("mouseenter", canvas._onEnter);

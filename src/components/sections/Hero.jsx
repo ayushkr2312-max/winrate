@@ -154,9 +154,8 @@ export default function Hero({ playEntrance }) {
         scrollTrigger = ScrollTrigger.create({
           trigger: hero,
           start: "top top",
-          end: mobile ? "bottom top" : "+=120",
-          pin: !mobile,
-          anticipatePin: 1,
+          end: mobile ? "bottom top" : "+=100",
+          pin: false,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const threshold = mobile ? 0.04 : 0.15;

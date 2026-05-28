@@ -34,7 +34,15 @@ export function useLenis() {
     const enableLenis = shouldUseLenis();
 
     if (!enableLenis) {
-      const onScroll = () => ScrollTrigger.update();
+      let rafPending = false;
+      const onScroll = () => {
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(() => {
+          rafPending = false;
+          ScrollTrigger.update();
+        });
+      };
       window.addEventListener("scroll", onScroll, { passive: true });
       return () => window.removeEventListener("scroll", onScroll);
     }

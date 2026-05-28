@@ -53,6 +53,7 @@ export default function AnimatedHeading({
                       duration={1.0}
                       delay={delay}
                       trigger={triggerStart}
+                      once
                     />
                   );
                 })}
@@ -70,6 +71,7 @@ export default function AnimatedHeading({
                 duration={1.0}
                 delay={baseDelay}
                 trigger={triggerStart}
+                once
               />
             </span>
           </span>

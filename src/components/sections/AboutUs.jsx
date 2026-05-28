@@ -92,7 +92,7 @@ function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
       className="ab-box ab-ml ab-marquee"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
-      viewport={{ once: false, amount: 0.15 }}
+      viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={handleMarqueeLeave}
@@ -174,7 +174,7 @@ function PlaceholderBox({ box, delay = 0 }) {
       className={`ab-box ${box.cls}${box.video ? " ab-box--video" : ""}`}
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
-      viewport={{ once: false, amount: 0.15 }}
+      viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={box.video ? handleEnter : undefined}
       onMouseLeave={box.video ? handleLeave : undefined}
@@ -232,7 +232,7 @@ export default function AboutUs() {
           className="ab-center"
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: false, amount: 0.35 }}
+          viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="ab-center-glow" aria-hidden="true" />

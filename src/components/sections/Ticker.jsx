@@ -7,7 +7,6 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * Ticker — replaces generic marquee. Each item is a typed datum
  * (timestamp + region + label + value) so it reads like a real ops feed.
- * Drift speed is bound to scroll velocity (scroll forward → speed up).
  */
 const ITEMS = [
   { t: "00:01:14", label: "SYSTEMS", val: "WORKFLOW AUTOMATION" },
@@ -21,13 +20,17 @@ const ITEMS = [
 ];
 
 export default function Ticker({ invert = false }) {
+  const wrapRef = useRef(null);
   const railRef = useRef(null);
 
   useEffect(() => {
+    const wrap = wrapRef.current;
     const rail = railRef.current;
-    if (!rail) return;
+    if (!wrap || !rail) return;
 
-    // duplicate content into rail for seamless loop
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return undefined;
+
     const inner = rail.firstElementChild;
     rail.appendChild(inner.cloneNode(true));
 
@@ -39,39 +42,22 @@ export default function Ticker({ invert = false }) {
       repeat: -1,
     });
 
-    // bind speed to scroll velocity — speeds up on forward scroll, slows on reverse
-    let lastY = window.scrollY;
-    let rafId = 0;
-    let settleTimeout;
-    const onScroll = () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        const y = window.scrollY;
-        const velo = y - lastY;
-        lastY = y;
-        const target = 1 + Math.min(Math.abs(velo) / 18, 2.5);
-        const dir = velo >= 0 ? 1 : -0.5;
-        gsap.to(tween, { timeScale: target * dir, duration: 0.5, overwrite: true });
-      });
-
-      clearTimeout(settleTimeout);
-      settleTimeout = setTimeout(() => {
-        gsap.to(tween, { timeScale: 1, duration: 0.8, overwrite: true });
-      }, 180);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        tween.paused(!entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: "80px 0px" },
+    );
+    io.observe(wrap);
 
     return () => {
+      io.disconnect();
       tween.kill();
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(settleTimeout);
-      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [invert]);
 
   return (
-    <div className={"ticker" + (invert ? " invert" : "")} aria-hidden="true">
+    <div ref={wrapRef} className={"ticker" + (invert ? " invert" : "")} aria-hidden="true">
       <div className="ticker-rail" ref={railRef}>
         <div style={{ display: "flex", flexShrink: 0 }}>
           {ITEMS.map((it, i) => (
