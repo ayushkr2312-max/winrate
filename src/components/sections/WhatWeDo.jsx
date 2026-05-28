@@ -29,7 +29,7 @@ const STEPS = [
   },
 ];
 
-const INTERVAL = 3500;
+const INTERVAL = 7000;
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -159,7 +159,7 @@ export default function WhatWeDo() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
                       >
                         <p className="wwd-step-detail">{step.detail}</p>
                         <ul className="wwd-step-tags">

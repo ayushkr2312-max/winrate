@@ -6974,7 +6974,7 @@ html.is-mobile .hero-canvas {
 .wwd-rh-pipeline-head {
   position: relative;
   z-index: 1;
-  padding: clamp(1.4rem, 2.5vw, 2rem) clamp(1.5rem, 2.5vw, 2.2rem) clamp(1.25rem, 2vw, 1.6rem);
+  padding: clamp(1rem, 1.8vw, 1.4rem) clamp(1rem, 1.6vw, 1.4rem) clamp(.85rem, 1.4vw, 1.1rem);
   border-bottom: 1px solid rgba(102,232,255,0.1);
   background: rgba(0,0,0,.22);
 }
@@ -7002,17 +7002,15 @@ html.is-mobile .hero-canvas {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   list-style: none;
-  min-height: clamp(170px, 20vh, 260px);
 }
 
 .wwd-rh-step {
-  padding: clamp(1.4rem, 2.2vw, 2rem) clamp(1.25rem, 1.8vw, 1.65rem);
+  padding: clamp(1rem, 1.6vw, 1.4rem) clamp(1rem, 1.4vw, 1.3rem);
   border-right: 1px solid rgba(102,232,255,0.08);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: clamp(170px, 20vh, 260px);
   transition: background .28s ease, border-color .28s ease;
 }
 .wwd-rh-step:hover,
@@ -7024,24 +7022,24 @@ html.is-mobile .hero-canvas {
 .wwd-rh-step-num {
   display: block;
   font-family: var(--f-mono);
-  font-size: .58rem;
+  font-size: .55rem;
   letter-spacing: .14em;
   color: var(--lime);
-  margin-bottom: clamp(.55rem, 1vw, .8rem);
+  margin-bottom: .4rem;
 }
 .wwd-rh-step h4 {
   font-family: var(--f-sub);
-  font-size: clamp(.95rem, 1.25vw, 1.1rem);
+  font-size: clamp(.85rem, 1.1vw, .98rem);
   font-weight: 700;
   color: var(--white);
-  margin-bottom: clamp(.4rem, .7vw, .55rem);
+  margin-bottom: .3rem;
   line-height: 1.2;
 }
 .wwd-rh-step p {
-  font-size: clamp(.75rem, .9vw, .82rem);
+  font-size: clamp(.7rem, .82vw, .77rem);
   color: rgba(240,240,238,0.52);
-  line-height: 1.6;
-  max-width: 26ch;
+  line-height: 1.55;
+  max-width: 24ch;
 }
 .wwd-rh-step-body {
   flex: 1;
@@ -7308,7 +7306,7 @@ html.is-mobile .hero-canvas {
 
 .wwd-rh-step {
   outline: none;
-  transition: background .55s ease, box-shadow .55s ease;
+  transition: background 1.8s ease, box-shadow 1.8s ease;
 }
 
 .wwd-rh-step.is-active {
@@ -7324,7 +7322,7 @@ html.is-mobile .hero-canvas {
   height: 2px;
   background: var(--lime);
   transform-origin: left center;
-  animation: pipe-progress 3.5s linear forwards;
+  animation: pipe-progress 7s linear forwards;
   box-shadow: 0 0 8px rgba(182,255,30,.55);
 }
 
@@ -7333,31 +7331,31 @@ html.is-mobile .hero-canvas {
 }
 
 .wwd-step-detail {
-  font-size: clamp(.72rem, .85vw, .8rem);
-  color: rgba(240,240,238,.58);
-  line-height: 1.65;
-  margin-top: .5rem;
-  max-width: 26ch;
+  font-size: clamp(.68rem, .8vw, .75rem);
+  color: rgba(240,240,238,.55);
+  line-height: 1.6;
+  margin-top: .4rem;
+  max-width: 24ch;
 }
 
 .wwd-step-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: .32rem;
+  gap: .25rem;
   list-style: none;
-  margin-top: .8rem;
+  margin-top: .55rem;
 }
 
 .wwd-step-tags li {
   font-family: var(--f-mono);
-  font-size: .54rem;
+  font-size: .5rem;
   letter-spacing: .09em;
   text-transform: uppercase;
   color: var(--lime);
   background: rgba(182,255,30,.07);
   border: 1px solid rgba(182,255,30,.2);
   border-radius: 2px;
-  padding: .18rem .42rem;
+  padding: .14rem .36rem;
   line-height: 1.4;
 }
 
@@ -7381,7 +7379,7 @@ html.is-mobile .hero-canvas {
   pointer-events: none;
   z-index: 0;
   background: radial-gradient(ellipse at 50% 80%, rgba(182,255,30,.08) 0%, transparent 68%);
-  transition: transform .75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
