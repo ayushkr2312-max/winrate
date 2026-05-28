@@ -741,15 +741,15 @@ export function VisualRoster({ active }) {
    orbiting around it, connected by lines. Positions computed
    each frame via GSAP onUpdate for correct circular motion.
 ─────────────────────────────────────────────────────────────── */
+const GT_CX = 140;
+const GT_CY = 140;
+const GT_HUB_R = 34;
+const GT_ORBIT_R = 95;
+const GT_OFFSETS = [150, 270, 30];
+
 export function VisualGrowthTracking({ active }) {
   const ref = useRef(null);
   const orbitRef = useRef({ angle: 0 });
-
-  const CX = 140;
-  const CY = 140;
-  const HUB_R = 34;
-  const ORBIT_R = 95;
-  const OFFSETS = [150, 270, 30];
 
   useEffect(() => {
     if (!active) return;
@@ -767,10 +767,10 @@ export function VisualGrowthTracking({ active }) {
       repeat: -1,
       onUpdate: () => {
         const a = orbitRef.current.angle;
-        OFFSETS.forEach((offset, i) => {
+        GT_OFFSETS.forEach((offset, i) => {
           const rad = ((a + offset) * Math.PI) / 180;
-          const px = CX + ORBIT_R * Math.cos(rad);
-          const py = CY + ORBIT_R * Math.sin(rad);
+          const px = GT_CX + GT_ORBIT_R * Math.cos(rad);
+          const py = GT_CY + GT_ORBIT_R * Math.sin(rad);
           lines[i]?.setAttribute("x2", String(px));
           lines[i]?.setAttribute("y2", String(py));
           icons[i]?.setAttribute("transform", `translate(${px},${py})`);
@@ -796,27 +796,27 @@ export function VisualGrowthTracking({ active }) {
 
       <svg viewBox="0 0 280 280" style={{ width: "100%", maxWidth: 340 }}>
         {/* connection lines */}
-        <line className="gt-line" x1={CX} y1={CY} x2={CX} y2={CY} stroke="rgba(255,255,255,.2)" strokeWidth="1.2" />
-        <line className="gt-line" x1={CX} y1={CY} x2={CX} y2={CY} stroke="rgba(169,112,255,.3)" strokeWidth="1.2" />
-        <line className="gt-line" x1={CX} y1={CY} x2={CX} y2={CY} stroke="rgba(255,60,60,.25)" strokeWidth="1.2" />
+        <line className="gt-line" x1={GT_CX} y1={GT_CY} x2={GT_CX} y2={GT_CY} stroke="rgba(255,255,255,.2)" strokeWidth="1.2" />
+        <line className="gt-line" x1={GT_CX} y1={GT_CY} x2={GT_CX} y2={GT_CY} stroke="rgba(169,112,255,.3)" strokeWidth="1.2" />
+        <line className="gt-line" x1={GT_CX} y1={GT_CY} x2={GT_CX} y2={GT_CY} stroke="rgba(255,60,60,.25)" strokeWidth="1.2" />
 
         {/* center hub */}
         <g className="gt-hub-circle">
-          <circle cx={CX} cy={CY} r={HUB_R} fill="rgba(6,6,8,.94)" stroke="rgba(182,255,30,.45)" strokeWidth="1.6" />
-          <circle cx={CX} cy={CY} r={HUB_R + 2} fill="none" stroke="rgba(182,255,30,.07)" strokeWidth="4" />
-          <text x={CX} y={CY + 4} textAnchor="middle" style={{ font: "900 12px var(--f-display)", letterSpacing: ".06em" }}>
+          <circle cx={GT_CX} cy={GT_CY} r={GT_HUB_R} fill="rgba(6,6,8,.94)" stroke="rgba(182,255,30,.45)" strokeWidth="1.6" />
+          <circle cx={GT_CX} cy={GT_CY} r={GT_HUB_R + 2} fill="none" stroke="rgba(182,255,30,.07)" strokeWidth="4" />
+          <text x={GT_CX} y={GT_CY + 4} textAnchor="middle" style={{ font: "900 12px var(--f-display)", letterSpacing: ".06em" }}>
             <tspan fill="var(--lime)">WIN</tspan><tspan fill="var(--white)">RVTE</tspan>
           </text>
         </g>
 
         {/* X / Twitter */}
-        <g className="gt-icon" transform={`translate(${CX},${CY})`}>
+        <g className="gt-icon" transform={`translate(${GT_CX},${GT_CY})`}>
           <rect x="-18" y="-18" width="36" height="36" rx="8" fill="rgba(12,12,14,.92)" stroke="rgba(255,255,255,.3)" strokeWidth="1" />
           <path d="M-5,-6 L-1.5,-1 L-5.5,6 L-3,6 L0,1.5 L3,6 L5.5,6 L1.5,-1 L5,-6 L2.5,-6 L0,-1.5 L-2.5,-6Z" fill="var(--white)" />
         </g>
 
         {/* Twitch */}
-        <g className="gt-icon" transform={`translate(${CX},${CY})`}>
+        <g className="gt-icon" transform={`translate(${GT_CX},${GT_CY})`}>
           <rect x="-18" y="-18" width="36" height="36" rx="8" fill="rgba(12,12,14,.92)" stroke="rgba(169,112,255,.35)" strokeWidth="1" />
           <g>
             <path d="M-6.5,-8 L-8,-5 L-8,5 L-4.5,5 L-4.5,7.5 L-2,7.5 L0.5,5 L4,5 L7.5,1.5 L7.5,-8Z" fill="none" stroke="rgb(169,112,255)" strokeWidth="1.3" strokeLinejoin="round" />
@@ -827,7 +827,7 @@ export function VisualGrowthTracking({ active }) {
         </g>
 
         {/* YouTube */}
-        <g className="gt-icon" transform={`translate(${CX},${CY})`}>
+        <g className="gt-icon" transform={`translate(${GT_CX},${GT_CY})`}>
           <rect x="-18" y="-18" width="36" height="36" rx="8" fill="rgba(12,12,14,.92)" stroke="rgba(255,60,60,.35)" strokeWidth="1" />
           <rect x="-9" y="-6" width="18" height="12" rx="3.5" fill="rgb(255,60,60)" />
           <polygon points="-2.5,-3.5 -2.5,3.5 4.5,0" fill="var(--white)" />
