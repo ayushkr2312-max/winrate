@@ -23,7 +23,7 @@ const STATUS_ITEMS = [
 const cellEnter = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: false, amount: 0.25 },
+  viewport: { once: true, amount: 0.25 },
   transition: { duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] },
 });
 
@@ -63,9 +63,9 @@ export default function SystemManifest() {
                 <motion.span
                   key={whoIdx}
                   className="sm-who"
-                  initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -18, filter: "blur(6px)" }}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -18 }}
                   transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {WHO_LIST[whoIdx]}

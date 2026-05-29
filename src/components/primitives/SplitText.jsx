@@ -34,7 +34,7 @@ export default function SplitText({
   y = 110,
   trigger = "top 85%",
   delay = 0,
-  once = false,
+  once = true,
   active = true,
 }) {
   const ref = useRef(null);

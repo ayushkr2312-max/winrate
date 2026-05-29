@@ -60,7 +60,7 @@ export default function ProblemToSolution() {
               custom={i}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               variants={shiftVariants}
             >
               <span className="pts-from">{s.from}</span>

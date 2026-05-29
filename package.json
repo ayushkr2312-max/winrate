@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@fontsource/dm-sans": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/orbitron": "^5.2.8",
     "@fontsource/space-grotesk": "^5.2.10",
@@ -22,8 +21,7 @@
     "react-scripts": "5.0.1",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
-    "tailwindcss-animate": "^1.0.7",
-    "three": "^0.184.0"
+    "tailwindcss-animate": "^1.0.7"
   },
   "scripts": {
     "start": "craco start",
