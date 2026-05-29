@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { prefersReducedMotion, isMobileViewport, isCoarsePointer } from "@/lib/device";
+import { isMobileViewport, isCoarsePointer } from "@/lib/device";
 
 /** Maps signal index → node id to pop out */
 export const SIGNAL_HOT = {
@@ -233,7 +233,7 @@ export default function WwdSystemMap({ laneId = "experience", accent = "lime", h
     const captionEl = captionRef.current;
     if (!host || !canvas) return;
 
-    const useFallback = prefersReducedMotion() || isMobileViewport() || isCoarsePointer();
+    const useFallback = isMobileViewport() || isCoarsePointer();
     host.dataset.mode = useFallback ? "fallback" : "webgl";
 
     if (useFallback) return undefined;

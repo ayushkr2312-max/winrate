@@ -1,5 +1,9 @@
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import AnimatedHeading from "../primitives/AnimatedHeading";
+import LazyVideo from "../primitives/LazyVideo";
+
+const MANIFESTO_BG_VIDEO = "/Repeater-Animation.webm";
 
 const ROWS = [
   {
@@ -40,11 +44,22 @@ const fadeUp = {
 };
 
 export default function Manifesto() {
+  const sectionRef = useRef(null);
+
   return (
-    <section className="sect manifesto" id="manifesto">
+    <section className="sect manifesto" id="manifesto" ref={sectionRef}>
+      <div className="manifesto-bg" aria-hidden="true">
+        <LazyVideo
+          className="manifesto-bg-video"
+          src={MANIFESTO_BG_VIDEO}
+          visibilityRootRef={sectionRef}
+          playbackRate={0.4}
+          loop
+        />
+      </div>
       <div className="sect-inner">
         <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
-          <span className="num">06</span> Manifesto
+          <span className="num">05</span> Manifesto
         </motion.span>
         <div className="manifesto-head">
           <AnimatedHeading

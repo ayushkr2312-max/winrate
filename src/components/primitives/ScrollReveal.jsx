@@ -34,18 +34,12 @@ export default function ScrollReveal({
     const root = ref.current;
     if (!root) return;
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const targets = selector
       ? root.querySelectorAll(selector)
       : Array.from(root.querySelectorAll("[data-reveal]"));
 
     const els = targets.length ? Array.from(targets) : Array.from(root.children);
     if (els.length === 0) return;
-
-    if (prefersReduced) {
-      gsap.set(els, { clearProps: "all" });
-      return;
-    }
 
     const initial = {
       y,

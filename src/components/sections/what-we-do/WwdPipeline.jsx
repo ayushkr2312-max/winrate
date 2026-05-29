@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
-import { prefersReducedMotion } from "@/lib/device";
 
 export default function WwdPipeline({ flow }) {
   const [activeStep, setActiveStep] = useState(0);
@@ -9,7 +8,6 @@ export default function WwdPipeline({ flow }) {
   const fillRef = useRef(null);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return undefined;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ".wwd-pipe-step",

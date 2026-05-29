@@ -6,8 +6,11 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 const LazyVideo = forwardRef(function LazyVideo({
   src,
   className = "",
-  rootMargin = "240px 0px",
+  rootMargin = "320px 0px",
   autoPlayWhenVisible = false,
+  visibilityRootRef = null,
+  visibilityThreshold = 0.06,
+  playbackRate = 1,
   onReady,
   ...rest
 }, forwardedRef) {
@@ -46,10 +49,36 @@ const LazyVideo = forwardRef(function LazyVideo({
   }, [src, rootMargin]);
 
   useEffect(() => {
-    if (!autoPlayWhenVisible || !loaded) return;
+    const el = ref.current;
+    if (!el || !loaded || playbackRate === 1) return;
+    el.playbackRate = playbackRate;
+  }, [loaded, playbackRate]);
+
+  useEffect(() => {
+    if (!loaded) return;
     const el = ref.current;
     if (!el) return;
-    const play = () => el.play().catch(() => {});
+
+    const root = visibilityRootRef?.current;
+    if (root) {
+      el.muted = true;
+      const play = () => { el.play().catch(() => {}); };
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) play();
+          else el.pause();
+        },
+        { threshold: visibilityThreshold },
+      );
+      io.observe(root);
+      const { top, bottom } = root.getBoundingClientRect();
+      if (bottom > 0 && top < window.innerHeight) play();
+      return () => io.disconnect();
+    }
+
+    if (!autoPlayWhenVisible) return undefined;
+
+    const play = () => { el.play().catch(() => {}); };
     play();
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -60,7 +89,7 @@ const LazyVideo = forwardRef(function LazyVideo({
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [autoPlayWhenVisible, loaded]);
+  }, [autoPlayWhenVisible, loaded, visibilityRootRef, visibilityThreshold]);
 
   return (
     <video

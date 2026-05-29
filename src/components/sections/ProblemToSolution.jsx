@@ -1,5 +1,9 @@
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import SplitText from "../primitives/SplitText";
+import LazyVideo from "../primitives/LazyVideo";
+
+const PTS_BG_VIDEO = "/Scene_x.webm";
 
 const SHIFTS = [
   { from: "Manual processes", to: "Automated workflows" },
@@ -25,8 +29,19 @@ const shiftVariants = {
 };
 
 export default function ProblemToSolution() {
+  const sectionRef = useRef(null);
+
   return (
-    <section className="pts">
+    <section className="pts" ref={sectionRef}>
+      <div className="pts-bg" aria-hidden="true">
+        <LazyVideo
+          className="pts-bg-video"
+          src={PTS_BG_VIDEO}
+          visibilityRootRef={sectionRef}
+          playbackRate={0.75}
+          loop
+        />
+      </div>
       <div className="pts-inner">
         <div className="pts-headline">
           <span className="pts-line">

@@ -15,30 +15,31 @@ import HeroCanvas from "@/components/hero/HeroCanvas";
 
 import Hero from "@/components/sections/Hero";
 import AboutUs from "@/components/sections/AboutUs";
-import SystemManifest from "@/components/sections/SystemManifest";
 import BridgeSection from "@/components/sections/BridgeSection";
 import ProblemToSolution from "@/components/sections/ProblemToSolution";
 import Solutions from "@/components/sections/Solutions";
 import Ticker from "@/components/sections/Ticker";
-import WhatWeDo from "@/components/sections/WhatWeDo";
 import Manifesto from "@/components/sections/Manifesto";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 
 export default function App() {
   const [booted, setBooted] = useState(false);
-  const { isMobile, reducedMotion, useLenis: lenisOn } = useDeviceProfile();
+  const { isMobile, useLenis: lenisOn } = useDeviceProfile();
   useLenis();
+
+  useEffect(() => {
+    document.title = "WINRVTE — Esports Technology Agency";
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle("is-mobile", isMobile);
-    root.classList.toggle("is-reduced-motion", reducedMotion);
     root.classList.toggle("is-lenis", lenisOn);
     return () => {
-      root.classList.remove("is-mobile", "is-reduced-motion", "is-lenis");
+      root.classList.remove("is-mobile", "is-lenis");
     };
-  }, [isMobile, reducedMotion, lenisOn]);
+  }, [isMobile, lenisOn]);
 
   const onBoot = useCallback(() => {
     setBooted(true);
@@ -49,7 +50,7 @@ export default function App() {
 
   return (
     <>
-      {!isMobile && <HeroCanvas />}
+      <HeroCanvas />
       <div className="site-watermark" aria-hidden="true">WINRVTE</div>
       <div className="scanlines" aria-hidden="true" />
       <TopProgress />
@@ -66,7 +67,6 @@ export default function App() {
       <ProblemToSolution />
       <Solutions />
       <Ticker invert />
-      <WhatWeDo />
       <Manifesto />
       <Contact />
       <Footer />

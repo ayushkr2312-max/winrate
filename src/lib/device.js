@@ -9,7 +9,7 @@ export function matchMq(query) {
 }
 
 export function prefersReducedMotion() {
-  return matchMq(MQ_REDUCED);
+  return false;
 }
 
 export function isMobileViewport() {
@@ -22,5 +22,5 @@ export function isCoarsePointer() {
 
 /** Native scroll is smoother on mobile; Lenis + ST pin often fight touch scrolling. */
 export function shouldUseLenis() {
-  return !prefersReducedMotion() && !isMobileViewport();
+  return !isMobileViewport();
 }

@@ -132,7 +132,6 @@ export default function PageShader() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.innerWidth < 768) return;
 
     const gl = canvas.getContext("webgl", {

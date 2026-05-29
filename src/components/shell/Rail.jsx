@@ -11,9 +11,8 @@ const SECTIONS = [
   { id: "about",      label: "About Us",    num: "02" },
   { id: "problem",    label: "Problems",    num: "03" },
   { id: "solutions",  label: "Solutions",   num: "04" },
-  { id: "what-we-do", label: "Why Winrvte", num: "05" },
-  { id: "manifesto",  label: "Manifesto",   num: "06" },
-  { id: "contact",    label: "Contact",     num: "07" },
+  { id: "manifesto",  label: "Manifesto",   num: "05" },
+  { id: "contact",    label: "Contact",     num: "06" },
 ];
 
 const DOCK_BAR_H = 48;
@@ -131,7 +130,7 @@ function RailLogo() {
         src={LOGO_VIDEO}
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         onLoadedData={parkAtEnd}
         onLoadedMetadata={parkAtEnd}
         onEnded={handleEnded}

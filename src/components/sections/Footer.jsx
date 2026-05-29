@@ -36,7 +36,7 @@ export default function Footer() {
             <a href="#about" className="footer-link">About Us</a>
             <a href="#problem" className="footer-link">Problems</a>
             <a href="#solutions" className="footer-link">Solutions</a>
-            <a href="#what-we-do" className="footer-link">Why Winrvte</a>
+            <a href="#manifesto" className="footer-link">Manifesto</a>
           </div>
         </motion.div>
 

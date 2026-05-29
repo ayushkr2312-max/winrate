@@ -1,5 +1,56 @@
+import { useLayoutEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import AnimatedHeading from "../primitives/AnimatedHeading";
+
+function useCxConnectors(gridRef) {
+  useLayoutEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    let rafId = 0;
+    const update = () => {
+      rafId = 0;
+      grid.querySelectorAll(".cx-connector").forEach((line) => {
+        const card = line.parentElement;
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        if (line.classList.contains("cx-connector--left")) {
+          line.style.width = `${Math.max(0, rect.left)}px`;
+        } else {
+          line.style.width = `${Math.max(0, window.innerWidth - rect.right)}px`;
+        }
+      });
+    };
+
+    const schedule = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(update);
+    };
+
+    schedule();
+    window.addEventListener("resize", schedule, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true });
+
+    const ro = new ResizeObserver(schedule);
+    ro.observe(grid);
+
+    return () => {
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("scroll", schedule);
+      ro.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [gridRef]);
+}
+
+function CardConnector({ side }) {
+  return (
+    <span
+      className={`cx-connector cx-connector--${side}`}
+      aria-hidden="true"
+    />
+  );
+}
 
 const PROBLEMS = [
   {
@@ -58,6 +109,9 @@ const fadeUp = {
 };
 
 export default function BridgeSection() {
+  const gridRef = useRef(null);
+  useCxConnectors(gridRef);
+
   return (
     <section className="sect challenge-wall" id="problem">
       <div className="sect-inner">
@@ -79,7 +133,7 @@ export default function BridgeSection() {
           </motion.p>
         </div>
 
-        <div className="cx-grid">
+        <div className="cx-grid" ref={gridRef}>
           {PROBLEMS.map((item, i) => (
             <motion.div
               className="cx-card"
@@ -99,6 +153,11 @@ export default function BridgeSection() {
               <h3 className="cx-title">{item.title}</h3>
               <p className="cx-body">{item.body}</p>
               <div className="cx-card-edge" aria-hidden="true" />
+              {i % 2 === 0 ? (
+                <CardConnector side="left" />
+              ) : (
+                <CardConnector side="right" />
+              )}
             </motion.div>
           ))}
         </div>

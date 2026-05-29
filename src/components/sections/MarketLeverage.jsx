@@ -39,7 +39,6 @@ const POINTS = [
 ];
 
 const COMPACT_MQ = "(max-width: 768px)";
-const REDUCED_MQ = "(prefers-reduced-motion: reduce)";
 
 export default function MarketLeverage() {
   const rootRef = useRef(null);
@@ -114,39 +113,23 @@ export default function MarketLeverage() {
     };
 
     const ctx = gsap.context(() => {
-      const reduced = window.matchMedia(REDUCED_MQ).matches;
       const compact = window.matchMedia(COMPACT_MQ).matches;
 
       gsap.set(drawers, { height: 0, opacity: 0, overflow: "hidden" });
       gsap.set(fills, { scaleX: 0, transformOrigin: "left center" });
 
-      if (!reduced) {
-        if (headTag) gsap.set(headTag, { opacity: 0, y: 12 });
-        if (headCounter) gsap.set(headCounter, { opacity: 0 });
-        rows.forEach((row) => gsap.set(row, { opacity: 0, y: 20 }));
+      if (headTag) gsap.set(headTag, { opacity: 0, y: 12 });
+      if (headCounter) gsap.set(headCounter, { opacity: 0 });
+      rows.forEach((row) => gsap.set(row, { opacity: 0, y: 20 }));
 
-        ScrollTrigger.create({
-          trigger: root,
-          start: "top 88%",
-          end: "top 88%",
-          onEnter: playEntrance,
-          onEnterBack: playEntrance,
-          onLeaveBack: resetEntrance,
-        });
-      }
-
-      if (reduced) {
-        drawers.forEach((d) => gsap.set(d, { height: "auto", opacity: 1 }));
-        fills.forEach((f) => gsap.set(f, { scaleX: 1 }));
-        rows.forEach((r) => {
-          r.classList.add("is-past");
-          gsap.set(r, { opacity: 1, y: 0 });
-        });
-        rows[rows.length - 1].classList.add("is-active");
-        if (headTag) gsap.set(headTag, { opacity: 1, y: 0 });
-        if (headCounter) gsap.set(headCounter, { opacity: 1 });
-        return;
-      }
+      ScrollTrigger.create({
+        trigger: root,
+        start: "top 88%",
+        end: "top 88%",
+        onEnter: playEntrance,
+        onEnterBack: playEntrance,
+        onLeaveBack: resetEntrance,
+      });
 
       if (compact) {
         rows.forEach((row, i) => {

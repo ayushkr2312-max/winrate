@@ -12,11 +12,7 @@ export default function HeroCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isSmallViewport = window.innerWidth < 900;
     const lowPowerDevice = (navigator.hardwareConcurrency || 8) <= 4;
-    const disableCanvas = reducedMotion || isSmallViewport;
-    if (disableCanvas) return;
 
     let W = 0, H = 0;
     const points = [];
@@ -77,9 +73,20 @@ export default function HeroCanvas() {
     const GATHER_F = 20;
 
     let rafId;
+    let heroVisible = true;
+
+    const heroEl = document.getElementById("hero");
+    const heroIo = heroEl
+      ? new IntersectionObserver(
+          ([entry]) => { heroVisible = entry.isIntersecting; },
+          { threshold: 0, rootMargin: "80px 0px" },
+        )
+      : null;
+    if (heroEl && heroIo) heroIo.observe(heroEl);
+
     function draw() {
       const now = performance.now();
-      if (document.hidden) {
+      if (document.hidden || !heroVisible) {
         rafId = requestAnimationFrame(draw);
         return;
       }
@@ -145,6 +152,7 @@ export default function HeroCanvas() {
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(pillAttachId);
       window.removeEventListener("resize", resize);
+      heroIo?.disconnect();
       if (canvas._pill) {
         canvas._pill.removeEventListener("mouseenter", canvas._onEnter);
         canvas._pill.removeEventListener("mouseleave", canvas._onLeave);

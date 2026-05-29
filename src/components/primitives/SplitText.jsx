@@ -95,13 +95,6 @@ export default function SplitText({
     }
     playedRef.current = false;
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 768px)").matches;
-    if (prefersReduced) {
-      gsap.set(units, { yPercent: 0, opacity: 1 });
-      playedRef.current = true;
-      return;
-    }
-
     const computedStagger = stagger ?? (splitBy === "chars" ? 0.018 : 0.06);
 
     tweenRef.current = gsap.fromTo(
@@ -130,8 +123,6 @@ export default function SplitText({
     if (!active) return;
     const el = ref.current;
     if (!el) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 768px)").matches) return;
 
     if (once) {
       const play = () => {

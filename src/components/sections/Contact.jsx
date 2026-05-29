@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import SplitText from "../primitives/SplitText";
+import ContactAccentSwap from "./ContactAccentSwap";
 import Magnetic from "../primitives/Magnetic";
 
 const TOPICS = [
@@ -58,18 +59,16 @@ export default function Contact() {
         <div className="contact-inner-grid">
           <div>
             <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
-              <span className="num">07</span> Contact
+              <span className="num">06</span> Contact
             </motion.span>
             <div className="contact-headline">
-              <span className="contact-line">
+              <span className="contact-line contact-line--sm">
                 <SplitText text="LET'S BUILD" splitBy="chars" stagger={0.024} duration={1.0} />
               </span>
-              <span className="contact-line">
+              <span className="contact-line contact-line--95 contact-line--stroke">
                 <SplitText text="SOMETHING" splitBy="chars" stagger={0.024} duration={1.0} delay={0.18} />
               </span>
-              <span className="contact-line accent">
-                <SplitText text="DIFFERENT." splitBy="chars" stagger={0.024} duration={1.0} delay={0.36} />
-              </span>
+              <ContactAccentSwap />
             </div>
 
             <motion.div className="contact-chips" data-cursor-label="PICK" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.3 }} variants={staggerContainer}>

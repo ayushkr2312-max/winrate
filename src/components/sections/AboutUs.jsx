@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import AnimatedHeading from "../primitives/AnimatedHeading";
 import LazyVideo from "../primitives/LazyVideo";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const VIDEO = {
   id: "video",
@@ -41,8 +45,11 @@ const PILLARS = [
 
 function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
   const marqueeRef = useRef(null);
-  const [paused, setPaused] = useState(false);
+  const scrollRef = useRef(null);
+  const tweenRef = useRef(null);
+  const [inView, setInView] = useState(false);
   const [activeIdx, setActiveIdx] = useState(null);
+  const paused = activeIdx !== null;
   const loop = [...CAPABILITIES, ...CAPABILITIES];
 
   const handleItemEnter = (idx, e) => {
@@ -70,21 +77,54 @@ function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
   };
 
   const handleMarqueeLeave = () => {
-    setPaused(false);
     setActiveIdx(null);
     onPopout?.(null);
   };
 
   useEffect(() => {
-    const viewport = marqueeRef.current?.querySelector(".ab-mq-viewport");
-    if (!viewport) return;
-    const io = new IntersectionObserver(
-      ([entry]) => viewport.classList.toggle("is-inview", entry.isIntersecting),
-      { threshold: 0.08 },
-    );
-    io.observe(viewport);
-    return () => io.disconnect();
+    const root = marqueeRef.current;
+    const scrollEl = scrollRef.current;
+    if (!root || !scrollEl) return;
+
+    gsap.set(scrollEl, { yPercent: 0 });
+
+    const tween = gsap.to(scrollEl, {
+      yPercent: -50,
+      duration: 22,
+      ease: "none",
+      repeat: -1,
+    });
+    tween.pause();
+    tweenRef.current = tween;
+
+    const st = ScrollTrigger.create({
+      trigger: root,
+      start: "top bottom",
+      end: "bottom top",
+      onEnter: () => setInView(true),
+      onLeave: () => setInView(false),
+      onEnterBack: () => setInView(true),
+      onLeaveBack: () => setInView(false),
+    });
+
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      setInView(st.isActive);
+    });
+
+    return () => {
+      tween.kill();
+      st.kill();
+      tweenRef.current = null;
+    };
   }, []);
+
+  useEffect(() => {
+    const tween = tweenRef.current;
+    if (!tween) return;
+    if (inView && !paused) tween.play();
+    else tween.pause();
+  }, [inView, paused]);
 
   return (
     <motion.div
@@ -94,7 +134,6 @@ function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
       whileInView={{ opacity: 1 }}
       viewport={{ once: false, amount: 0.15 }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      onMouseEnter={() => setPaused(true)}
       onMouseLeave={handleMarqueeLeave}
     >
       <div className="ab-box-tl" aria-hidden="true" />
@@ -113,11 +152,11 @@ function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
         ))}
       </div>
 
-      <div className="ab-mq-viewport">
+      <div className={"ab-mq-viewport" + (inView ? " is-inview" : "")}>
         <div className="ab-mq-fade ab-mq-fade--top" aria-hidden="true" />
         <div className="ab-mq-fade ab-mq-fade--bot" aria-hidden="true" />
 
-        <div className={"ab-mq-scroll" + (paused ? " is-paused" : "")}>
+        <div ref={scrollRef} className={"ab-mq-scroll" + (paused ? " is-paused" : "")}>
           {loop.map((item, i) => {
             const idx = i % CAPABILITIES.length;
             const isActive = activeIdx === idx;
@@ -126,6 +165,11 @@ function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
                 key={`${item.code}-${i}`}
                 className={"ab-mq-item" + (isActive ? " is-active" : "")}
                 onMouseEnter={(e) => handleItemEnter(idx, e)}
+                onMouseLeave={(e) => {
+                  if (e.relatedTarget?.closest?.(".ab-mq-item")) return;
+                  setActiveIdx(null);
+                  onPopout?.(null);
+                }}
               >
                 <span className="ab-mq-bullet" aria-hidden="true" />
                 <span className="ab-mq-label">{item.label}</span>
@@ -155,18 +199,21 @@ function PlaceholderBox({ box, delay = 0 }) {
     const v = videoRef.current;
     if (!v) return;
     v.currentTime = 0;
-    playPromiseRef.current = v.play();
+    const result = v.play();
+    playPromiseRef.current =
+      result && typeof result.then === "function" ? result : null;
   };
   const handleLeave = () => {
     const v = videoRef.current;
     if (!v) return;
+    const finish = () => { v.pause(); v.currentTime = pauseAt; };
     const p = playPromiseRef.current;
-    if (p !== undefined) {
-      p.then(() => { v.pause(); v.currentTime = pauseAt; }).catch(() => {});
-    } else {
-      v.pause(); v.currentTime = pauseAt;
-    }
     playPromiseRef.current = null;
+    if (p && typeof p.then === "function") {
+      p.then(finish).catch(finish);
+    } else {
+      finish();
+    }
   };
 
   return (
