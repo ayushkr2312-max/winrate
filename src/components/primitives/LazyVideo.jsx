@@ -1,7 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { BOOT_PRELOAD_DONE, isBootAssetReady } from "@/lib/bootPreload";
 
 /**
- * Defers setting video src until near viewport. Reduces initial bandwidth and decode work.
+ * Defers setting video src until near viewport — unless boot preload already cached it.
  */
 const LazyVideo = forwardRef(function LazyVideo({
   src,
@@ -27,12 +28,23 @@ const LazyVideo = forwardRef(function LazyVideo({
       if (el.dataset.lazyLoaded) return;
       el.dataset.lazyLoaded = "1";
       el.src = src;
+      el.preload = "auto";
       setLoaded(true);
     };
 
-    if (!("IntersectionObserver" in window)) {
+    if (isBootAssetReady(src)) {
       attach();
       return undefined;
+    }
+
+    const onBootReady = () => {
+      if (isBootAssetReady(src)) attach();
+    };
+    window.addEventListener(BOOT_PRELOAD_DONE, onBootReady);
+
+    if (!("IntersectionObserver" in window)) {
+      attach();
+      return () => window.removeEventListener(BOOT_PRELOAD_DONE, onBootReady);
     }
 
     const io = new IntersectionObserver(
@@ -45,7 +57,11 @@ const LazyVideo = forwardRef(function LazyVideo({
       { rootMargin, threshold: 0.01 },
     );
     io.observe(el);
-    return () => io.disconnect();
+
+    return () => {
+      io.disconnect();
+      window.removeEventListener(BOOT_PRELOAD_DONE, onBootReady);
+    };
   }, [src, rootMargin]);
 
   useEffect(() => {

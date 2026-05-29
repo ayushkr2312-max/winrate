@@ -50,7 +50,7 @@ export default function App() {
 
   return (
     <>
-      <HeroCanvas />
+      {booted && <HeroCanvas />}
       <div className="site-watermark" aria-hidden="true">WINRVTE</div>
       <div className="scanlines" aria-hidden="true" />
       <TopProgress />
@@ -62,14 +62,18 @@ export default function App() {
       <Loader onDone={onBoot} />
 
       <Hero playEntrance={booted} />
-      <AboutUs />
-      <BridgeSection />
-      <ProblemToSolution />
-      <Solutions />
-      <Ticker invert />
-      <Manifesto />
-      <Contact />
-      <Footer />
+      {booted && (
+        <>
+          <AboutUs />
+          <BridgeSection />
+          <ProblemToSolution />
+          <Solutions />
+          <Ticker invert />
+          <Manifesto />
+          <Contact />
+          <Footer />
+        </>
+      )}
     </>
   );
 }

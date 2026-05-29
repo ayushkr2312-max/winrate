@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import AnimatedHeading from "../primitives/AnimatedHeading";
 import LazyVideo from "../primitives/LazyVideo";
 
-const MANIFESTO_BG_VIDEO = "/Repeater-Animation.webm";
+const MANIFESTO_BG_VIDEO = "/repeater-animation.webm";
 
 const ROWS = [
   {

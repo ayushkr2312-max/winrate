@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
+import { runBootPreload } from "@/lib/bootPreload";
 
 const FEED_LINES = [
   { msg: "Boot sequence...", ok: false },
   { msg: "Linking ops protocol", ok: true },
+  { msg: "Buffering media streams", ok: true },
   { msg: "Calibrating data feeds  EU·NA·APAC", ok: true },
-  { msg: "Compiling scout vectors", ok: true },
   { msg: "Online", ok: true },
 ];
+
+const MIN_BOOT_MS = 2800;
+const MAX_BOOT_MS = 14000;
+const TICK_MS = 50;
+const EXIT_MS = 360;
 
 export default function Loader({ onDone }) {
   const rootRef = useRef(null);
@@ -18,24 +24,51 @@ export default function Loader({ onDone }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
+
     let elapsed = 0;
-    const total = 1500;
-    const step = 50;
+    let preloadRatio = 0;
     let feedIdx = 0;
+    let finished = false;
 
-    const iv = setInterval(() => {
-      elapsed += step;
-      const t = Math.min(elapsed / total, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      const pct = Math.min(Math.floor(eased * 100), elapsed < total ? 99 : 100);
-      if (fillRef.current) fillRef.current.style.width = pct + "%";
-      if (pctRef.current) pctRef.current.textContent = String(pct).padStart(3, "0");
+    runBootPreload((ratio) => {
+      preloadRatio = ratio;
+    });
 
-      // step feed lines as pct passes thresholds
-      const stage = Math.floor((pct / 100) * FEED_LINES.length);
-      if (stage !== feedIdx && stage < FEED_LINES.length) {
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      if (feedRef.current) {
+        feedRef.current.innerHTML = `> ${FEED_LINES[FEED_LINES.length - 1].msg} <span class="ok">OK</span>`;
+      }
+      if (fillRef.current) fillRef.current.style.width = "100%";
+      if (pctRef.current) pctRef.current.textContent = "100";
+      window.setTimeout(() => {
+        setDone(true);
+        document.body.style.overflow = "";
+        onDone?.();
+      }, EXIT_MS);
+    };
+
+    const iv = window.setInterval(() => {
+      elapsed += TICK_MS;
+
+      const timeRatio = Math.min(elapsed / MIN_BOOT_MS, 1);
+      const eased = 1 - Math.pow(1 - timeRatio, 3);
+      const combined = Math.min(
+        elapsed >= MIN_BOOT_MS && preloadRatio >= 1 ? 100 : 99,
+        Math.floor(Math.max(eased, preloadRatio) * 100),
+      );
+
+      if (fillRef.current) fillRef.current.style.width = `${combined}%`;
+      if (pctRef.current) pctRef.current.textContent = String(combined).padStart(3, "0");
+
+      const stage = Math.min(
+        FEED_LINES.length - 1,
+        Math.floor((combined / 100) * FEED_LINES.length),
+      );
+      if (stage !== feedIdx) {
         feedIdx = stage;
-        const line = FEED_LINES[Math.min(stage, FEED_LINES.length - 1)];
+        const line = FEED_LINES[stage];
         if (feedRef.current) {
           feedRef.current.innerHTML = line.ok
             ? `> ${line.msg} <span class="ok">OK</span>`
@@ -43,18 +76,17 @@ export default function Loader({ onDone }) {
         }
       }
 
-      if (elapsed >= total) {
-        clearInterval(iv);
-        if (feedRef.current) feedRef.current.innerHTML = `> ${FEED_LINES[FEED_LINES.length - 1].msg} <span class="ok">OK</span>`;
-        setTimeout(() => {
-          setDone(true);
-          document.body.style.overflow = "";
-          if (onDone) onDone();
-        }, 360);
+      const ready = elapsed >= MIN_BOOT_MS && preloadRatio >= 1;
+      if (ready || elapsed >= MAX_BOOT_MS) {
+        window.clearInterval(iv);
+        finish();
       }
-    }, step);
+    }, TICK_MS);
 
-    return () => clearInterval(iv);
+    return () => {
+      window.clearInterval(iv);
+      document.body.style.overflow = "";
+    };
   }, [onDone]);
 
   return (
