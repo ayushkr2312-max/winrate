@@ -49,6 +49,15 @@ export default function Hero({ playEntrance }) {
         ease: "expo.out",
         overwrite: "auto",
       });
+      gsap.fromTo(".hero-wins-underline",
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: mobile ? 0.7 : 0.9,
+          delay: mobile ? 0.08 : 0.15,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
 
       if (mobile) {
         gsap.to(".hero-swap-default", {
@@ -100,6 +109,12 @@ export default function Hero({ playEntrance }) {
         ease: "expo.out",
         overwrite: "auto",
       });
+      gsap.to(".hero-wins-underline", {
+        scaleX: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        overwrite: "auto",
+      });
 
       if (mobile) {
         gsap.to(".hero-swap-default", {
@@ -139,10 +154,98 @@ export default function Hero({ playEntrance }) {
       });
     };
 
+    // Desktop scroll-lock state machine
+    let lockState = "default"; // default | playing | wins | released
+    let cooldownEnd = 0;
+    let playingTimer = null;
+    let wheelHandler = null;
+    let touchHandler = null;
+    let touchStartY = 0;
+
+    const clearLockTimers = () => {
+      if (playingTimer) { clearTimeout(playingTimer); playingTimer = null; }
+    };
+    const detachLockHandlers = () => {
+      if (wheelHandler) {
+        window.removeEventListener("wheel", wheelHandler, { capture: true });
+        wheelHandler = null;
+      }
+      if (touchHandler) {
+        window.removeEventListener("touchmove", touchHandler.move, { capture: true });
+        window.removeEventListener("touchstart", touchHandler.start, { capture: true });
+        touchHandler = null;
+      }
+    };
+    const attachLockHandlers = () => {
+      const isAtHeroTop = () => window.scrollY <= 2;
+      const swallow = (e) => { e.preventDefault(); e.stopPropagation(); };
+
+      const triggerLock = () => {
+        lockState = "playing";
+        swapToHover(false);
+        clearLockTimers();
+        playingTimer = setTimeout(() => {
+          lockState = "wins";
+          cooldownEnd = performance.now() + 190;
+          playingTimer = null;
+        }, 620);
+      };
+
+      const releaseUpward = () => {
+        lockState = "default";
+        clearLockTimers();
+        swapToDefault(false);
+      };
+
+      const handleDir = (e, deltaY) => {
+        const now = performance.now();
+        const atTop = isAtHeroTop();
+
+        if (deltaY > 0) {
+          if (lockState === "default" && atTop) {
+            swallow(e);
+            triggerLock();
+            return;
+          }
+          if (lockState === "playing") { swallow(e); return; }
+          if (lockState === "wins") {
+            if (now < cooldownEnd) { swallow(e); return; }
+            lockState = "released";
+            // event passes through to Lenis/native scroll
+          }
+          return;
+        }
+        if (deltaY < 0) {
+          if (atTop && (lockState === "wins" || lockState === "released")) {
+            swallow(e);
+            releaseUpward();
+          }
+        }
+      };
+
+      wheelHandler = (e) => handleDir(e, e.deltaY ?? 0);
+      window.addEventListener("wheel", wheelHandler, { passive: false, capture: true });
+
+      touchHandler = {
+        start: (e) => { touchStartY = e.touches?.[0]?.clientY ?? 0; },
+        move: (e) => {
+          const y = e.touches?.[0]?.clientY ?? 0;
+          // touch deltaY: positive when finger moves UP (page scrolls down)
+          const deltaY = touchStartY - y;
+          handleDir(e, deltaY);
+        },
+      };
+      window.addEventListener("touchstart", touchHandler.start, { passive: false, capture: true });
+      window.addEventListener("touchmove", touchHandler.move, { passive: false, capture: true });
+    };
+
     const ctx = gsap.context(() => {
       setupScrollSwap = () => {
         scrollTrigger?.kill();
+        detachLockHandlers();
+        clearLockTimers();
         swapped = false;
+        lockState = "default";
 
         const mobile = isCompactLayout();
         gsap.set(".hero-swap-hover", mobile
@@ -150,19 +253,26 @@ export default function Hero({ playEntrance }) {
           : { rotationX: -80, z: -400, scale: 0.8, opacity: 0, y: 0 });
         gsap.set(".hero-swap-default", { opacity: 1, y: 0, rotationX: 0, z: 0, scale: 1 });
         gsap.set(".hero-line-a", { scale: 1, fontWeight: 300 });
+        gsap.set(".hero-wins-underline", { scaleX: 0, transformOrigin: "0% 50%" });
 
-        scrollTrigger = ScrollTrigger.create({
-          trigger: hero,
-          start: "top top",
-          end: mobile ? "bottom top" : "+=100",
-          pin: false,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const threshold = mobile ? 0.04 : 0.15;
-            if (self.progress > threshold && !swapped) swapToHover(mobile);
-            else if (self.progress <= threshold && swapped) swapToDefault(mobile);
-          },
-        });
+        if (mobile) {
+          // Mobile: keep the existing scroll-driven swap (no hard lock).
+          scrollTrigger = ScrollTrigger.create({
+            trigger: hero,
+            start: "top top",
+            end: "bottom top",
+            pin: false,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const threshold = 0.04;
+              if (self.progress > threshold && !swapped) { swapped = true; swapToHover(true); }
+              else if (self.progress <= threshold && swapped) { swapped = false; swapToDefault(true); }
+            },
+          });
+        } else {
+          // Desktop: scroll is fully locked until the swap finishes + a fresh down-scroll.
+          attachLockHandlers();
+        }
       };
 
       setupScrollSwap();
@@ -172,6 +282,8 @@ export default function Hero({ playEntrance }) {
     return () => {
       mobileMql.removeEventListener("change", setupScrollSwap);
       scrollTrigger?.kill();
+      detachLockHandlers();
+      clearLockTimers();
       ctx.revert();
     };
   }, []);
@@ -247,7 +359,7 @@ export default function Hero({ playEntrance }) {
               <span className="hero-line-c"><span className="inner">DESERVES.</span></span>
             </div>
             <div className="hero-swap-hover" aria-hidden="true">
-              <span className="hero-line-hover">THAT <span className="lime-text">WINS.</span></span>
+              <span className="hero-line-hover">THAT <span className="lime-text">WINS.<span className="hero-wins-underline" aria-hidden="true" /></span></span>
             </div>
           </div>
         </div>

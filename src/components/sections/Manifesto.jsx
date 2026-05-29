@@ -1,9 +1,7 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import AnimatedHeading from "../primitives/AnimatedHeading";
-import LazyVideo from "../primitives/LazyVideo";
-
-const MANIFESTO_BG_VIDEO = "/repeater-animation.webm";
+import useCxConnectors from "@/hooks/useCxConnectors";
 
 const ROWS = [
   {
@@ -23,6 +21,12 @@ const ROWS = [
     title: "Custom solutions, cost-conscious delivery",
     body: "We adapt scope and pricing to each org's needs so teams can improve operations without overcommitting budget.",
     tag: "Practical value",
+  },
+  {
+    n: "04",
+    title: "Decisions driven by signal, not noise",
+    body: "We instrument the metrics that actually matter so leadership moves on evidence instead of gut feel.",
+    tag: "Signal first",
   },
 ];
 
@@ -44,19 +48,11 @@ const fadeUp = {
 };
 
 export default function Manifesto() {
-  const sectionRef = useRef(null);
+  const rowsRef = useRef(null);
+  useCxConnectors(rowsRef);
 
   return (
-    <section className="sect manifesto" id="manifesto" ref={sectionRef}>
-      <div className="manifesto-bg" aria-hidden="true">
-        <LazyVideo
-          className="manifesto-bg-video"
-          src={MANIFESTO_BG_VIDEO}
-          visibilityRootRef={sectionRef}
-          playbackRate={0.4}
-          loop
-        />
-      </div>
+    <section className="sect manifesto" id="manifesto">
       <div className="sect-inner">
         <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
           <span className="num">05</span> Manifesto
@@ -75,7 +71,7 @@ export default function Manifesto() {
           </motion.p>
         </div>
 
-        <div className="manifesto-rows">
+        <div className="manifesto-rows" ref={rowsRef}>
           {ROWS.map((r, i) => (
             <motion.div
               className="manifesto-row"
@@ -92,6 +88,12 @@ export default function Manifesto() {
                 <p className="manifesto-row-body">{r.body}</p>
               </div>
               <div className="manifesto-row-tag"><span>{r.tag}</span></div>
+              <span
+                className={`cx-connector cx-connector--${i % 2 === 0 ? "left" : "right"} is-primary`}
+                aria-hidden="true"
+              />
+              <span className="cx-connector cx-connector--left is-fat" aria-hidden="true" />
+              <span className="cx-connector cx-connector--right is-fat" aria-hidden="true" />
             </motion.div>
           ))}
         </div>

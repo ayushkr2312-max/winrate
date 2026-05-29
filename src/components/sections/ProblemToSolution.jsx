@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import SplitText from "../primitives/SplitText";
 import LazyVideo from "../primitives/LazyVideo";
 
-const PTS_BG_VIDEO = "/Scene_x.webm";
+const PTS_BG_VIDEO = "/Scene_x2.webm";
 
 const SHIFTS = [
   { from: "Manual processes", to: "Automated workflows" },
@@ -38,7 +38,7 @@ export default function ProblemToSolution() {
           className="pts-bg-video"
           src={PTS_BG_VIDEO}
           visibilityRootRef={sectionRef}
-          playbackRate={0.75}
+          playbackRate={0.5}
           loop
         />
       </div>

@@ -211,11 +211,7 @@ function ServiceDetailPanel({ svc, playVisuals }) {
             </div>
           </div>
         ) : isWebDev ? (
-          <div className="svc-reel-wrap">
-            <div className="svc-reel-label">
-              <span className="svc-reel-dot" />
-              <span>WORK SAMPLES</span>
-            </div>
+          <div className="svc-reel-wrap svc-reel-wrap--no-label">
             <div className="svc-reel-frame">
               <LazyVideo
                 className="svc-reel-video"

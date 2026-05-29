@@ -111,7 +111,10 @@ export default function StackSection() {
           <div className="stack-head-text">
             <span className="section-tag">Powered By</span>
             <h2 className="stack-heading">
-              <SplitText text="THE STACK" splitBy="chars" stagger={0.04} duration={1.05} />
+              <SplitText text="THE " splitBy="chars" stagger={0.04} duration={1.05} />
+              <span className="stack-accent">
+                <SplitText text="STACK" splitBy="chars" stagger={0.04} duration={1.05} delay={0.12} />
+              </span>
             </h2>
           </div>
           <p className="stack-sub">

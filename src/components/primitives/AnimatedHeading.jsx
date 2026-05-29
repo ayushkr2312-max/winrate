@@ -27,7 +27,7 @@ export default function AnimatedHeading({
   const lengthOf = (s) => Array.from(String(s)).length;
 
   return (
-    <Tag className={`k-head ${className}`}>
+    <Tag className={`k-head ${className}`.trim()}>
       {rows.map((row, i) => {
         const baseDelay = i * rowStagger;
         if (row.parts) {

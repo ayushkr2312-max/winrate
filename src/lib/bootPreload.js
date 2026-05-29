@@ -11,9 +11,7 @@ const POSTERS = [
 ];
 
 const SECTION_VIDEOS = [
-  "/Scene_abt.webm",
-  "/Scene_x.webm",
-  "/repeater-animation.webm",
+  "/Scene_x2.webm",
   "/new-web-reel.webm",
 ];
 

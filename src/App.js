@@ -18,10 +18,9 @@ import AboutUs from "@/components/sections/AboutUs";
 import BridgeSection from "@/components/sections/BridgeSection";
 import ProblemToSolution from "@/components/sections/ProblemToSolution";
 import Solutions from "@/components/sections/Solutions";
-import Ticker from "@/components/sections/Ticker";
+import StackSection from "@/components/sections/StackSection";
 import Manifesto from "@/components/sections/Manifesto";
 import Contact from "@/components/sections/Contact";
-import Footer from "@/components/sections/Footer";
 
 export default function App() {
   const [booted, setBooted] = useState(false);
@@ -68,10 +67,9 @@ export default function App() {
           <BridgeSection />
           <ProblemToSolution />
           <Solutions />
-          <Ticker invert />
+          <StackSection />
           <Manifesto />
           <Contact />
-          <Footer />
         </>
       )}
     </>
