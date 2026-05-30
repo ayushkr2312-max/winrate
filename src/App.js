@@ -14,7 +14,7 @@ import MobileNav from "@/components/shell/MobileNav";
 import HeroCanvas from "@/components/hero/HeroCanvas";
 
 import Hero from "@/components/sections/Hero";
-import AboutUs from "@/components/sections/AboutUs";
+import AboutUs, { HelpYouSection } from "@/components/sections/AboutUs";
 import BridgeSection from "@/components/sections/BridgeSection";
 import ProblemToSolution from "@/components/sections/ProblemToSolution";
 import Solutions from "@/components/sections/Solutions";
@@ -67,6 +67,7 @@ export default function App() {
           <BridgeSection />
           <ProblemToSolution />
           <Solutions />
+          <HelpYouSection />
           <StackSection />
           <Manifesto />
           <Contact />

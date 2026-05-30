@@ -475,15 +475,10 @@ export default function AboutUs() {
 
   return (
     <>
-      {/* PAGE 1 — WE HELP YOU panel expanded to fill the section */}
-      <section className="about-sect about-sect--help" id="about">
-        <TechEsportsPanel delay={0} />
-      </section>
-
-      {/* PAGE 2 — Capability marquee + WINRVTE watermark + WE LIVE INSIDE
+      {/* PAGE 1 — Capability marquee + WINRVTE watermark + WE LIVE INSIDE
           ESPORTS (expanded to fill the right column). Layout matches the
           original bento, just without the WE HELP YOU box. */}
-      <section className="about-sect about-sect--inside" id="about-inside">
+      <section className="about-sect about-sect--inside" id="about">
         <div className="about-bento about-bento--no-video" ref={bentoRef}>
 
           <div className="ab-gap-watermark" aria-hidden="true">WINRVTE</div>
@@ -547,5 +542,14 @@ export default function AboutUs() {
         </div>
       </section>
     </>
+  );
+}
+
+// Standalone WE HELP YOU section — placed between Solutions and The Stack.
+export function HelpYouSection() {
+  return (
+    <section className="about-sect about-sect--help" id="about-help">
+      <TechEsportsPanel delay={0} />
+    </section>
   );
 }

@@ -1450,8 +1450,8 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
 .about-sect--help {
   background: var(--lime);
   padding: 6px;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 68vh;
+  min-height: 68dvh;
   display: flex;
   align-items: stretch;
   position: relative;
@@ -1462,8 +1462,8 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
   flex: 1;
   width: 100%;
   height: auto;
-  min-height: calc(100vh - 12px);
-  min-height: calc(100dvh - 12px);
+  min-height: calc(68vh - 12px);
+  min-height: calc(68dvh - 12px);
   justify-self: stretch;
   align-self: stretch;
 }
@@ -1832,7 +1832,7 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
 }
 .ab-help-top {
   position: absolute;
-  top: clamp(3rem, 10vh, 6rem);
+  top: clamp(1.6rem, 5vh, 3.4rem);
   left: 0;
   right: 0;
   color: transparent;
@@ -1862,8 +1862,8 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: clamp(5rem, 14vh, 10rem);
-  top: clamp(3.6rem, 11vh, 7rem);
+  bottom: clamp(1.8rem, 5vh, 3.6rem);
+  top: clamp(2.6rem, 7.5vh, 4.6rem);
   overflow-x: visible;
   overflow-y: clip;
   font-size: clamp(4rem, min(15vw, 32vh), 13rem);
