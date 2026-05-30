@@ -1446,6 +1446,87 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
   position: relative;
 }
 
+/* ─── PAGE 1: WE HELP YOU expanded to fill section ─── */
+.about-sect--help {
+  background: var(--lime);
+  padding: 6px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  z-index: 3;
+  overflow: hidden;
+}
+.about-sect--help .ab-box--tech-panel {
+  flex: 1;
+  width: 100%;
+  height: auto;
+  min-height: calc(100vh - 12px);
+  min-height: calc(100dvh - 12px);
+  justify-self: stretch;
+  align-self: stretch;
+}
+
+/* ─── PAGE 2: Marquee + WINRVTE watermark + WE LIVE INSIDE (full-height) ─── */
+.about-sect--inside {
+  background: var(--lime);
+  position: relative;
+  z-index: 3;
+  overflow: hidden;
+}
+.about-bento--no-video {
+  grid-template-rows: 1fr;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.about-bento--no-video .ab-ml {
+  grid-row: 1;
+  height: 100%;
+}
+.about-bento--no-video .ab-center {
+  grid-column: 2;
+  grid-row: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  margin-bottom: clamp(6px, 1.5vh, 18px);
+  max-height: calc(100% - clamp(6px, 1.5vh, 18px));
+}
+.about-bento--no-video .ab-gap-watermark {
+  grid-row: 1;
+}
+/* Heading + lead get the breathing room previously stolen by the video box */
+.about-bento--no-video .ab-center-inner {
+  padding:
+    clamp(28px, 4.5vh, 60px)
+    clamp(22px, 2.5vw, 36px)
+    clamp(24px, 3vh, 40px)
+    clamp(22px, 2.8vw, 36px);
+  justify-content: center;
+  gap: clamp(14px, 1.6vh, 22px);
+  height: 100%;
+}
+.about-bento--no-video .ab-center-inner h2,
+.about-bento--no-video .ab-center-inner .ab-center-head {
+  font-size: clamp(2.4rem, 5vw, 5.4rem) !important;
+  line-height: .88 !important;
+}
+.about-bento--no-video .ab-center-lead {
+  font-size: clamp(.92rem, 1.15vw, 1.05rem);
+  max-width: 62ch;
+}
+.about-bento--no-video .ab-center-pillars {
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2vw, 32px) clamp(20px, 2vw, 32px);
+  padding-top: clamp(18px, 2.4vh, 28px);
+}
+.about-bento--no-video .ab-pillar + .ab-pillar {
+  padding-left: 0;
+  border-left: none;
+}
+
 /* ── Cell placement (unchanged) ── */
 .ab-ml { grid-column: 1; grid-row: 1 / 3; min-height: 0; overflow: hidden; align-self: stretch; }
 .ab-video { grid-column: 2; grid-row: 1; min-height: 0; }
@@ -1751,26 +1832,43 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
 }
 .ab-help-top {
   position: absolute;
-  top: clamp(1rem, 8cqh, 2rem);
+  top: clamp(3rem, 10vh, 6rem);
   left: 0;
   right: 0;
-  color: var(--white);
-  font-size: clamp(0.82rem, min(6cqi, 10.5cqh), 1.45rem);
+  color: transparent;
+  -webkit-text-stroke: 1px var(--white);
+  text-stroke: 1px var(--white);
+  font-size: clamp(1.2rem, min(4.4vw, 7vh), 2.8rem);
   letter-spacing: .02em;
   line-height: 1;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2vw, 2rem);
+}
+.ab-help-top::before,
+.ab-help-top::after {
+  content: "";
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(28px, 4.5vw, 70px);
+  height: var(--edge-line-w);
+  background: var(--lime);
+  box-shadow: 0 0 10px rgba(182, 255, 30, 0.45);
+  border-radius: 1px;
 }
 .ab-help-words {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: clamp(0.6rem, 6cqh, 1.6rem);
-  top: clamp(2.2rem, 17cqh, 3.8rem);
+  bottom: clamp(5rem, 14vh, 10rem);
+  top: clamp(3.6rem, 11vh, 7rem);
   overflow-x: visible;
   overflow-y: clip;
-  font-size: clamp(2.35rem, min(31.5cqi, 61cqh), 7.4rem);
+  font-size: clamp(4rem, min(15vw, 32vh), 13rem);
   line-height: 1;
-  perspective: 800px;
+  perspective: 1200px;
   transform-style: preserve-3d;
 }
 .ab-help-word {
@@ -3441,7 +3539,7 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
 .sol-panel {
   flex: 0 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 1.05fr);
+  grid-template-columns: minmax(0, 1.7fr) minmax(180px, 0.85fr);
   gap: clamp(1.2rem, 2.5vw, 2rem);
   padding: 0 1.25rem 1.25rem 1rem;
 }
@@ -3457,7 +3555,7 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
   font-size: var(--text-content-lg);
   color: var(--muted);
   line-height: 1.7;
-  max-width: 52ch;
+  max-width: 72ch;
 }
 .sol-bullets {
   list-style: none;
@@ -6415,7 +6513,37 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
   font-size: var(--text-content-lg);
   color: var(--muted);
   line-height: 1.84;
-  margin-bottom: 1.8rem;
+  margin-bottom: 1.4rem;
+}
+
+.svc-detail-highlights {
+  list-style: none;
+  margin: 0 0 1.8rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1.6rem;
+}
+.svc-detail-highlight {
+  position: relative;
+  padding-left: 1.1rem;
+  font-family: var(--f-body);
+  font-size: var(--text-content-md);
+  color: rgba(240, 240, 238, 0.78);
+  line-height: 1.55;
+}
+.svc-detail-highlight::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 10px;
+  height: 1px;
+  background: var(--lime);
+  opacity: 0.75;
+}
+@media (max-width: 768px) {
+  .svc-detail-highlights { grid-template-columns: 1fr; gap: 0.55rem; }
 }
 
 /* Tech tags */
@@ -6589,10 +6717,17 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
   background: #000;
   overflow: hidden;
   isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow:
     0 0 0 1px rgba(0,0,0,.8),
     0 0 32px rgba(182,255,30,.06),
     inset 0 0 0 1px rgba(182,255,30,.04);
+}
+.svc-reel-frame > * {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /* Collapse inline gap under video only — not HUD visuals */
@@ -8016,4 +8151,159 @@ html.is-mobile .site-watermark {
   .wwd-step-progress { animation: none; transform: scaleX(1); }
   .wwd-rh-step-conn.is-active { animation: none; background: rgba(182,255,30,.4); }
   .wwd-pipe-step-glow { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE OPTIMIZATIONS — additive overrides (desktop untouched)
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* ── About: stack the bento ─────────────────────────────── */
+  .about-bento {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+    padding: 8px;
+  }
+  .about-bento .ab-ml { grid-column: 1; grid-row: 2; height: 360px; }
+  .about-bento .ab-video {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: stretch;
+    width: 100%;
+    height: clamp(200px, 42vw, 260px);
+  }
+  .about-bento .ab-center { grid-column: 1; grid-row: 3; }
+  .ab-gap-watermark { display: none; }
+  .ab-marquee { width: 100%; margin-right: 0; }
+  .ab-mq-popout { display: none; }
+
+  /* Page-split mobile: WE HELP YOU box section + Marquee/Inside section */
+  .about-sect--help {
+    min-height: 78vh;
+    min-height: 78dvh;
+  }
+  .about-sect--help .ab-box--tech-panel {
+    min-height: calc(78vh - 12px);
+    min-height: calc(78dvh - 12px);
+  }
+  .about-bento--no-video {
+    grid-template-rows: auto auto;
+    min-height: 0;
+  }
+  .about-bento--no-video .ab-ml {
+    grid-column: 1;
+    grid-row: 1;
+    height: 320px;
+    min-height: 320px;
+  }
+  .about-bento--no-video .ab-center {
+    grid-column: 1;
+    grid-row: 2;
+    height: auto;
+  }
+  .about-bento--no-video .ab-center-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  /* WE HELP YOU panel */
+  .ab-help-top { font-size: clamp(0.78rem, 4.2vw, 1.05rem); }
+  .ab-help-words { font-size: clamp(2rem, 11vw, 3.5rem); }
+
+  /* Disable particle canvas inside the tech panel — saves frames on mobile */
+  .ab-tech-panel-particles { display: none; }
+
+  /* ── Stack section ──────────────────────────────────────── */
+  .stack-head {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 1rem;
+    gap: 1rem;
+  }
+  .stack-sub {
+    text-align: left;
+    max-width: 100%;
+  }
+  .stack-heading { font-size: clamp(2rem, 9vw, 3.4rem); }
+  .stack-tag {
+    font-size: .58rem;
+    padding: 8px 14px;
+  }
+
+  /* ── Manifesto: hide hover-only fat connectors on touch ── */
+  .manifesto-row .cx-connector.is-fat { display: none; }
+  .manifesto-row:hover { padding-left: 0; }
+
+  /* ── Contact section ────────────────────────────────────── */
+  .contact-inner-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .contact-line {
+    white-space: normal;
+    line-height: .92;
+    font-size: clamp(2.2rem, 11vw, 4rem);
+  }
+  .contact-line--sm,
+  .contact-line--95 {
+    font-size: clamp(2rem, 10.5vw, 3.6rem);
+  }
+  .contact-accent-swap {
+    font-size: clamp(2.2rem, 11vw, 4rem);
+  }
+  .contact-headline { margin-bottom: 1.4rem; }
+  .contact-card { padding: 1rem; }
+  .contact-card-head {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .contact-detail {
+    grid-template-columns: minmax(64px, 84px) minmax(0, 1fr);
+    gap: .55rem;
+    padding: .55rem 0;
+  }
+  .contact-detail .v { font-size: 0.92rem; }
+
+  /* ── Top dock CTA / labels ──────────────────────────────── */
+  .rail.is-docked .rail-dock-cta {
+    padding: 7px 14px;
+    font-size: .62rem;
+    letter-spacing: .12em;
+  }
+
+  /* ── Hero WINS underline thinness on mobile ─────────────── */
+  .hero-wins-underline { height: 0.04em; }
+
+  /* ── Hero→dock sweep flash text sizing ──────────────────── */
+  .rail-sweep-mark {
+    font-size: clamp(2rem, 11vw, 3.6rem);
+    padding: 12px 18px;
+  }
+  .rail-sweep-section {
+    font-size: clamp(1.15rem, 6vw, 2rem);
+  }
+
+  /* ── Reduce ambient watermark / decorations cost ────────── */
+  .scanlines { opacity: 0.35; }
+  .site-watermark { display: none; }
+}
+
+@media (max-width: 520px) {
+  .about-bento .ab-ml { height: 320px; }
+  .about-bento .ab-video { height: clamp(180px, 48vw, 240px); }
+
+  .rail.is-docked .rail-dock-cta {
+    padding: 6px 11px;
+    font-size: .56rem;
+  }
+
+  /* Contact card top labels compact */
+  .contact-card-head {
+    gap: 0.4rem 0.8rem;
+  }
+  .contact-detail .k { font-size: .54rem; }
+
+  /* Manifesto row body easier to read */
+  .manifesto-row-title { font-size: clamp(1rem, 4.6vw, 1.18rem); }
+  .manifesto-row-body { font-size: 0.92rem; }
 }

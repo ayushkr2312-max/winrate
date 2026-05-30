@@ -77,8 +77,10 @@ export function VisualAutomation({ active }) {
       gsap.fromTo(".au-trigger", { scale: 0.85 }, { scale: 1, duration: 0.5, ease: "back.out(2)", transformBox: "fill-box", transformOrigin: "center" });
       gsap.fromTo(".au-edge", { strokeDashoffset: 220 }, { strokeDashoffset: 0, duration: 0.85, stagger: 0.04, ease: "power2.out" });
       gsap.fromTo(".au-hub", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.6)", transformBox: "fill-box", transformOrigin: "center" });
-      gsap.to(".au-tool", {
-        opacity: 0.55, duration: 0.9, yoyo: true, repeat: -1, ease: "sine.inOut", stagger: { each: 0.12, from: "random" },
+      // Subtle border-glow blink only — keep the box fill fully opaque so the
+      // moving tokens always pass behind the labels, never over them.
+      gsap.to(".au-tool .au-tool-glow", {
+        opacity: 0.25, duration: 0.9, yoyo: true, repeat: -1, ease: "sine.inOut", stagger: { each: 0.12, from: "random" },
       });
     }, ref);
 
@@ -148,14 +150,6 @@ export function VisualAutomation({ active }) {
           <text x={AU_HUB.x} y={AU_HUB.y + 3} textAnchor="middle" fill="var(--lime)" style={{ font: `800 7px ${mono}`, letterSpacing: ".1em" }}>ROUTE</text>
         </g>
 
-        {AU_TOOLS.map((t, i) => (
-          <g key={`tl-${i}`} className="au-tool">
-            <rect x={AU_TOOL_X} y={t.y - 11} width={AU_TOOL_W} height={22} rx={4} fill="rgba(0,0,0,.65)" stroke="rgba(182,255,30,.22)" strokeWidth="0.8" />
-            <text x={AU_TOOL_X + AU_TOOL_W / 2} y={t.y + 1} textAnchor="middle" fill="var(--white)" style={lbl}>{t.label}</text>
-            <text x={AU_TOOL_X + AU_TOOL_W / 2} y={t.y + 9} textAnchor="middle" fill="rgba(182,255,30,.5)" style={sub}>{t.sub}</text>
-          </g>
-        ))}
-
         <g className="au-trigger">
           <circle cx={AU_OUT.x} cy={AU_OUT.y} r={15} fill="rgba(182,255,30,.08)" stroke="var(--lime)" strokeWidth="1.3" strokeDasharray="3,2" />
           <path d={`M${AU_OUT.x - 6} ${AU_OUT.y} L${AU_OUT.x} ${AU_OUT.y + 6} L${AU_OUT.x + 8} ${AU_OUT.y - 6}`} stroke="var(--lime)" strokeWidth="1.5" fill="none" />
@@ -165,6 +159,36 @@ export function VisualAutomation({ active }) {
 
         {AU_PATHS.map((_, i) => (
           <circle key={`tk-${i}`} className="au-token" cx={TX} cy={82} r={2.2} fill="var(--lime)" />
+        ))}
+
+        {/* Integration label boxes are painted LAST so tokens pass behind them */}
+        {AU_TOOLS.map((t, i) => (
+          <g key={`tl-${i}`} className="au-tool">
+            <rect
+              x={AU_TOOL_X}
+              y={t.y - 11}
+              width={AU_TOOL_W}
+              height={22}
+              rx={4}
+              fill="#070708"
+              stroke="rgba(182,255,30,.55)"
+              strokeWidth="0.8"
+            />
+            <rect
+              className="au-tool-glow"
+              x={AU_TOOL_X}
+              y={t.y - 11}
+              width={AU_TOOL_W}
+              height={22}
+              rx={4}
+              fill="none"
+              stroke="var(--lime)"
+              strokeWidth="0.8"
+              opacity="0"
+            />
+            <text x={AU_TOOL_X + AU_TOOL_W / 2} y={t.y + 1} textAnchor="middle" fill="var(--white)" style={lbl}>{t.label}</text>
+            <text x={AU_TOOL_X + AU_TOOL_W / 2} y={t.y + 9} textAnchor="middle" fill="rgba(182,255,30,.7)" style={sub}>{t.sub}</text>
+          </g>
         ))}
       </svg>
 

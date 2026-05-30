@@ -29,9 +29,12 @@ const CAPABILITIES = [
 ];
 
 const PILLARS = [
-  { label: "Built in esports", desc: "Not adapted from outside playbooks" },
-  { label: "Fully custom", desc: "Scoped to your org, roster, and budget" },
-  { label: "Ops-first delivery", desc: "Systems your team runs every day" },
+  { label: "Hands-on partnership", desc: "We work alongside your team, not above it" },
+  { label: "End-to-end delivery", desc: "Strategy, build, launch, and iterate from one team" },
+  { label: "Data-driven decisions", desc: "Real signals over instinct and assumptions" },
+  { label: "Custom-fit solutions", desc: "Tailored to your org's stage, scale, and goals" },
+  { label: "Esports-native team", desc: "Operators and engineers from inside the industry" },
+  { label: "Built to scale", desc: "Infrastructure that grows with your roster and revenue" },
 ];
 
 function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
@@ -53,11 +56,13 @@ function CapabilitiesMarquee({ delay = 0, bentoRef, onPopout }) {
     const mRect = marquee.getBoundingClientRect();
     const iRect = item.getBoundingClientRect();
     const bRect = bento.getBoundingClientRect();
-    const videoEl = bento.querySelector(".ab-video");
-    const gapRight = videoEl?.getBoundingClientRect().left ?? bRect.right;
+    // Anchor the popout's right edge to whichever right-column box is present
+    // (the WE LIVE INSIDE panel on page 2, the WE HELP YOU video on page 1).
+    const gapEl = bento.querySelector(".ab-center") || bento.querySelector(".ab-video");
+    const gapRight = gapEl?.getBoundingClientRect().left ?? bRect.right;
 
     const left = mRect.right - bRect.left;
-    const width = gapRight - mRect.right;
+    const width = Math.max(0, gapRight - mRect.right);
 
     onPopout?.({
       idx,
@@ -333,6 +338,21 @@ function TechEsportsPanel({ delay = 0 }) {
         tl.set([outgoingEdges.l, outgoingEdges.r], { scaleY: 0 });
 
         if (visibleWord === "WIN") {
+          const outgoingInner = outgoing.querySelector(".ab-help-word-inner");
+
+          // Scale the WIN word up significantly and add a subtle lime glow.
+          tl.set(outgoingInner, { transformOrigin: "50% 50%" });
+          tl.to(outgoingInner, {
+            scale: 1.45,
+            duration: 0.42,
+            ease: "back.out(1.6)",
+          });
+          tl.to(outgoing, {
+            textShadow: "0 0 28px rgba(182,255,30,0.18), 0 0 70px rgba(182,255,30,0.08)",
+            duration: 0.42,
+            ease: "power2.out",
+          }, "<");
+
           // WIN gets ~2x the on-screen time (1.8s): trace box around text, then hold.
           const seg = 0.32;
           tl.to(outgoingEdges.b, { scaleX: 1, duration: seg, ease: "power2.out" });
@@ -346,7 +366,8 @@ function TechEsportsPanel({ delay = 0 }) {
           tl.to(sweep, { scaleY: 1, duration: 0.32, ease: "power4.inOut" });
           tl.call(() => {
             incomingText.textContent = upcomingWord;
-            gsap.set(outgoing, { yPercent: -110, opacity: 0 });
+            gsap.set(outgoing, { yPercent: -110, opacity: 0, textShadow: "" });
+            gsap.set(outgoingInner, { scale: 1 });
             gsap.set([outgoingEdges.b, outgoingEdges.t], { scaleX: 0 });
             gsap.set([outgoingEdges.l, outgoingEdges.r], { scaleY: 0 });
             gsap.set(incoming, { yPercent: 0, opacity: 1 });
@@ -383,20 +404,23 @@ function TechEsportsPanel({ delay = 0 }) {
         nextEl = outgoing;
       });
 
-      tl.pause();
+      tl.pause(0);
 
+      // Only start cycling when the section is actually on screen; always
+      // restart from GROW so the first word the user sees is the first word.
       const st = ScrollTrigger.create({
         trigger: panel,
-        start: "top bottom",
+        start: "top 70%",
         end: "bottom top",
-        onEnter: () => tl.play(),
-        onLeave: () => tl.pause(),
-        onEnterBack: () => tl.play(),
-        onLeaveBack: () => tl.pause(),
+        onEnter: () => tl.restart(true),
+        onLeave: () => tl.pause(0),
+        onEnterBack: () => tl.restart(true),
+        onLeaveBack: () => tl.pause(0),
       });
 
       requestAnimationFrame(() => {
-        if (st.isActive) tl.play();
+        if (st.isActive) tl.restart(true);
+        else tl.pause(0);
       });
     }, panel);
 
@@ -450,72 +474,78 @@ export default function AboutUs() {
   const [popout, setPopout] = useState(null);
 
   return (
-    <section className="about-sect" id="about">
-      <div className="about-bento" ref={bentoRef}>
-
-        <div className="ab-gap-watermark" aria-hidden="true">WINRVTE</div>
-
-        <CapabilitiesMarquee delay={0.06} bentoRef={bentoRef} onPopout={setPopout} />
-
-        {/* Top centre — video aligned with main text width */}
+    <>
+      {/* PAGE 1 — WE HELP YOU panel expanded to fill the section */}
+      <section className="about-sect about-sect--help" id="about">
         <TechEsportsPanel delay={0} />
+      </section>
 
-        {/* Centre — cols 2-3 */}
-        <motion.div
-          className="ab-center"
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="ab-center-glow" aria-hidden="true" />
-          <div className="ab-center-inner">
-            <AnimatedHeading
-              tag="h2"
-              className="ab-center-head"
-              rows={[
-                {
-                  parts: [
-                    { text: "WE L" },
-                    { text: "I", className: "ab-kern-li" },
-                    { text: "VE INSIDE" },
-                  ],
-                },
-                { parts: [{ text: "ESPORTS.", accent: true }] },
-              ]}
-            />
-            <p className="ab-center-lead">
-              Winrvte is a hands-on operations and technology partner for
-              competitive organizations. We build the infrastructure that keeps
-              teams focused on winning — not managing chaos.
-            </p>
-            <div className="ab-center-pillars">
-              {PILLARS.map((p) => (
-                <div key={p.label} className="ab-pillar">
-                  <span className="ab-pillar-label">{p.label}</span>
-                  <span className="ab-pillar-desc">{p.desc}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+      {/* PAGE 2 — Capability marquee + WINRVTE watermark + WE LIVE INSIDE
+          ESPORTS (expanded to fill the right column). Layout matches the
+          original bento, just without the WE HELP YOU box. */}
+      <section className="about-sect about-sect--inside" id="about-inside">
+        <div className="about-bento about-bento--no-video" ref={bentoRef}>
 
-        {popout && popout.width > 0 && (
-          <div
-            className="ab-mq-popout"
-            style={{
-              top: popout.top,
-              left: popout.left,
-              width: popout.width,
-            }}
-            aria-live="polite"
+          <div className="ab-gap-watermark" aria-hidden="true">WINRVTE</div>
+
+          <CapabilitiesMarquee delay={0.06} bentoRef={bentoRef} onPopout={setPopout} />
+
+          <motion.div
+            className="ab-center"
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="ab-mq-popout-tag">{CAPABILITIES[popout.idx].code}</span>
-            <span className="ab-mq-popout-text">{CAPABILITIES[popout.idx].desc}</span>
-          </div>
-        )}
+            <div className="ab-center-glow" aria-hidden="true" />
+            <div className="ab-center-inner">
+              <AnimatedHeading
+                tag="h2"
+                className="ab-center-head"
+                rows={[
+                  {
+                    parts: [
+                      { text: "WE L" },
+                      { text: "I", className: "ab-kern-li" },
+                      { text: "VE INSIDE" },
+                    ],
+                  },
+                  { parts: [{ text: "ESPORTS.", accent: true }] },
+                ]}
+              />
+              <p className="ab-center-lead">
+                Winrvte is a hands-on operations and technology partner for
+                competitive organizations. We build the infrastructure that
+                keeps teams focused on winning — not managing chaos.
+              </p>
+              <div className="ab-center-pillars">
+                {PILLARS.map((p) => (
+                  <div key={p.label} className="ab-pillar">
+                    <span className="ab-pillar-label">{p.label}</span>
+                    <span className="ab-pillar-desc">{p.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
 
-      </div>
-    </section>
+          {popout && popout.width > 0 && (
+            <div
+              className="ab-mq-popout"
+              style={{
+                top: popout.top,
+                left: popout.left,
+                width: popout.width,
+              }}
+              aria-live="polite"
+            >
+              <span className="ab-mq-popout-tag">{CAPABILITIES[popout.idx].code}</span>
+              <span className="ab-mq-popout-text">{CAPABILITIES[popout.idx].desc}</span>
+            </div>
+          )}
+
+        </div>
+      </section>
+    </>
   );
 }

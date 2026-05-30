@@ -12,10 +12,10 @@ import {
 
 const VISUAL_MAP = {
   "01": { Component: VisualAutomation,      label: "WORKFLOW ENGINE",   aspect: "7/4" },
-  "02": { Component: VisualDashboard,       label: "LIVE DASHBOARD",    aspect: "7/4" },
-  "03": { Component: VisualScouting,        label: "ANALYST WORKSTATION", aspect: "7/4" },
-  "04": { Component: VisualNetworkSourcing, label: "TALENT NETWORK", aspect: "5/4", showLabel: false },
-  "06": { Component: VisualGrowthTracking,  label: "GROWTH HUB",        aspect: "auto" },
+  "02": { Component: VisualDashboard,       label: "LIVE DASHBOARD",    aspect: "9/5" },
+  "03": { Component: VisualScouting,        label: "ANALYST WORKSTATION", aspect: "9/5" },
+  "04": { Component: VisualNetworkSourcing, label: "TALENT NETWORK",    aspect: "7/5", showLabel: false },
+  "06": { Component: VisualGrowthTracking,  label: "GROWTH HUB",        aspect: "8/5" },
 };
 
 const fadeUp = {
@@ -29,6 +29,12 @@ const SERVICES = [
     name: "Workflow Automation",
     tag: "Systems & Automation",
     desc: "Practical automations that remove repetitive manual work from your day-to-day. Request routing, data syncing, Discord workflows, approval flows — if your team does it manually every day, we can probably automate it.",
+    highlights: [
+      "Map every manual handoff in your weekly ops cycle",
+      "Replace spreadsheet juggling with audited, reliable flows",
+      "Wire Discord, sheets, and APIs into one orchestrated layer",
+      "Keep humans in the loop where judgment matters",
+    ],
     tags: ["Python", "Zapier", "APIs", "Discord Bots", "Google Sheets"],
     delivery: "Custom Scoped",
     stat: "↓70%",
@@ -41,6 +47,12 @@ const SERVICES = [
     name: "Personalized Dashboards & Reports",
     tag: "Custom Data Systems",
     desc: "One place for everything your org needs to see. Custom dashboards connected to your sheets, Discord channels and tools — so leadership always knows what's happening and where things stand.",
+    highlights: [
+      "One canonical view of roster, ops, and growth signals",
+      "Custom-built to mirror how your leadership actually thinks",
+      "Live-syncs with the sources of truth your team already uses",
+      "Designed for stand-ups, board updates, and sponsor reports",
+    ],
     tags: ["React", "Google Sheets", "Airtable", "REST APIs", "Supabase"],
     delivery: "Custom Scoped",
     stat: "1",
@@ -53,6 +65,12 @@ const SERVICES = [
     name: "Analyst Support & Prep Tools",
     tag: "Performance Tech",
     desc: "Tools that simplify opponent prep and team data management — scraping public data, structuring it cleanly, giving your players and teams practical systems to work from instead of scattered notes.",
+    highlights: [
+      "Structured match, draft, and VOD data — not scattered notes",
+      "Cut prep cycle time so analysts focus on insight, not formatting",
+      "Consistent template across coaches, analysts, and players",
+      "Public-data scraping shaped to your team's specific workflow",
+    ],
     tags: ["Python", "Data Scraping", "Notion", "Google Sheets", "Custom Tools"],
     delivery: "Custom Scoped",
     stat: "3×",
@@ -65,6 +83,12 @@ const SERVICES = [
     name: "Network & Resource Sourcing",
     tag: "Industry Connections",
     desc: "Finding the right people at the right price is harder than it should be. We have a strong network across the esports ecosystem and can connect your org with the staff, creatives, players and vendors you actually need.",
+    highlights: [
+      "Vetted operators, creatives, and players across the ecosystem",
+      "Pricing intel so you don't overpay or underspec the brief",
+      "Discreet introductions — no listings, no public bidding",
+      "Filtered for fit with your stage, budget, and timeline",
+    ],
     tags: ["Staff", "Designers", "Editors", "Players", "Vendors"],
     delivery: "Ongoing",
     stat: "Wide",
@@ -77,6 +101,12 @@ const SERVICES = [
     name: "Website Development & Management",
     tag: "Web & Digital Presence",
     desc: "Websites that actually reflect your brand and vision — custom design and storytelling that feel unmistakably yours, not another template with your logo swapped in. A digital presence built to match how your org sees itself and how you want players, fans, and sponsors to experience you.",
+    highlights: [
+      "Custom design that signals brand, not template fatigue",
+      "Modern stack — fast, secure, and easy to evolve season-over-season",
+      "CMS workflows your non-technical team can actually own",
+      "Ongoing maintenance so the site stays current between drops",
+    ],
     tags: ["React", "Next.js", "UI/UX", "CMS", "SEO", "Maintenance"],
     delivery: "Sprint + Retainer",
     stat: "Full",
@@ -89,6 +119,12 @@ const SERVICES = [
     name: "Growth Tracking",
     tag: "Cross-Platform Intelligence",
     desc: "All your growth signals — social reach, content performance, sponsor deliverables, roster impact — pulled into one live view. Connected across every platform your org touches, updated in real time, and built to give leadership and sponsors the proof they need.",
+    highlights: [
+      "Cross-platform metrics unified into a single growth picture",
+      "Auto-generated, sponsor-ready reports backed by verified data",
+      "Roster, content, and partnership impact tracked side-by-side",
+      "Built to scale as you add platforms, partners, and seasons",
+    ],
     tags: ["X / Twitter", "Twitch", "YouTube", "Instagram", "TikTok", "Custom APIs"],
     delivery: "Ongoing",
     stat: "1",
@@ -188,6 +224,14 @@ function ServiceDetailPanel({ svc, playVisuals }) {
 
         <p className="svc-detail-desc">{svc.desc}</p>
 
+        {svc.highlights?.length > 0 && (
+          <ul className="svc-detail-highlights">
+            {svc.highlights.map((h, i) => (
+              <li key={i} className="svc-detail-highlight">{h}</li>
+            ))}
+          </ul>
+        )}
+
         {visualEntry ? (
           <div className={`svc-reel-wrap${visualEntry.showLabel === false ? " svc-reel-wrap--no-label" : ""}`}>
             {visualEntry.showLabel !== false && (
@@ -206,9 +250,6 @@ function ServiceDetailPanel({ svc, playVisuals }) {
             >
               <VisualComponent active={playVisuals} />
             </div>
-            <div className="svc-reel-footer">
-              <span>{svc.outcome}</span>
-            </div>
           </div>
         ) : isWebDev ? (
           <div className="svc-reel-wrap svc-reel-wrap--no-label">
@@ -219,12 +260,10 @@ function ServiceDetailPanel({ svc, playVisuals }) {
                 poster="/new-web-reel-poster.webp"
                 autoPlayWhenVisible
                 loop
+                playbackRate={1.25}
               />
               <div className="svc-reel-overlay-tl" aria-hidden="true" />
               <div className="svc-reel-overlay-br" aria-hidden="true" />
-            </div>
-            <div className="svc-reel-footer">
-              <span>A site that reflects your brand and vision — unmistakably yours, not a generic esports skin.</span>
             </div>
           </div>
         ) : (
