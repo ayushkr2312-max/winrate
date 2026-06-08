@@ -54,7 +54,7 @@ export default function Manifesto() {
   return (
     <section className="sect manifesto" id="manifesto">
       <div className="sect-inner">
-        <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+        <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
           <span className="num">05</span> Manifesto
         </motion.span>
         <div className="manifesto-head">
@@ -66,7 +66,7 @@ export default function Manifesto() {
               { parts: [{ text: "ORGS.", accent: true }] },
             ]}
           />
-          <motion.p initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+          <motion.p initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
             A hands-on partner for organizations that need better systems, cleaner operations, and smarter use of limited budget.
           </motion.p>
         </div>
@@ -79,7 +79,7 @@ export default function Manifesto() {
               custom={i}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
               variants={rowVariants}
             >
               <div className="manifesto-row-num">{r.n}</div>

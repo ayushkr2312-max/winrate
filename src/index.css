@@ -1188,8 +1188,8 @@ html:has(.rail.is-on-hero:not(.is-docked):not(:hover)) {
   right: 0;
   bottom: -0.02em;
   height: 0.025em;
-  background: var(--lime);
-  box-shadow: 0 0 14px rgba(182, 255, 30, 0.5);
+  background: var(--white);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.5);
   border-radius: 999px;
   transform: scaleX(0);
   transform-origin: 0% 50%;

@@ -21,7 +21,7 @@ export default function WwdPipeline({ flow }) {
           scrollTrigger: {
             trigger: railRef.current,
             start: "top 88%",
-            once: false,
+            once: true,
           },
         },
       );

@@ -36,13 +36,9 @@ export default function StackSection() {
       ScrollTrigger.create({
         trigger: ".stack-head",
         start: "top 86%",
-        end: "bottom 20%",
+        once: true,
         onEnter: () =>
           gsap.to(".stack-head", { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" }),
-        onEnterBack: () =>
-          gsap.to(".stack-head", { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }),
-        onLeave: () => gsap.set(".stack-head", { y: 28, opacity: 0 }),
-        onLeaveBack: () => gsap.set(".stack-head", { y: 28, opacity: 0 }),
       });
     }, sectionRef);
     return () => ctx.revert();

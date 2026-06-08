@@ -62,11 +62,8 @@ export default function ScrambleNum({ target, suffix = "", decimals = 0, duratio
     const st = ScrollTrigger.create({
       trigger: el,
       start: trigger,
-      end: "bottom 20%",
+      once: true,
       onEnter: play,
-      onEnterBack: play,
-      onLeave: reset,
-      onLeaveBack: reset,
     });
 
     return () => {

@@ -14,7 +14,7 @@ export default function Contact() {
       <div className="sect-inner">
         <div className="contact-inner-grid">
           <div>
-            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
               <span className="num">06</span> Contact
             </motion.span>
             <div className="contact-headline">
@@ -28,7 +28,7 @@ export default function Contact() {
             </div>
           </div>
 
-          <motion.div className="contact-right" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}>
+          <motion.div className="contact-right" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={fadeUp}>
             <div className="contact-card">
               <div className="contact-card-head">
                 <span>// DIRECT LINE</span>

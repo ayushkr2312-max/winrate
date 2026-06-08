@@ -63,9 +63,9 @@ export default function HeroCanvas() {
       canvas._onLeave = onLeave;
     });
 
-    const BAND_SPEED = 375;   // px / second
-    const SIGMA      = 360;   // Gaussian half-width — larger = wider, softer band
-    const MAX_ALPHA  = 0.20;  // keep well below foreground text
+    const BAND_SPEED = 425;   // px / second (faster sweep)
+    const SIGMA      = 700;   // Gaussian half-width — larger = wider, softer band (more visible dots)
+    const MAX_ALPHA  = 0.235; // keep well below foreground text but more visible
     const CUTOFF     = 0.015; // skip dots below this Gaussian value (invisible)
 
     // Gather params for pill hover
@@ -134,9 +134,9 @@ export default function HeroCanvas() {
 
         if (g < CUTOFF) continue;
 
-        const breath = Math.sin(t * 0.7 + p.phase) * 0.03;
+        const breath = Math.sin(t * 1.2 + p.phase) * 0.05;
         const a      = Math.min(g * MAX_ALPHA + breath * g, MAX_ALPHA);
-        const r      = 0.6 + g * 1.4;
+        const r      = 0.6 + g * 1.6;
 
         ctx.beginPath();
         ctx.arc(p.bx, p.by, r, 0, Math.PI * 2);

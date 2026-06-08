@@ -113,11 +113,8 @@ export default function Stats() {
         ScrollTrigger.create({
           trigger: p,
           start: "top 82%",
-          end: "bottom 20%",
+          once: true,
           onEnter: () => gsap.to(p, { strokeDashoffset: 0, duration: 1.6, ease: "power2.out", delay: 0.45 }),
-          onEnterBack: () => gsap.to(p, { strokeDashoffset: 0, duration: 1.2, ease: "power2.out", delay: 0.15 }),
-          onLeave: () => gsap.set(p, { strokeDashoffset: len }),
-          onLeaveBack: () => gsap.set(p, { strokeDashoffset: len }),
         });
       });
     }, gridRef);
@@ -129,7 +126,7 @@ export default function Stats() {
       <div className="sect-inner">
         <div className="stats-head">
           <div>
-            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+            <motion.span className="section-tag" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
               <span className="num">04</span> Outcomes
             </motion.span>
             <AnimatedHeading
@@ -140,7 +137,7 @@ export default function Stats() {
               ]}
             />
           </div>
-          <motion.p initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.5 }} variants={fadeUp}>
+          <motion.p initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={fadeUp}>
             Save time, reduce costs, and make teams easier to run through better systems and execution structure.
           </motion.p>
         </div>
@@ -153,7 +150,7 @@ export default function Stats() {
               custom={i}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: false, amount: 0.15 }}
+              viewport={{ once: true, amount: 0.15 }}
               variants={cardVariants}
             >
               <div className="stat-val-row">
